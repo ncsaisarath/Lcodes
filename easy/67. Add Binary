@@ -1,0 +1,90 @@
+Given two binary strings a and b, return their sum as a binary string.
+
+class Solution {
+    public String addBinary(String a, String b) {
+        int carry = 0, aLen = a.length(), bLen = b.length(), maxLen = Math.max(aLen, bLen);
+        var chars = new char[maxLen + 1];
+        for (var i = 1; i <= maxLen; ++i) {
+            var aDigit = (i <= aLen ? a.charAt(aLen - i) : '0');
+            var bDigit = (i <= bLen ? b.charAt(bLen - i) : '0');
+            var sum = aDigit + bDigit + carry - '`';
+            chars[chars.length - i] = (char)((sum & 1) + '0');
+            carry = sum >> 1;
+        }
+        chars[0] = '1';
+        return new String(chars, 1 - carry, chars.length - (1 - carry));
+    }
+}
+
+class Solution2 {
+    public String addBinary(String a, String b) {
+        char[] ac=a.toCharArray();
+        char[] bc=b.toCharArray();
+        int al=ac.length-1;
+        int bl=bc.length-1;
+        int[] rc = new int[Math.max(al+1,bl+1)+1];
+        int rl=rc.length-1;
+        int carry=0;
+        int leng=0;
+        while(al>=0 && bl>=0 && rl>=0){
+            int x=Integer.parseInt(String.valueOf(ac[al]));
+            int y=Integer.parseInt(String.valueOf(bc[bl]));
+            // System.out.println(x + " " + y + " " + carry);
+            if(x+y+carry==2){
+                carry=1;
+                rc[rl--]=0;
+                // System.out.println("sum=2");
+            }else if(x+y+carry==3){
+                carry=1;
+                rc[rl--]=1;
+                // System.out.println("sum=3");
+            }else{
+                
+                rc[rl--]=x+y+carry;
+                carry=0;
+                // System.out.println("sum<2");
+            }
+            al--;
+            bl--;
+            leng++;
+           
+        while(al>=0){
+            int x=Integer.parseInt(String.valueOf(ac[al]));
+            if(x+carry==2){
+                carry=1;
+                rc[rl--]=0;
+            }else{
+                rc[rl--]=x+carry;
+                carry=0;
+            }
+            al--;
+            leng++;
+        }
+        while(bl>=0){
+            int x=Integer.parseInt(String.valueOf(bc[bl]));
+            if(x+carry==2){
+                carry=1;
+                rc[rl--]=0;
+            }else{
+                rc[rl--]=x+carry;
+                carry=0;
+            }
+            bl--;
+            leng++;
+        }
+        if(carry==1 && rl>=0){
+            rc[rl]=1;
+            leng++;
+        }
+           
+        
+        StringBuilder sb = new StringBuilder();
+        for(int x:rc){
+            sb.append(String.valueOf(x));
+        }
+        if(leng==rc.length)
+            return sb.toString();
+        else
+            return sb.toString().substring(1);
+    }
+}
