@@ -1,0 +1,53 @@
+Given the root of a binary tree, return the inorder traversal of its nodes' values.
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        ArrayList<Integer> list = new ArrayList<>();
+        helper(root, list);
+        return list;
+    }        
+    private void helper(TreeNode root, ArrayList<Integer> list){
+        if(root!=null) {
+            helper(root.left, list);
+            list.add(root.val);
+            helper(root.right, list);
+        }
+    }
+}
+
+class Solution2 {
+    
+    List<Integer> lis;
+    public List<Integer> inorderTraversal(TreeNode root) {
+        
+        lis = new ArrayList<>();
+        inorder(root);
+        
+        return lis;
+        
+    }    
+    
+    public void inorder(TreeNode x){
+        if(x==null)
+            return;
+        inorder(x.left);
+        lis.add(x.val);
+        inorder(x.right);
+    }
+}
