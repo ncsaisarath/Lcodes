@@ -1,0 +1,59 @@
+Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+ 
+class Solution {
+  public boolean isSymmetric(TreeNode root) {
+        return (isSymmetricRoot(root.left, root.right));
+    }
+
+  private boolean isSymmetricRoot(TreeNode rootLeft, TreeNode rootRight) {
+      if(rootLeft==null && rootRight==null){
+          return true;
+      }
+      if((rootLeft!=null && rootRight==null) || (rootLeft==null && rootRight!=null)){
+          return false;
+      }
+      boolean isNormalNumbers = false;
+      if(rootLeft.val == rootRight.val){
+          isNormalNumbers = true;
+      }
+      return isNormalNumbers && isSymmetricRoot(rootLeft.left, rootRight.right) && isSymmetricRoot(rootLeft.right, rootRight.left);
+  }
+}
+
+class Solution2 {
+    public boolean isSymmetric(TreeNode root) {
+        if(root==null)
+            return false;
+        else if(root.left==null && root.right==null)
+            return true;
+        return isMirror(root,root);
+    }
+    
+    public boolean isMirror(TreeNode x, TreeNode y){
+        if(x==null && y==null)
+            return true;
+        
+        if(x!=null && y!=null && x.val==y.val){
+            return (isMirror(x.left,y.right) && isMirror(x.right,y.left));
+        }
+        
+        return false;
+    }
+    
+}
