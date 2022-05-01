@@ -1,0 +1,45 @@
+Given a string s consisting of some words separated by some number of spaces, return the length of the last word in the string.
+
+A word is a maximal substring consisting of non-space characters only.
+
+ class Solution {
+    public int lengthOfLastWord(String s) {
+        
+        String k=s.trim();
+        int l=k.length();
+        int id=0;
+       char a[]=k.toCharArray();
+        
+        //int id=0;
+        for(int i=l-1;i>=0;i--){
+            if(a[i]==' '){
+                break;
+            }
+            else{
+                id++;
+            }
+        }
+        return id;
+        
+    }
+}
+
+class Solution2 {
+    public int lengthOfLastWord(String s) {
+        int r=s.length()-1,len=0;
+        char[] c = s.toCharArray();
+        
+        if(r==1)
+            return 1;
+        
+        while(c[r]==' ')
+            r--;
+        
+        while(r>=0 && c[r]!=' '){
+            r--;
+            len++;
+        }
+        
+        return len;
+    }
+}
