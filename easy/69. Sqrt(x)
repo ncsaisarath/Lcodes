@@ -1,0 +1,38 @@
+Given a non-negative integer x, compute and return the square root of x.
+
+Since the return type is an integer, the decimal digits are truncated, and only the integer part of the result is returned.
+
+Note: You are not allowed to use any built-in exponent function or operator, such as pow(x, 0.5) or x ** 0.5.
+
+class Solution {
+    public int mySqrt(int x) {
+        if(x==0) return x;
+        
+        int left = 1;
+        int right = x;
+
+        while (left <= right) {
+            int mid = left + (right-left)/2;
+
+            if ( x / mid < mid) {
+                right = mid - 1; /* answer <= (mid - 1) */
+            } else {
+                left = mid + 1;
+            }
+        }
+        return right;
+    }
+}
+
+class Solution2 {
+    public int mySqrt(int x) {
+        return (int)Math.sqrt(x);
+    }
+}
+
+class Solution3 {
+    public int mySqrt(int x) {
+        int sqrt = (int) Math.pow(x, 0.5);
+        return sqrt;
+    }
+}
