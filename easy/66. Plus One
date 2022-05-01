@@ -1,0 +1,54 @@
+You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. The digits are ordered from most significant to least significant in left-to-right order. The large integer does not contain any leading 0's.
+
+Increment the large integer by one and return the resulting array of digits.
+
+class Solution {
+    public int[] plusOne(int[] digits) {
+        
+        int n = digits.length;
+        
+        for(int i=n-1; i>=0 ; i--){
+            if(digits[i]<9){
+                digits[i]++;
+                return digits;
+            }
+            
+            digits[i] = 0;
+        }
+    int[] newNumber = new int [n+1];
+    newNumber[0] = 1;
+    
+    return newNumber;
+
+    }
+}
+
+class Solution2 {
+    public int[] plusOne(int[] digits) {
+        
+        int carry=0,first=1;
+        for(int i=digits.length-1;i>=0;i--){
+            int temp;
+            if(first==1){
+                temp = (digits[i]+1+carry);
+                first=0;
+            }
+                
+            else
+                temp = (digits[i]+carry);
+            carry= temp/10;
+            digits[i]=temp%10;
+            if(carry<1)
+                break;
+        }
+        if(carry!=0){
+            int[] res = new int[digits.length+1];
+            res[0]=carry;
+            for(int i=1;i<digits.length;i++)
+                res[i]=digits[i-1];
+            return res;
+        }
+        return digits;
+        
+    }
+}
