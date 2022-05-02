@@ -1,0 +1,139 @@
+Given an integer numRows, return the first numRows of Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it.
+
+class Solution {
+    public List<List<Integer>> generate(int n) 
+    {
+        List<List<Integer>> ans=new ArrayList<>();
+        if(n>0)
+        {
+            List<Integer> l=new ArrayList<>();
+            l.add(1);
+            ans.add(l);
+        }
+        else
+            return ans;
+        if(n>1)
+        {
+            List<Integer> l=new ArrayList<>();
+            l.add(1);
+            l.add(1);
+            ans.add(l);
+        }
+        Node prev=new Node(1);
+        prev.next=new Node(1);
+        for(int i=3;i<=n;i++)
+        {
+            List<Integer> l=new ArrayList<>();
+            l.add(1);
+            while(prev.next!=null)
+            {
+                l.add(prev.val+prev.next.val);
+                prev=prev.next;
+            }
+            l.add(1);
+            ans.add(l);
+            Node temp=prev;
+            for(int j:l)
+            {
+                temp.next=new Node(j);
+                temp=temp.next;
+            }
+            prev=prev.next;
+        }
+        return ans;
+    }
+}
+class Node
+{
+    int val;
+    Node next;
+    Node(int val)
+    {
+        this.val=val;
+    }
+}
+
+class Solution2 {
+    public List<List<Integer>> generate(int numRows) {
+ 
+        List<List<Integer>> lis = new ArrayList<>();
+        
+        if(numRows<2){
+            List<Integer> tt = new ArrayList<>(1);
+            tt.add(0,1);
+            lis.add(0,tt);
+            return lis;
+        }
+        Integer[][] pas = new Integer[2][numRows];
+        Arrays.fill(pas[0],0);
+        Arrays.fill(pas[1],0);
+        
+        int temp=numRows;
+        
+        pas[0][0]=1;
+        pas[1][0]=1;
+        pas[1][1]=1;
+        
+        
+        while(temp>0){
+            int ind=numRows-temp;
+            
+            List<Integer> temper = new ArrayList<Integer>(Arrays.asList(Arrays.copyOfRange(pas[(numRows-temp)%2],0,ind+1)));
+            lis.add(numRows-temp,temper);
+            for(int i=ind%2,j=1;j<numRows;j++){
+                int v1=pas[(i+1)%2][j];
+                int v2=pas[(i+1)%2][j-1];
+                pas[i][j]=v1+v2;
+            }
+            temp--;
+        }
+        
+        return lis;
+    }
+}
+
+class Solution3{
+  public List<List<Integer>> generate(int numRows) {
+          List<List<Integer>> output = new ArrayList<>();
+          List<Integer> temp = new ArrayList<>();
+          temp.add(1);
+          output.add(temp);
+          int i,j;
+          for(i = 1;i < numRows;i++)
+          {
+              temp = new ArrayList<>();
+              temp.add(1);
+              for(j = 1;j < i;j++)
+                  temp.add(output.get(i-1).get(j-1) + output.get(i-1).get(j));
+              temp.add(1);
+              output.add(temp);
+          }
+          return output;
+      }
+}      
+
+class Solution4 {
+        public List<List<Integer>> generate(int numRows) {
+            List<List<Integer>> ans = new ArrayList<List<Integer>>();
+           
+            List<Integer> ls = new ArrayList<Integer>();
+            
+            ls.add(1);
+            ans.add(ls);
+            
+            for(int i=1;i<numRows;i++){
+                int number = 1;
+                List<Integer> sum = new ArrayList<Integer>();
+                for(int k=0;k<=i;k++){
+                    sum.add(number);
+                    number = number * (i-k)/(k+1);  
+                }
+               ans.add(sum);
+               ls = sum;
+            }
+            
+          return ans;  
+        }
+}
