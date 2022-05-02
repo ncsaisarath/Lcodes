@@ -1,0 +1,105 @@
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+    MinStack() initializes the stack object.
+    void push(int val) pushes the element val onto the stack.
+    void pop() removes the element on the top of the stack.
+    int top() gets the top element of the stack.
+    int getMin() retrieves the minimum element in the stack.
+
+
+
+class MinStack {
+    Node head;
+
+    public MinStack() {
+    }
+    
+    public void push(int val) {
+        if (head == null)
+            head = new Node(val, val);
+        else 
+            head = new Node(val, Math.min(head.min, val), head);
+    }
+    
+    public void pop() {
+        head = head.next;
+    }
+    
+    public int top() {
+        return head.val;
+    }
+    
+    public int getMin() {
+        return head.min;
+    }
+    
+    class Node {
+        int val;
+        int min;
+        Node next;
+        public Node(int val, int min) {
+            this.val = val;
+            this.min = min;
+            next = null;
+        }
+        public Node(int val, int min, Node head) {
+            this.val = val;
+            this.min = min;
+            next = head;
+        }
+    }
+}
+
+/**
+ * Your MinStack object will be instantiated and called as such:
+ * MinStack obj = new MinStack();
+ * obj.push(val);
+ * obj.pop();
+ * int param_3 = obj.top();
+ * int param_4 = obj.getMin();
+ */
+
+class MinStack2 {
+    
+    List<Integer> lis;
+    int min = Integer.MAX_VALUE;
+    Stack<Integer> stack;
+    public MinStack() {
+        stack = new Stack<>();
+    }
+    
+    public void push(int val) {
+        if(min>val)
+            min=val;
+        stack.push(val);
+    }
+    
+    public void pop() {
+        int x = stack.pop();
+        if(x==min)
+            changeMin();
+    }
+    
+    public int top() {
+        return stack.peek();
+    }
+    
+    public int getMin() {
+        return min;
+    }
+    
+    public void changeMin(){
+        int x = Integer.MAX_VALUE;
+        Iterator iterator = stack.iterator();
+        while(iterator.hasNext()){
+            int c =(int)iterator.next(); 
+            if(x>c)
+                x=c;
+        }
+        min = x;
+    }
+    
+    
+}
