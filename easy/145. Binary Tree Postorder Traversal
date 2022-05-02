@@ -1,0 +1,39 @@
+Given the root of a binary tree, return the postorder traversal of its nodes' values.
+
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+       List<Integer> list= new ArrayList<>();
+        list=postorder(root,new ArrayList<>());
+        return list;
+        
+    }
+    List <Integer> postorder(TreeNode root,List<Integer> list){
+        if(root==null) return list;
+        
+        postorder(root.left,list);
+        postorder(root.right,list);
+        list.add(root.val);
+        return list;
+    }  
+}
+
+class Solution2 {
+    
+    List<Integer> lis;
+    public List<Integer> postorderTraversal(TreeNode root) {
+        
+        lis = new ArrayList<Integer>();
+        postorder(root);
+        
+        return lis;
+    }
+    
+    public void postorder(TreeNode x){
+        if(x==null)
+            return;
+        
+        postorder(x.left);
+        postorder(x.right);
+        lis.add(x.val);
+    }
+}
