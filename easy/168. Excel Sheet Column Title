@@ -1,0 +1,30 @@
+Given an integer columnNumber, return its corresponding column title as it appears in an Excel sheet.
+
+class Solution {
+    public String convertToTitle(int columnNumber) {
+        StringBuilder sb = new StringBuilder();
+        while (columnNumber > 0) {
+          columnNumber--;
+          sb.append((char) ('A' + columnNumber % 26));
+          columnNumber /= 26;
+        }
+        return sb.reverse().toString();
+    }   
+}
+
+class Solution2 {
+    public String convertToTitle(int columnNumber) {
+        String res = "";
+        int n=columnNumber;
+        while(n>0){
+            int rem = n%26;
+            n/=26;
+            if(rem==0){
+                rem=26;
+                n-=1;
+            }
+            res = (char)(rem+64)+res;
+        }
+        return res;
+    }
+}
