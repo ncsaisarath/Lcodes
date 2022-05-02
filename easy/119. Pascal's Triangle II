@@ -1,0 +1,55 @@
+Given an integer rowIndex, return the rowIndexth (0-indexed) row of the Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it.
+
+class Solution {
+    public List<Integer> getRow(int rowIndex) {
+        int[] arr=new int[rowIndex+1];
+        arr[0]=1;
+        for(int i=1;i<=rowIndex;i++) {
+            for(int j=i;j>=1;j--) {
+                arr[j]+=arr[j-1];
+            }
+        }
+        List<Integer> list = new ArrayList<>();
+        for (int i : arr) {
+          list.add(i);
+        }
+        return list;   
+    }
+}
+
+class Solution2 {
+    public List<Integer> getRow(int rowIndex) {
+        
+        List<Integer> lis = new ArrayList<>();
+        if(rowIndex==0){
+            lis.add(1);
+            return lis;
+        }
+        if(rowIndex==1){
+            lis.add(1);
+            lis.add(1);
+            return lis;
+        }
+        
+        int[][] temp = new int[2][rowIndex+1];
+        temp[0][0]=1;
+        temp[1][0]=1;
+        temp[1][1]=1;
+        
+        for(int i=2;i<=rowIndex;i++){
+            for(int j=1;j<i+1;j++){
+                temp[i%2][j]=temp[(i-1)%2][j]+temp[(i-1)%2][j-1];
+            }
+        }
+        
+        for(int x:temp[rowIndex%2])
+            lis.add(x);
+            
+        return lis;
+        
+        
+        
+    }
+}
