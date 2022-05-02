@@ -1,0 +1,24 @@
+Given a string columnTitle that represents the column title as appear in an Excel sheet, return its corresponding column number.
+
+class Solution {
+    public int titleToNumber(String columnTitle) {
+        int result = 0;
+        for(int i = 0; i < columnTitle.length() ; i++){
+            final char c = columnTitle.charAt(i);
+            result = result*26 + (c - 'A' + 1);
+        }
+        return result;
+    }
+}
+
+class Solution2 {
+    public int titleToNumber(String columnTitle) {
+        int n = columnTitle.length();
+        char[] c = columnTitle.toCharArray();
+        int res=0;
+        for(int i=0;i<n;i++){
+            res=res*26+(int)(c[i]-64);
+        }
+        return res;
+    }
+}
