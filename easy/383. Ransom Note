@@ -1,0 +1,68 @@
+Given two strings ransomNote and magazine, return true if ransomNote can be constructed from magazine and false otherwise.
+
+Each letter in magazine can only be used once in ransomNote.
+
+
+Example 1:
+
+Input: ransomNote = "a", magazine = "b"
+Output: false
+
+Example 2:
+
+Input: ransomNote = "aa", magazine = "ab"
+Output: false
+
+Example 3:
+
+Input: ransomNote = "aa", magazine = "aab"
+Output: true
+
+Constraints:
+
+    1 <= ransomNote.length, magazine.length <= 105
+    ransomNote and magazine consist of lowercase English letters.
+
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        
+        if(ransomNote.length() > magazine.length())
+            return false;
+        int[] indexArr = new int[26];
+        
+        for(char c: ransomNote.toCharArray()){
+            int index = magazine.indexOf(c, indexArr[c - 'a']);
+            
+            if(index == -1){
+                return false;
+            }
+            indexArr[c - 'a'] = index + 1; 
+        }
+        return true;
+    }
+}
+
+class Solution2 {
+    public boolean canConstruct(String ransomNote, String magazine) {
+        
+        int[] r = new int[26];
+        int[] m = new int[26];  
+        
+        char[] rr = ransomNote.toCharArray();
+        char[] mm = magazine.toCharArray();
+        
+        for(char x:rr)
+            r[(int)x-97]++;
+        
+        for(char x : mm)
+            m[(int)x-97]++;
+        
+        for(int i=0;i<26;i++){
+            if(r[i]>m[i])
+                return false;
+        }
+        
+        return true;
+        
+    }
+}
