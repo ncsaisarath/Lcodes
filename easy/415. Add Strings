@@ -1,0 +1,85 @@
+Given two non-negative integers, num1 and num2 represented as string, return the sum of num1 and num2 as a string.
+
+You must solve the problem without using any built-in library for handling large integers (such as BigInteger). You must also not convert the inputs to integers directly.
+
+ 
+
+Example 1:
+
+Input: num1 = "11", num2 = "123"
+Output: "134"
+
+Example 2:
+
+Input: num1 = "456", num2 = "77"
+Output: "533"
+
+Example 3:
+
+Input: num1 = "0", num2 = "0"
+Output: "0"
+
+ 
+
+Constraints:
+
+    1 <= num1.length, num2.length <= 104
+    num1 and num2 consist of only digits.
+    num1 and num2 don't have any leading zeros except for the zero itself.
+
+class Solution {
+    public String addStrings(String num1, String num2) {
+        StringBuilder sb = new StringBuilder();
+        
+        int carry = 0; 
+        int p1 = num1.length() - 1;
+        int p2 = num2.length() - 1;
+        
+        while(p1 >=0 || p2 >=0){
+            int x1 = p1 >=0 ? num1.charAt(p1) - '0' : 0;
+            int x2 = p2 >=0 ? num2.charAt(p2) - '0' : 0; 
+            
+            int sum = x1 + x2 + carry;
+            sb.append(sum % 10); 
+            carry = (sum) / 10;
+            
+            p1--;
+            p2--;
+        }
+        
+        if(carry != 0){
+            sb.append(carry);
+        }
+        
+        return sb.reverse().toString();
+    }
+}
+
+class Solution2 {
+    public String addStrings(String num1, String num2) {
+        
+        int nl1=num1.length();
+        int nl2=num2.length();
+        int max = Math.max(nl1,nl2)+1;
+        StringBuilder sb = new StringBuilder();
+        int temp = 0;
+        while(nl1>0 || nl2>0){
+            if(nl1>0){
+                temp+=num1.charAt(nl1-1)-'0';
+                nl1--;
+            }
+            if(nl2>0){
+                temp+=num2.charAt(nl2-1)-'0';
+                nl2--;
+            }
+            sb.append((char)(temp%10 + '0'));
+            temp/=10;
+        }
+        if(temp!=0){
+            sb.append('1');
+        }
+        return sb.reverse().toString();
+        
+    }
+    
+}
