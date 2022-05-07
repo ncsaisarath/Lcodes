@@ -1,0 +1,59 @@
+Given an integer n, return true if it is a power of three. Otherwise, return false.
+
+An integer n is a power of three, if there exists an integer x such that n == 3x.
+
+ 
+
+Example 1:
+
+Input: n = 27
+Output: true
+
+Example 2:
+
+Input: n = 0
+Output: false
+
+Example 3:
+
+Input: n = 9
+Output: true
+
+ 
+
+Constraints:
+
+    -2^31 <= n <= 2^31 - 1
+
+ 
+Follow up: Could you solve it without loops/recursion?
+
+class Solution {
+    public boolean isPowerOfThree(int n) {
+        if(n<=0)
+            return false;
+        
+        if(n==1)
+            return true;
+        
+        if(n%3!=0)
+            return false;
+        
+        return isPowerOfThree(n/3);
+    }
+}
+
+If N is a power of 3:
+
+    It follows that 3^X == N
+    It follows that log (3^X) == log N
+    It follows that X log 3 == log N
+    It follows that X == (log N) / (log 3)
+    For the basis to hold, X must be an integer.
+
+However, due to the fact that log(3) cannot be precisely represented on a binary computer; X is considered an integer if its decimal component falls within a guard range of +/-0.00000000000001. Static imports for log, abs and rint from java.lang.Math.
+
+public boolean isPowerOfThree(int n) {
+  double a = log(n) / log(3);
+  return abs(a - rint(a)) <= 0.00000000000001;
+}
