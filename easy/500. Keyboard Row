@@ -1,0 +1,146 @@
+Given an array of strings words, return the words that can be typed using letters of the alphabet on only one row of American keyboard like the image below.
+
+In the American keyboard:
+
+    the first row consists of the characters "qwertyuiop",
+    the second row consists of the characters "asdfghjkl", and
+    the third row consists of the characters "zxcvbnm".
+
+ 
+
+Example 1:
+
+Input: words = ["Hello","Alaska","Dad","Peace"]
+Output: ["Alaska","Dad"]
+
+Example 2:
+
+Input: words = ["omk"]
+Output: []
+
+Example 3:
+
+Input: words = ["adsdf","sfd"]
+Output: ["adsdf","sfd"]
+
+ 
+
+Constraints:
+
+    1 <= words.length <= 20
+    1 <= words[i].length <= 100
+    words[i] consists of English letters (both lowercase and uppercase). 
+
+
+class Solution {
+    
+    public static boolean contains(String str, Character ch){
+        int i = 0;
+        
+        while (i < str.length()){
+            if(str.charAt(i) == Character.toLowerCase(ch)){
+                return true;
+            }
+            i++;
+        }
+        
+        return false;
+    }
+    
+    public String[] findWords(String[] words) {
+        String firstRow = "qwertyuiop";
+        String secondRow = "asdfghjkl";
+        String thirdRow = "zxcvbnm";
+        
+        int k = 0;
+        int t = 0;
+        int m = 0;
+        
+        
+        String[] result = new String[0];
+        
+        for(int i = 0; i < words.length; i++){
+            k = 0; 
+            t = 0;
+            m = 0;
+            
+            while(k < words[i].length() && contains(firstRow, words[i].charAt(k))){
+                k++;
+            }
+            
+            if(k == words[i].length()){
+                result = Arrays.copyOf(result, result.length + 1);
+                result[result.length - 1] = words[i];
+                continue;
+            } else if(k > 0){
+                continue;
+            }
+            
+            while(t < words[i].length() && contains(secondRow, words[i].charAt(t))){
+                t++;
+            }
+           
+            
+            if(t == words[i].length()){
+                result = Arrays.copyOf(result, result.length + 1);
+                result[result.length - 1] = words[i];
+                continue;
+            } else if(t > 0){
+                continue;
+            } 
+            
+            while(m < words[i].length() && contains(thirdRow, words[i].charAt(m))){
+                m++;
+            }
+            
+            if(m == words[i].length()){
+                result = Arrays.copyOf(result, result.length + 1);
+                result[result.length - 1] = words[i];
+                continue; 
+            } else if(m > 0){
+                continue;
+            }
+            
+            
+        }
+        
+        return result;
+    }
+}
+
+
+class Solution {
+    public String[] findWords(String[] words) {
+        String one = "qwertyuiop";
+        String two = "asdfghjkl";
+        String three = "zxcvbnm";
+        String main = "";
+        ArrayList<String> arr = new ArrayList<>();
+        int no = 0;
+        for(int i=0;i<words.length;i++){
+            char c = words[i].charAt(0);
+            if(c>='A' && c<='Z')
+                c+=32;
+            if(one.indexOf(c)!=-1)
+                main = one;
+            else if(two.indexOf(c)!=-1)
+                main = two;
+            else
+                main = three;
+            int j=0;
+            for(;j<words[i].length();j++){
+                String x = words[i].toLowerCase();
+                if(main.indexOf(x.charAt(j))==-1)
+                    break;
+            }
+            if(j==words[i].length())
+                arr.add(words[i]);
+        }
+        String[] res = new String[arr.size()];
+        int i=0;
+        for(String x:arr){
+            res[i++]=x;
+        }
+        return res;
+    }
+}
