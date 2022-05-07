@@ -1,0 +1,91 @@
+Given an integer n, return an array ans of length n + 1 such that for each i (0 <= i <= n), ans[i] is the number of 1's in the binary representation of i.
+
+Example 1:
+
+Input: n = 2
+Output: [0,1,1]
+Explanation:
+0 --> 0
+1 --> 1
+2 --> 10
+
+Example 2:
+
+Input: n = 5
+Output: [0,1,1,2,1,2]
+Explanation:
+0 --> 0
+1 --> 1
+2 --> 10
+3 --> 11
+4 --> 100
+5 --> 101
+
+ 
+
+Constraints:
+
+    0 <= n <= 105
+
+ 
+
+Follow up:
+
+    It is very easy to come up with a solution with a runtime of O(n log n). Can you do it in linear time O(n) and possibly in a single pass?
+    Can you do it without using any built-in function (i.e., like __builtin_popcount in C++)?
+
+class Solution {
+    public int[] countBits(int n) {
+        // 0000 0 -> 0, 2
+        // 0001 1 -> 1, 3
+        // 0010 2 -> 2, 6
+        // 0011 3
+        // 0100 4
+        // 0101 5
+        // 0110 6
+        // 0111 7
+        
+        return sol1(n);
+    }
+    
+    private int[] sol1(int n) {
+        int num = 0;
+        int[] result = new int[n+1];
+        result[0] = 0;
+        append(num, 1, result);
+            
+        return result;
+    }
+    
+    private void append(int n, int lastDigit, int[] result) {
+        int tempResult = result[n] + lastDigit;
+        n <<= 1;
+        n += lastDigit;
+        
+        if (n < result.length) {
+            result[n] = tempResult;
+            append(n, 0, result);
+            append(n, 1, result);
+        }
+    }
+}
+
+class Solution {
+    public int[] countBits(int n) {
+        int[] res = new int[n+1];
+        if(n==0)
+            return new int[]{0};
+        if(n==1)
+            return new int[]{0,1};
+        res[0]=0;
+        res[1]=1;
+        for(int i=2;i<n+1;i*=2){
+            int j=i,k=0;
+            while(j<i*2 && j<n+1){
+                res[j++]=1+res[k++];
+            }
+        }
+        
+       return res; 
+    }
+}
