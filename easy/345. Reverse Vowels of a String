@@ -1,0 +1,80 @@
+Given a string s, reverse only all the vowels in the string and return it.
+
+The vowels are 'a', 'e', 'i', 'o', and 'u', and they can appear in both cases.
+
+Example 1:
+
+Input: s = "hello"
+Output: "holle"
+
+Example 2:
+
+Input: s = "leetcode"
+Output: "leotcede"
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 3 * 10^5
+    s consist of printable ASCII characters.
+
+class Solution {
+    public String reverseVowels(String s) {
+        int n = s.length();
+        int[] vowels = new int[n];
+        int pos = 0;
+        char[] array = s.toCharArray();
+        for(int i = 0; i < n; i++) {
+            if(isVowel(array[i])) {
+                vowels[pos] = i;
+                pos++;
+            }
+        }
+        int left = 0;
+        int right = pos - 1;
+        while(left < right) {
+            swap(array, vowels[left], vowels[right]);
+            left++;
+            right--;
+        }
+        return String.valueOf(array);
+    }
+    
+    private void swap(char[] array, int left, int right) {
+        char tmp = array[left];
+        array[left] = array[right];
+        array[right] = tmp;
+    }
+    
+    private boolean isVowel(char c) {
+        if(c == 'a' || c == 'A' || c == 'e' || c == 'E' || c == 'i' || c == 'I' ||
+          c == 'o' || c == 'O' || c == 'u' || c == 'U') return true;
+        return false;
+    }
+}
+
+class Solution {
+    public String reverseVowels(String s) {
+        
+        char[] ca = s.toCharArray();
+        int st=0,e=ca.length-1;
+        while(st<=e){
+            while(st<e && !isVowel(ca[st]))
+                st++;
+            while(st<e && !isVowel(ca[e]))
+                e--;
+            char temp = ca[st];
+            ca[st++]=ca[e];
+            ca[e--]=temp;
+            
+        }
+        return String.valueOf(ca);
+        
+    }
+    public boolean isVowel(char cg){
+        if(cg=='a'||cg=='e'||cg=='i'||cg=='o'||cg=='u'||cg=='A'||cg=='E'||cg=='I'||cg=='O'||cg=='U')
+            return true;
+        return false;
+    }
+}
