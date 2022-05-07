@@ -1,0 +1,99 @@
+Given an array nums of n integers where nums[i] is in the range [1, n], return an array of all the integers in the range [1, n] that do not appear in nums.
+
+ 
+
+Example 1:
+
+Input: nums = [4,3,2,7,8,2,3,1]
+Output: [5,6]
+
+Example 2:
+
+Input: nums = [1,1]
+Output: [2]
+
+ 
+
+Constraints:
+
+    n == nums.length
+    1 <= n <= 105
+    1 <= nums[i] <= n
+
+ 
+
+Follow up: Could you do it without extra space and in O(n) runtime? You may assume the returned list does not count as extra space.
+
+import java.util.*;
+
+class Solution {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> results = new ArrayList<Integer>();
+        int[] tempNums = new int[nums.length];
+        
+        for (int i = 0;i<nums.length;i++) {
+            tempNums[nums[i]-1] = tempNums[nums[i]-1] + 1;
+        }
+        for (int i = 0;i<tempNums.length;i++) {
+            if (tempNums[i] == 0) {
+                results.add(i+1);
+            }
+        }
+        return results;
+    }
+}
+
+Could you do it without extra space and in O(n) runtime? You may assume the returned list does not count as extra space.
+
+class Solution2 {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        if (nums == null)
+            return null;
+        
+        for (int i = 0; i < nums.length; i++) {
+            int tmp = (nums[i] < 0) ? -nums[i] : nums[i];
+            if (tmp < 1 || tmp > nums.length)
+                continue;
+            
+            tmp--;
+            if (nums[tmp] > 0)
+                nums[tmp] = -nums[tmp];
+        }
+        
+        List<Integer> result = new LinkedList<>();
+        for (int i = 0; i < nums.length; i++)
+            if (nums[i] > 0)
+                result.add(i + 1);
+            else
+                nums[i] = -nums[i];
+        
+        return result;
+    }
+}
+
+class Solution3 {
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        int max=nums.length;
+        List<Integer> lis = new ArrayList<>();
+        
+        int i=0,min=0;
+        while(i<=max-1){
+            int j=nums[i];
+            while(j!=0){
+                int temp=nums[j-1];
+                nums[j-1]=0;
+                j=temp; 
+                // System.out.println(i+" "+j);
+            }
+            // System.out.println(Arrays.toString(nums));
+            i++;
+        }
+        for(i=0;i<max;i++){
+            if(nums[i]!=0)
+                lis.add(i+1);
+        }
+        
+        return lis;
+        
+    }
+}
