@@ -1,0 +1,99 @@
+Given two integer arrays nums1 and nums2, return an array of their intersection. Each element in the result must appear as many times as it shows in both arrays and you may return the result in any order.
+
+Example 1:
+
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2,2]
+
+Example 2:
+
+Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+Output: [4,9]
+Explanation: [9,4] is also accepted.
+
+Constraints:
+
+    1 <= nums1.length, nums2.length <= 1000
+    0 <= nums1[i], nums2[i] <= 1000
+
+class Solution {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        
+        int[] table = new int[1001];
+        
+        for(int n: nums1)
+            table[n]++;
+        int k=0;
+        for(int n: nums2){
+            if(table[n] != 0){
+                nums1[k++] = n;
+                table[n]--;
+            }
+        }
+        
+        return Arrays.copyOfRange(nums1, 0, k);
+    }
+}
+
+class Solution2 {
+    public int[] intersect(int[] nums1, int[] nums2) {
+        
+        HashMap<Integer,Integer> hm1 = new HashMap<>();
+        HashMap<Integer,Integer> hm2 = new HashMap<>();
+        
+        for(int i=0;i<nums1.length;i++){
+            if(hm1.get(nums1[i])==null){
+                hm1.put(nums1[i],1); 
+            }else{
+                int temp=hm1.get(nums1[i]);
+                hm1.put(nums1[i],temp+1);
+            }
+                
+        }
+        
+        for(int i=0;i<nums2.length;i++){
+            if(hm2.get(nums2[i])==null){
+                hm2.put(nums2[i],1); 
+            }else{
+                int temp=hm2.get(nums2[i]);
+                hm2.put(nums2[i],temp+1);
+            }
+                
+        }
+        
+        int count=0;
+        int[] temper;
+        if(nums1.length<=nums2.length){
+            temper = new int[nums1.length];
+            for(int i=0,j=0;i<nums1.length && j<nums2.length;i++){
+                int temp1 = hm1.get(nums1[i])!=null?hm1.get(nums1[i]):0;
+                int temp2 = hm2.get(nums1[i])!=null?hm2.get(nums1[i]):0;
+                if(!(temp1==0) && !(temp2==0)){
+                    int temp3 = Math.min(temp1,temp2);
+                    hm1.remove(nums1[i]);
+                    count+=temp3;;
+                        while(temp3-->0){
+                            temper[j++]=nums1[i];
+                        } 
+                }
+                  
+            } 
+        }else{
+            temper = new int[nums2.length];
+            for(int i=0,j=0;i<nums2.length && j<nums2.length;i++){
+                int temp1 = hm1.get(nums2[i])!=null?hm1.get(nums2[i]):0;
+                int temp2 = hm2.get(nums2[i])!=null?hm2.get(nums2[i]):0;
+                if(temp1!=0 && temp2!=0){
+                    int temp3 = Math.min(temp1,temp2);
+                    hm2.remove(nums2[i]);
+                    count+=temp3;;
+                        while(temp3-->0){
+                            temper[j++]=nums2[i];
+                        } 
+                }   
+            }
+        }
+        
+        return Arrays.copyOf(temper,count);
+    }
+}
