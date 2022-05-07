@@ -1,0 +1,67 @@
+Given a string s, find the first non-repeating character in it and return its index. If it does not exist, return -1.
+
+ 
+
+Example 1:
+
+Input: s = "leetcode"
+Output: 0
+
+Example 2:
+
+Input: s = "loveleetcode"
+Output: 2
+
+Example 3:
+
+Input: s = "aabb"
+Output: -1
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 10^5
+    s consists of only lowercase English letters.
+    
+
+class Solution {
+    public int firstUniqChar(String s) {
+
+        if (s.length() == 0) {
+            return -1;
+        }
+        int minIndex = s.length();
+        for (char c='a';c<='z';c++) {
+            int index = s.indexOf(c);          
+            if (index !=-1 && s.indexOf(c,index+1) ==-1) {                             
+                minIndex = Math.min(index,minIndex);
+            }
+        }
+        if (minIndex == s.length() ){
+            return -1;
+        }
+        return minIndex;
+    }
+}
+
+class Solution {
+    public int firstUniqChar(String s) {
+        // String t = s;
+        int[] occ = new int[26];
+        int pos=0;
+        
+        for(char x:s.toCharArray()){
+            occ[x-'a']++;
+            int index=0;
+            if(occ[x-'a']<2)
+                index = s.indexOf(x,pos+1);
+                if(index==-1)
+                    return pos;
+            pos++;
+        }
+        
+        return -1;
+        
+    }
+}
