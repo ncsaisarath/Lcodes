@@ -1,0 +1,84 @@
+Given two integer arrays nums1 and nums2, return an array of their intersection. Each element in the result must be unique and you may return the result in any order.
+
+Example 1:
+
+Input: nums1 = [1,2,2,1], nums2 = [2,2]
+Output: [2]
+
+Example 2:
+
+Input: nums1 = [4,9,5], nums2 = [9,4,9,8,4]
+Output: [9,4]
+Explanation: [4,9] is also accepted.
+
+Constraints:
+
+    1 <= nums1.length, nums2.length <= 1000
+    0 <= nums1[i], nums2[i] <= 1000
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        int[] freq = new int[1000];
+        for (int num : nums1) {
+            freq[num] = 1;
+        }
+        int size = 0;
+        for (int num : nums2) {
+            if (freq[num] == 1) {
+                freq[num] = 2;
+                size++;
+            }
+        }
+        int[] res = new int[size];
+        int idx = 0;
+        for (int i = 0; i < nums2.length; i++) {
+            if (freq[nums2[i]] == 2) {
+                res[idx++] = nums2[i];
+                freq[nums2[i]] = 1;
+            }
+        }
+        return res;
+    }
+}
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        
+        int i=0,j=0,k=0,l=0;
+        int m=nums1.length,n=nums2.length;
+        int[] temp = new int[Math.min(m,n)];
+        while(i<m&&j<n){
+            k=0;
+            // if(nums1[i]<nums2[j])
+                while(i<m && j<n && nums1[i]<nums2[j])
+                    i++;
+            // else if(nums1[i]>nums2[j])
+                while(j<n && i<m && nums1[i]>nums2[j])
+                    j++;
+            // else{
+                if(i<m && j<n && nums1[i]==nums2[j]){
+                    if(k==0){
+                        temp[l++]=nums1[i];
+                        k=1;
+                    }
+                    int t1=nums1[i];
+                    while(i<m && nums1[i]==t1)
+                        i++;
+                    while(j<n && nums2[j]==t1)
+                        j++;
+                }  
+            // }
+                  
+        }
+        int[] res = new int[l];
+        for(i=0;i<l;i++){
+            res[i]=temp[i];
+        }
+        
+        
+        return res;
+    }
+}
