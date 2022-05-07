@@ -1,0 +1,61 @@
+You have n coins and you want to build a staircase with these coins. The staircase consists of k rows where the ith row has exactly i coins. The last row of the staircase may be incomplete.
+
+Given the integer n, return the number of complete rows of the staircase you will build.
+
+ 
+
+Example 1:
+
+Input: n = 5
+Output: 2
+Explanation: Because the 3rd row is incomplete, we return 2.
+
+Example 2:
+
+Input: n = 8
+Output: 3
+Explanation: Because the 4th row is incomplete, we return 3.
+
+ 
+
+Constraints:
+
+    1 <= n <= 2^31 - 1
+
+class Solution {
+    public int arrangeCoins(int c) {
+        int n = (int)(-1 + Math.sqrt(1+(4*2*(long)c)))/2;
+        return n;
+    }
+}
+
+Idea
+See sum of first x natural number is n=x(x+1)/2*
+Therefore x is close to Math.sqrt(2*n) right!!
+
+In Question n is more or equal to sum of first x natutal number as mentioned above and we have to calculate the x i.e the number of rows we can make with coins!!
+
+So, the answer can either x or x-1!!
+
+If the answer is x then x*(x+1)/2 should more than equal to n otherwise (x-1)!!
+
+class Solution2 {
+    public int arrangeCoins(int n) {
+        
+        int x=(int)Math.sqrt((long)2*n);
+        if(n>=(long)x*(x+1)/2)
+            return x;
+        return x-1;
+    }
+}
+
+class Solution3 {
+    public int arrangeCoins(int n) {
+        int count=0;
+        while(n>count){
+            count++;
+            n=n-count;
+        }
+        return count;
+    }
+}
