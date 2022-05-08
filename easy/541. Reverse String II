@@ -1,0 +1,74 @@
+Given a string s and an integer k, reverse the first k characters for every 2k characters counting from the start of the string.
+
+If there are fewer than k characters left, reverse all of them. If there are less than 2k but greater than or equal to k characters, then reverse the first k characters and leave the other as original.
+
+ 
+
+Example 1:
+
+Input: s = "abcdefg", k = 2
+Output: "bacdfeg"
+
+Example 2:
+
+Input: s = "abcd", k = 2
+Output: "bacd"
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 10^4
+    s consists of only lowercase English letters.
+    1 <= k <= 10^4
+    
+    
+class Solution {
+    public String reverseStr(String s, int k) {
+        if (s == null || s.length() == 0 || k < 0) return null;
+        
+        char[] chars = s.toCharArray();
+            
+        int slow = 0;
+        while (slow <= chars.length - k) {
+            int fast = slow + k - 1;
+            reverse(slow, fast, chars);
+            slow = fast + 1 + k;
+        } 
+        if (slow < chars.length) {
+            reverse(slow, chars.length - 1, chars);
+        }
+        
+        return new String(chars);
+    }
+    
+    private void reverse(int s, int e, char[] chars) {
+        while (s < e) {
+            char tmp = chars[s];
+            chars[s] = chars[e];
+            chars[e] = tmp;
+            s++;
+            e--;
+        }
+    }
+    
+}
+
+class Solution2 {
+    public String reverseStr(String s, int k) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<s.length();i+=2*k){
+            int st = i;
+            int e = Math.min(i+k-1,s.length()-1);
+            while(e>=st){
+                sb.append(s.charAt(e--));
+            }
+            e=st+k;
+            while(e<s.length()&&e<i+2*k){
+                sb.append(s.charAt(e++));
+            }
+        }
+        return sb.toString();
+    }
+}
+
