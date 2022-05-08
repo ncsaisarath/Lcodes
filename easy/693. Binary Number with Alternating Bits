@@ -1,0 +1,76 @@
+Given a positive integer, check whether it has alternating bits: namely, if two adjacent bits will always have different values.
+
+ 
+
+Example 1:
+
+Input: n = 5
+Output: true
+Explanation: The binary representation of 5 is: 101
+
+Example 2:
+
+Input: n = 7
+Output: false
+Explanation: The binary representation of 7 is: 111.
+
+Example 3:
+
+Input: n = 11
+Output: false
+Explanation: The binary representation of 11 is: 1011.
+
+ 
+
+Constraints:
+
+    1 <= n <= 2^31 - 1
+
+
+class Solution {
+    public boolean hasAlternatingBits(int n) {
+        boolean prev = n % 2 == 1;
+        n = n / 2;
+        while (n > 1) {
+            if (prev) {
+                if (n % 2 == 1) return false;
+                prev = false;
+            } else {
+                if (n % 2 == 0) return false;
+                prev = true;
+            }
+            n = n / 2;
+        }
+        if (prev) {
+            if (n == 1) return false;
+        } else {
+            if (n == 0) return false;
+        }
+        return true;
+    }
+}
+
+
+class Solution2 {
+    public boolean hasAlternatingBits(int n) {
+        boolean last = (n&1)==1;
+        n>>=1;
+        while(n>0){
+            if(last){
+                if((n&1)==0)
+                    last=!last;
+                else
+                    break;
+            }else{
+                if((n&1)==1)
+                    last=!last;
+                else
+                    break;
+            }
+            n>>=1;
+        }
+        if(n>0)
+            return false;
+        return true;
+    }
+}
