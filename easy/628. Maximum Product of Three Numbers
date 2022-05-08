@@ -1,0 +1,123 @@
+Given an integer array nums, find three numbers whose product is maximum and return the maximum product.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3]
+Output: 6
+
+Example 2:
+
+Input: nums = [1,2,3,4]
+Output: 24
+
+Example 3:
+
+Input: nums = [-1,-2,-3]
+Output: -6
+
+ 
+
+Constraints:
+
+    3 <= nums.length <= 10^4
+    -1000 <= nums[i] <= 1000
+
+
+class Solution {
+    public int maximumProduct(int[] nums) {
+        
+        
+        int max=Integer.MIN_VALUE;
+        int maxi=0;
+        int min=Integer.MAX_VALUE;
+        int mini=0;
+        
+        for(int i=0;i<nums.length;i++)
+        {
+            if(nums[i]>max)
+            {
+                max=nums[i];
+                maxi=i;
+            }
+            if(nums[i]<min)
+            {
+                min=nums[i];
+                mini=i;
+            }
+        }
+        int secondmin=Integer.MAX_VALUE;
+        for(int i=0;i<nums.length;i++)
+        {
+            if(nums[i]<=secondmin)
+            {
+                if(i!=mini)
+                {
+                    secondmin=nums[i];
+                }
+                    
+            }
+        }
+        
+        int secondmax=Integer.MIN_VALUE;
+        int smax=0;
+        int thirdmax=secondmax;
+        
+        for(int i=0;i<nums.length;i++)
+        {
+            if(nums[i]>secondmax && i!=maxi){
+                secondmax=nums[i];
+                smax=i;}
+        }
+        
+        for(int i=0;i<nums.length;i++)
+        {
+            if(nums[i]>thirdmax && i!=maxi && i!=smax)
+                thirdmax=nums[i];
+        }
+        
+        if(min*secondmin >= secondmax*thirdmax && max>0)
+        {
+            return min*secondmin*max;
+        }
+        else
+            return secondmax*thirdmax*max;
+        
+    }
+}
+
+
+class Solution2 {
+    public int maximumProduct(int[] nums) {
+        int pa=Integer.MIN_VALUE;
+        int pb=Integer.MIN_VALUE;
+        int pc=Integer.MIN_VALUE;
+        int na=Integer.MAX_VALUE;
+        int nb=Integer.MAX_VALUE;
+        
+        for(int x:nums){
+            if(x>pa){
+                pc=pb;
+                pb=pa;
+                pa=x;
+            }else if(x>pb){
+                pc=pb;
+                pb=x;
+            }else if(x>pc){
+                pc=x;
+            }
+            
+            if(x<na){
+                nb=na;
+                na=x;
+            }else if(x<nb){
+                nb=x;
+            }
+        }
+        
+        int pm = pa*pb*pc;
+        int nm = na*nb*pa;
+        return Math.max(pm,nm);
+    }
+}
