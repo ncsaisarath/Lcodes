@@ -1,0 +1,80 @@
+Given the root of a Binary Search Tree and a target number k, return true if there exist two elements in the BST such that their sum is equal to the given target.
+
+ 
+
+Example 1:
+
+Input: root = [5,3,6,2,4,null,7], k = 9
+Output: true
+
+Example 2:
+
+Input: root = [5,3,6,2,4,null,7], k = 28
+Output: false
+
+ 
+
+Constraints:
+
+    The number of nodes in the tree is in the range [1, 10^4].
+    -104 <= Node.val <= 10^4
+    root is guaranteed to be a valid binary search tree.
+    -10^5 <= k <= 10^5
+
+
+class Solution {
+    private TreeNode root;
+    private boolean isExist;
+    private int k;
+    public boolean findTarget(TreeNode root, int k) {
+        isExist = false;
+        this.root = root;
+        this.k = k;
+        traverse(root);
+        return isExist;
+    }
+    
+    private void traverse(TreeNode node) {
+        if (node == null || isExist) return;
+        
+        int t = k - node.val;
+        if (t != node.val) {
+            TreeNode next = root;
+            while (next != null) {
+                if (next.val == t) {
+                    isExist = true;
+                    return;
+                }
+                next = (t < next.val) ? next.left : next.right; 
+            }
+        }
+        
+        traverse(node.left);
+        traverse(node.right);
+    }
+}
+
+
+class Solution {
+    ArrayList<Integer> lis;
+    public boolean findTarget(TreeNode root, int k) {
+        
+        lis = new ArrayList<>();
+        return inorder(root,k);
+        
+    }
+    
+    public boolean inorder(TreeNode curr, int k){
+        boolean ans = false;
+        if(curr==null)
+            return false;
+        
+        ans = ans||inorder(curr.left,k);
+        if(lis.contains(k-curr.val))
+            return true; 
+        lis.add(curr.val);
+        
+        ans = ans||inorder(curr.right,k);
+        return ans;
+    }
+}
