@@ -1,0 +1,126 @@
+Given two strings s and t, return true if they are equal when both are typed into empty text editors. '#' means a backspace character.
+
+Note that after backspacing an empty text, the text will continue empty.
+
+ 
+
+Example 1:
+
+Input: s = "ab#c", t = "ad#c"
+Output: true
+Explanation: Both s and t become "ac".
+
+Example 2:
+
+Input: s = "ab##", t = "c#d#"
+Output: true
+Explanation: Both s and t become "".
+
+Example 3:
+
+Input: s = "a#c", t = "b"
+Output: false
+Explanation: s becomes "c" while t becomes "b".
+
+ 
+
+Constraints:
+
+    1 <= s.length, t.length <= 200
+    s and t only contain lowercase letters and '#' characters.
+
+ 
+
+Follow up: Can you solve it in O(n) time and O(1) space?
+
+
+class Solution {
+    public boolean backspaceCompare(String S, String T) {
+        int i = S.length() - 1, j = T.length() - 1;
+        int skipS = 0, skipT = 0;
+
+        while (i >= 0 || j >= 0) { // While there may be chars in build(S) or build (T)
+            while (i >= 0) { // Find position of next possible char in build(S)
+                if (S.charAt(i) == '#') {skipS++; i--;}
+                else if (skipS > 0) {skipS--; i--;}
+                else break;
+            }
+            while (j >= 0) { // Find position of next possible char in build(T)
+                if (T.charAt(j) == '#') {skipT++; j--;}
+                else if (skipT > 0) {skipT--; j--;}
+                else break;
+            }
+            // If two actual characters are different
+            if (i >= 0 && j >= 0 && S.charAt(i) != T.charAt(j))
+                return false;
+            // If expecting to compare char vs nothing
+            if ((i >= 0) != (j >= 0))
+                return false;
+            i--; j--;
+        }
+        return true;
+    }
+}
+
+
+class Solution {
+    private static final char BACKSPACE_CHAR = '#';
+    
+    public boolean backspaceCompare(String s, String t) {
+        int sIndex = s.length() - 1, tIndex = t.length() - 1;
+        while (sIndex >= 0 || tIndex >= 0) {
+            sIndex = getNextIndex(s, sIndex);
+            tIndex = getNextIndex(t, tIndex);
+            if (sIndex < 0 && tIndex < 0)
+                return true;
+            if (sIndex < 0 || tIndex < 0 || s.charAt(sIndex) != t.charAt(tIndex))
+                return false;
+            sIndex--;
+            tIndex--;
+        }
+        
+        return true;
+    }
+    
+    private int getNextIndex(String text, int currentIndex) {
+        int backspaceCount = 0;
+        while (currentIndex >= 0) {
+            if (text.charAt(currentIndex) != BACKSPACE_CHAR && backspaceCount == 0)
+                break;
+            else if (text.charAt(currentIndex) != BACKSPACE_CHAR)
+                backspaceCount--;
+            else
+                backspaceCount++;
+            currentIndex--;
+        }
+        
+        return currentIndex;
+    }
+}
+
+class Solution {
+    public boolean backspaceCompare(String s, String t) {
+        Stack<Character> s1 = new Stack<>();
+        for(int i=0;i<s.length();i++){
+            if(s.charAt(i)=='#' && !s1.isEmpty())
+                s1.pop();
+            else if(s.charAt(i)!='#')
+                s1.push(s.charAt(i));
+        }
+        Stack<Character> s2 = new Stack<>();
+        for(int i=0;i<t.length();i++){
+            if(t.charAt(i)=='#' && !s2.isEmpty())
+                s2.pop();
+            else if(t.charAt(i)!='#')
+                s2.push(t.charAt(i));
+        }
+        if(s1.size()!=s2.size())
+            return false;
+        
+        while(!s1.isEmpty()){
+            if(s1.pop()!=s2.pop())
+                return false;
+        }
+        return true;
+    }
+}
