@@ -1,0 +1,67 @@
+Given the root of a Binary Search Tree (BST), return the minimum difference between the values of any two different nodes in the tree.
+
+ 
+
+Example 1:
+
+Input: root = [4,2,6,1,3]
+Output: 1
+
+Example 2:
+
+Input: root = [1,0,48,null,null,12,49]
+Output: 1
+
+ 
+
+Constraints:
+
+    The number of nodes in the tree is in the range [2, 100].
+    0 <= Node.val <= 105
+
+ 
+
+Note: This question is the same as 530: https://leetcode.com/problems/minimum-absolute-difference-in-bst/
+
+
+class Solution {
+    public int minDiffInBST(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        midOrder(root, list);
+        int min = Integer.MAX_VALUE;
+        for (int i = 0; i < list.size() - 1; i++) {
+            min = Math.min(min, list.get(i + 1) - list.get(i));
+        }
+        return min;
+    }
+    
+    private void midOrder(TreeNode node, List<Integer> list) {
+        if (node == null) {
+            return;
+        }
+        midOrder(node.left, list);
+        list.add(node.val);
+        midOrder(node.right, list);
+    }
+}
+
+
+class Solution {
+    int prev=Integer.MIN_VALUE;
+    int mindiff=Integer.MAX_VALUE;
+    public int minDiffInBST(TreeNode root) {
+        in(root);
+        return mindiff;
+    }
+    
+    public void in(TreeNode root){
+        if(root==null)
+            return;
+        in(root.left);
+        if(prev>=0 && mindiff>root.val-prev){
+            mindiff=root.val-prev;
+        }
+        prev=root.val;
+        in(root.right);
+    }
+}
