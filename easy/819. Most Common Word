@@ -1,0 +1,96 @@
+Given a string paragraph and a string array of the banned words banned, return the most frequent word that is not banned. It is guaranteed there is at least one word that is not banned, and that the answer is unique.
+
+The words in paragraph are case-insensitive and the answer should be returned in lowercase.
+
+ 
+
+Example 1:
+
+Input: paragraph = "Bob hit a ball, the hit BALL flew far after it was hit.", banned = ["hit"]
+Output: "ball"
+Explanation: 
+"hit" occurs 3 times, but it is a banned word.
+"ball" occurs twice (and no other word does), so it is the most frequent non-banned word in the paragraph. 
+Note that words in the paragraph are not case sensitive,
+that punctuation is ignored (even if adjacent to words, such as "ball,"), 
+and that "hit" isn't the answer even though it occurs more because it is banned.
+
+Example 2:
+
+Input: paragraph = "a.", banned = []
+Output: "a"
+
+ 
+
+Constraints:
+
+    1 <= paragraph.length <= 1000
+    paragraph consists of English letters, space ' ', or one of the symbols: "!?',;.".
+    0 <= banned.length <= 100
+    1 <= banned[i].length <= 10
+    banned[i] consists of only lowercase English letters.
+
+
+import java.util.StringTokenizer;
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        Set<String> bannedSet = new HashSet<>();
+        
+        for (String bannedWord : banned)
+        {
+            bannedSet.add(bannedWord.toLowerCase());
+        }
+        
+        StringTokenizer strTkn = new StringTokenizer(paragraph," \t\n\r\f,.!?;:'");
+        Map<String, Integer> freqWord = new HashMap<>();
+        while (strTkn.hasMoreTokens())
+        {
+            String word = (String) strTkn.nextToken();
+            word = word.toLowerCase();
+            
+            if (!bannedSet.contains(word))
+            {
+                
+                freqWord.put(word, freqWord.getOrDefault(word, 0) + 1);
+            }
+        }
+        
+        int max = Integer.MIN_VALUE;
+        String wordWithMaxFreq = "";
+        for (Map.Entry<String,Integer> entry : freqWord.entrySet())
+        {
+            String key  = entry.getKey();
+            Integer val = entry.getValue();
+            
+            if (val > max)
+            {                
+                wordWithMaxFreq = key;
+                max = val;
+            }
+        }
+        
+        return wordWithMaxFreq;
+    }
+}
+
+
+class Solution {
+    public String mostCommonWord(String paragraph, String[] banned) {
+        paragraph=paragraph.toLowerCase();
+        String[] arr = paragraph.split("[ !?',;.]+");
+        // System.out.println(Arrays.toString(arr));
+        HashMap<String,Integer> map = new HashMap<>();
+        int max=0;
+        String maxString=null;
+        HashSet<String> set = new HashSet<>(Arrays.asList(banned));
+        for(int i=0;i<arr.length;i++){
+            int temp = map.getOrDefault(arr[i],0)+1;
+            map.put(arr[i],temp);
+            if(max<temp && !set.contains(arr[i])){
+                max=temp;
+                maxString=arr[i];
+            }
+        }
+        return maxString;
+    }
+}
