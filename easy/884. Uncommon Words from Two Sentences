@@ -1,0 +1,91 @@
+A sentence is a string of single-space separated words where each word consists only of lowercase letters.
+
+A word is uncommon if it appears exactly once in one of the sentences, and does not appear in the other sentence.
+
+Given two sentences s1 and s2, return a list of all the uncommon words. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: s1 = "this apple is sweet", s2 = "this apple is sour"
+Output: ["sweet","sour"]
+
+Example 2:
+
+Input: s1 = "apple apple", s2 = "banana"
+Output: ["banana"]
+
+ 
+
+Constraints:
+
+    1 <= s1.length, s2.length <= 200
+    s1 and s2 consist of lowercase English letters and spaces.
+    s1 and s2 do not have leading or trailing spaces.
+    All the words in s1 and s2 are separated by a single space.
+
+
+class Solution {
+    public String[] uncommonFromSentences(String s1, String s2) {
+       String str1[] = s1.split(" "); 
+       String str2[] = s2.split(" ");
+        // return array of substrings
+        HashMap<String, Integer> map = new HashMap<>();
+        ArrayList<String> list = new ArrayList<>();
+        for( String i : str1)
+        {
+            map.put(i, map.getOrDefault(i,0)+1);
+        }
+        for( String i : str2)
+        {
+            map.put(i, map.getOrDefault(i,0)+1);
+        }
+        for( String i : map.keySet())
+        {
+            if( map.get(i) == 1)
+            {
+                list.add(i);
+            }
+        }
+        
+        String [] strr = new String[list.size()];
+        return list.toArray(strr);
+    }
+}
+
+
+class Solution {
+    public String[] uncommonFromSentences(String s1, String s2) {
+        HashMap<String,Integer> map = new HashMap<>();
+        String[] a1 = s1.split(" ");
+        String[] a2 = s2.split(" ");
+        int i=0,j=0;
+        while(i<a1.length && j<a2.length){
+            map.put(a1[i],map.getOrDefault(a1[i],0)+1);
+            map.put(a2[j],map.getOrDefault(a2[j],0)+1);
+            i++;j++;
+        }
+        while(i<a1.length){
+            map.put(a1[i],map.getOrDefault(a1[i],0)+1);
+            i++;
+        }
+        while(j<a2.length){
+            map.put(a2[j],map.getOrDefault(a2[j],0)+1);
+            j++;
+        }
+        ArrayList<String> arr=new ArrayList<>();
+        for(Map.Entry<String,Integer> e:map.entrySet()){
+            if(e.getValue()==1){
+                arr.add(e.getKey());
+            }
+        }
+        String[] res = new String[arr.size()];
+        i=0;
+        for(String x:arr){
+            res[i++]=x;
+        }
+        return res;
+    }
+    
+}
