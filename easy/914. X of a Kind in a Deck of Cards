@@ -1,0 +1,117 @@
+In a deck of cards, each card has an integer written on it.
+
+Return true if and only if you can choose X >= 2 such that it is possible to split the entire deck into 1 or more groups of cards, where:
+
+    Each group has exactly X cards.
+    All the cards in each group have the same integer.
+
+ 
+
+Example 1:
+
+Input: deck = [1,2,3,4,4,3,2,1]
+Output: true
+Explanation: Possible partition [1,1],[2,2],[3,3],[4,4].
+
+Example 2:
+
+Input: deck = [1,1,1,2,2,2,3,3]
+Output: false
+Explanation: No possible partition.
+
+ 
+
+Constraints:
+
+    1 <= deck.length <= 10^4
+    0 <= deck[i] < 10^4
+    
+    
+class Solution {
+    
+    public int gcdByBruteForce(int n1, int n2) {
+    int gcd = 1;
+    for (int i = 1; i <= n1 && i <= n2; i++) {
+        if (n1 % i == 0 && n2 % i == 0) {
+            gcd = i;
+        }
+    }
+    return gcd;
+}
+    public boolean hasGroupsSizeX(int[] deck) {
+       int [] count = new int[10001];
+        for(int x:deck){
+            count[x]++;
+        }
+        int minEven = -1;
+        int minNotEven = -1;
+        for(int x:count){
+            if(x==0)continue;
+            if(x%2 == 0){
+                minEven = (minEven==-1)?x:Math.min(minEven,x);
+            }else{
+                minNotEven = (minNotEven==-1)?x:Math.min(minNotEven,x);
+            }
+            if(minEven!= -1 && gcdByBruteForce(minEven,x)==1)return false;
+            if(minNotEven!= -1 && gcdByBruteForce(minNotEven,x)==1)return false;
+            
+        }
+        
+        
+        return true;
+        
+    }
+}
+
+
+class Solution {
+    public boolean hasGroupsSizeX(int[] deck) {
+        int N = deck.length;
+        int[] count = new int[10000];
+        for (int c: deck)
+            count[c]++;
+
+        List<Integer> values = new ArrayList();
+        for (int i = 0; i < 10000; ++i)
+            if (count[i] > 0)
+                values.add(count[i]);
+
+        search: for (int X = 2; X <= N; ++X)
+            if (N % X == 0) {
+                for (int v: values)
+                    if (v % X != 0)
+                        continue search;
+                return true;
+            }
+
+        return false;
+    }
+}
+
+class Solution {
+    public boolean hasGroupsSizeX(int[] deck) {
+        HashMap<Integer, Integer> hash = new HashMap<>();
+        
+        for (int i = 0; i < deck.length; i++) {
+            hash.put(deck[i], hash.getOrDefault(deck[i], 0)+1);
+        }
+        
+        int lowest = Integer.MAX_VALUE;
+        for (int i : hash.keySet()) {
+            lowest = Math.min(lowest, hash.get(i));
+        }
+        
+        for (int i = lowest; i >= 2; i--) {
+            boolean lcd = true;
+            
+            for (int j : hash.keySet()) {
+                if (hash.get(j) % i != 0) lcd = false;
+            }
+            
+            if (lcd == true) return true;
+        }
+        
+        return false;
+    }
+}
+
