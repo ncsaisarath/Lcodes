@@ -1,0 +1,74 @@
+Given a string s, reverse the string according to the following rules:
+
+    All the characters that are not English letters remain in the same position.
+    All the English letters (lowercase or uppercase) should be reversed.
+
+Return s after reversing it.
+
+ 
+
+Example 1:
+
+Input: s = "ab-cd"
+Output: "dc-ba"
+
+Example 2:
+
+Input: s = "a-bC-dEf-ghIj"
+Output: "j-Ih-gfE-dCba"
+
+Example 3:
+
+Input: s = "Test1ng-Leet=code-Q!"
+Output: "Qedo1ct-eeLg=ntse-T!"
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 100
+    s consists of characters with ASCII values in the range [33, 122].
+    s does not contain '\"' or '\\'.
+
+
+
+class Solution {
+    public String reverseOnlyLetters(String s) {
+        char[] sArr = s.toCharArray();
+        int start=0, end=s.length()-1;
+        while(start<end){
+            if(Character.isLetter(sArr[start]) && Character.isLetter(sArr[end])){
+                char temp = sArr[start];
+                sArr[start] = sArr[end];
+                sArr[end] = temp;
+                start++;
+                end--;
+            }
+            if(!Character.isLetter(sArr[start])){
+                start++;
+            }
+            if(!Character.isLetter(sArr[end])){
+                end--;
+            }
+        }
+        return new String(sArr);
+    }
+}
+
+
+class Solution {
+    public String reverseOnlyLetters(String s) {
+        int st=0,e=s.length()-1;
+        char[] ch = s.toCharArray();
+        while(st<e){
+            while(st<e && !(Character.isLetter(ch[st])))
+                st++;
+            while(st<e && !(Character.isLetter(ch[e])))
+                e--;
+            char temp = ch[st];
+            ch[st++]=ch[e];
+            ch[e--]=temp;
+        }
+        return new String(ch);
+    }
+}
