@@ -1,0 +1,58 @@
+Given two strings first and second, consider occurrences in some text of the form "first second third", where second comes immediately after first, and third comes immediately after second.
+
+Return an array of all the words third for each occurrence of "first second third".
+
+ 
+
+Example 1:
+
+Input: text = "alice is a good girl she is a good student", first = "a", second = "good"
+Output: ["girl","student"]
+
+Example 2:
+
+Input: text = "we will we will rock you", first = "we", second = "will"
+Output: ["we","rock"]
+
+ 
+
+Constraints:
+
+    1 <= text.length <= 1000
+    text consists of lowercase English letters and spaces.
+    All the words in text a separated by a single space.
+    1 <= first.length, second.length <= 10
+    first and second consist of lowercase English letters.
+
+
+class Solution {
+    public String[] findOcurrences(String text, String first, String second) {
+        String[] wordsInText = text.split(" ");
+        List<String> occurrences = new ArrayList<String>();
+        for(int i = 2; i < wordsInText.length; i++){
+            if(wordsInText[i - 2].equals(first) && wordsInText[i - 1].equals(second)){
+                occurrences.add(wordsInText[i]);
+            }
+        }
+        return occurrences.toArray(new String[occurrences.size()]);
+    }
+}
+
+
+class Solution {
+    public String[] findOcurrences(String text, String first, String second) {
+        String[] words = text.split(" ");
+        ArrayList<String> lis = new ArrayList<>();
+        int n=words.length;
+        for(int i=0;i<n;i++){
+            if(words[i].equals(first)){
+                if(i+1<n && words[i+1].equals(second) && i+2<n){
+                    lis.add(words[i+2]);
+                }
+            }
+        }
+        
+        return lis.toArray(new String[lis.size()]);
+        
+    }
+}
