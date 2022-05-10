@@ -1,0 +1,87 @@
+Given the root of a binary tree with unique values and the values of two different nodes of the tree x and y, return true if the nodes corresponding to the values x and y in the tree are cousins, or false otherwise.
+
+Two nodes of a binary tree are cousins if they have the same depth with different parents.
+
+Note that in a binary tree, the root node is at the depth 0, and children of each depth k node are at the depth k + 1.
+
+ 
+
+Example 1:
+
+Input: root = [1,2,3,4], x = 4, y = 3
+Output: false
+
+Example 2:
+
+Input: root = [1,2,3,null,4,null,5], x = 5, y = 4
+Output: true
+
+Example 3:
+
+Input: root = [1,2,3,null,4], x = 2, y = 3
+Output: false
+
+ 
+
+Constraints:
+
+    The number of nodes in the tree is in the range [2, 100].
+    1 <= Node.val <= 100
+    Each node has a unique value.
+    x != y
+    x and y are exist in the tree.
+
+
+class Solution {
+    TreeNode xParent = null, yParent = null;
+    int xDepth = -1, yDepth = -2;
+    public boolean isCousins(TreeNode root, int x, int y) {
+        dfs(root, null, x, y, 0);
+        return xDepth == yDepth && xParent != yParent;
+    }
+    void dfs(TreeNode root, TreeNode parent, int x, int y, int depth) {
+        if (root == null) return;
+        if (x == root.val) {
+            xParent = parent;
+            xDepth = depth;
+        } else if (y == root.val) {
+            yParent = parent;
+            yDepth = depth;
+        } else {
+            // if we found x node or found y node then we don't need to dfs deeper
+            //     because x and y must be the same depth
+            dfs(root.left, root, x, y, depth + 1);
+            dfs(root.right, root, x, y, depth + 1);
+        }
+    }
+}
+
+
+class Solution {
+    int d1,d2,p1,p2;
+    public boolean isCousins(TreeNode root, int x, int y) {
+        find(root,root.val,0,x,'x');
+        find(root,root.val,0,y,'y');
+        if(d1==d2 && p1!=p2){
+            return true;
+        }
+        return false;
+    }
+    
+    public void find(TreeNode root,int parent,int depth,int val,char c){
+        if(root==null)
+            return;
+        find(root.left,root.val,depth+1,val,c);
+        find(root.right,root.val,depth+1,val,c);
+        if(root.val==val){
+            if(c=='x'){
+                d1=depth;
+                p1=parent;
+            }else{
+                d2=depth;
+                p2=parent;
+            }
+        }
+    }
+    
+}
