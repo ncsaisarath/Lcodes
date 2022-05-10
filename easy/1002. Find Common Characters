@@ -1,0 +1,97 @@
+Given a string array words, return an array of all characters that show up in all strings within the words (including duplicates). You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: words = ["bella","label","roller"]
+Output: ["e","l","l"]
+
+Example 2:
+
+Input: words = ["cool","lock","cook"]
+Output: ["c","o"]
+
+ 
+
+Constraints:
+
+    1 <= words.length <= 100
+    1 <= words[i].length <= 100
+    words[i] consists of lowercase English letters.
+
+
+
+class Solution {
+    public List<String> commonChars(String[] A) {
+        int[] ar=countOccurances(A[0]);     //First get occurance array of 1st String
+        //ar will be 1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        
+        //Now we will be comparing 1st String's countOccurance with 2nd, 3rd.. and so on, and will be getting the intersection also
+        
+        //Count Occurance of bella is   1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //Count Occurance of label is   1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        //After Intersection it will be 1 1 0 0 1 0 0 0 0 0 0 2 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+        
+        //Now Intersection will be compared with 3rd String's Count Occurance and so on  
+        for(int x=1; x<A.length; x++){
+            ar=intersection(ar, countOccurances(A[x]));
+        }
+        //For the result we will have to print each repeating element by the nuber of time it repeats
+        return result(ar);         
+    }
+    public static List<String> result(int[] ar){
+        List<String> l=new ArrayList<>();
+        for(int x=0; x<26; x++){
+            while(ar[x]!=0){        //this is the case of 'l' which repeats twice in every string so it needs to be printed twice 
+                l.add(String.valueOf( (char)(x+97) )); 
+                ar[x]=ar[x]-1;
+            }
+        }
+        return l;
+    }
+    public static int[] intersection(int[]a, int[]b){
+        int[] t=new int[26];
+        for(int x=0; x<26; x++){
+            t[x]=Math.min(a[x], b[x]);
+        }
+        return t;
+    }
+    public static int[] countOccurances(String a){
+        int[] t=new int[26];
+        for(char ch : a.toCharArray())
+            t[ch - 'a']++; 
+        // for(int x: t)
+        //     System.out.print(x + " ");
+        // System.out.println();
+        return t;
+    }
+}
+
+
+class Solution {
+    public List<String> commonChars(String[] words) {
+        int[] arr = new int[26];
+        int[] temp;
+        for(char x:words[0].toCharArray())
+            arr[x-'a']++;
+        for(String word:words){
+            temp = new int[26];
+            for(char x:word.toCharArray())
+                temp[x-'a']++;
+            for(int i=0;i<26;i++){
+                arr[i]=Math.min(arr[i],temp[i]);
+            }
+        }
+        List<String> res = new ArrayList<>();
+        for(int i=0;i<26;i++){
+            int count=arr[i];
+            String bn = String.valueOf((char)(i+'a'));
+            while(count-->0){
+                res.add(bn);
+            }
+        }
+        return res;
+    }
+    
+}
