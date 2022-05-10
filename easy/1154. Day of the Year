@@ -1,0 +1,85 @@
+Given a string date representing a Gregorian calendar date formatted as YYYY-MM-DD, return the day number of the year.
+
+ 
+
+Example 1:
+
+Input: date = "2019-01-09"
+Output: 9
+Explanation: Given date is the 9th day of the year in 2019.
+
+Example 2:
+
+Input: date = "2019-02-10"
+Output: 41
+
+ 
+
+Constraints:
+
+    date.length == 10
+    date[4] == date[7] == '-', and all other date[i]'s are digits
+    date represents a calendar date between Jan 1st, 1900 and Dec 31th, 2019.
+
+import java.time.LocalDate;
+
+class Solution {
+
+	public int dayOfYear(String date) {
+		int[] monthsum = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+        int ans = 0;
+        int year = 1000*((int)date.charAt(0)-'0')+100*((int)date.charAt(1)-'0')+10*((int)date.charAt(2)-'0')+((int)date.charAt(3)-'0');
+        int month = 10*((int)date.charAt(5)-'0')+((int)date.charAt(6)-'0');
+        int day = 10*((int)date.charAt(8)-'0')+((int)date.charAt(9)-'0');
+        if(year%4==0 && year != 1900 && month>2){
+            monthsum[month-1]++;
+        }
+        ans=day+monthsum[month-1];
+        return ans;
+    }
+}
+
+
+class Solution {
+    public int dayOfYear(String date) {
+        int m=(Integer.parseInt(date.substring(5,6)=="0"?date.substring(6,7):date.substring(5,7)));
+        int d=(Integer.parseInt(date.substring(8,9)=="0"?date.substring(9,10):date.substring(8,10)));
+        int y=(Integer.parseInt(date.substring(0,4)));
+        int count=0;
+        int[] a={0,31,28,31,30,31,30,31,31,30,31,30,31};
+        if(m==1) count+=d;
+        else{
+            for(int i=1;i<m;i++){
+              count+=a[i];  
+            }   
+            count+=d;
+        }
+        if(y%4==0&&m>=3&&(y%100!=0||y%400==0)){
+            count++;
+        }
+        return count;
+    }
+}
+
+
+
+class Solution {
+    public int dayOfYear(String date) {
+        int[] days = {31,28,31,30,31,30,31,31,30,31,30,31};
+        int y = Integer.parseInt(date.substring(0,4));
+        int m = Integer.parseInt(date.substring(5,7));
+        int d = Integer.parseInt(date.substring(8));
+        // System.out.println(y+" "+m+" "+d);
+        int res=0;
+        if(y%4==0 && y%400==0)
+            days[1]=29;
+        else if(y%4==0 && y%100!=0)
+            days[1]=29;
+        
+        for(int i=0;i<m-1;i++){
+            res+=days[i];
+        }
+        res+=d;
+        return res;
+    }
+}
