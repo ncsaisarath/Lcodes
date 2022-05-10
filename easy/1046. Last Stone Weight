@@ -1,0 +1,148 @@
+You are given an array of integers stones where stones[i] is the weight of the ith stone.
+
+We are playing a game with the stones. On each turn, we choose the heaviest two stones and smash them together. Suppose the heaviest two stones have weights x and y with x <= y. The result of this smash is:
+
+    If x == y, both stones are destroyed, and
+    If x != y, the stone of weight x is destroyed, and the stone of weight y has new weight y - x.
+
+At the end of the game, there is at most one stone left.
+
+Return the smallest possible weight of the left stone. If there are no stones left, return 0.
+
+ 
+
+Example 1:
+
+Input: stones = [2,7,4,1,8,1]
+Output: 1
+Explanation: 
+We combine 7 and 8 to get 1 so the array converts to [2,4,1,1,1] then,
+we combine 2 and 4 to get 2 so the array converts to [2,1,1,1] then,
+we combine 2 and 1 to get 1 so the array converts to [1,1,1] then,
+we combine 1 and 1 to get 0 so the array converts to [1] then that's the value of the last stone.
+
+Example 2:
+
+Input: stones = [1]
+Output: 1
+
+ 
+
+Constraints:
+
+    1 <= stones.length <= 30
+    1 <= stones[i] <= 1000
+
+
+
+class Solution {
+    int[] arr;
+    int heapSize;
+         
+    public int lastStoneWeight(int[] stones) {
+        
+        int length = stones.length;
+        
+        heapSize = length;
+        arr = new int[length + 1];
+        
+        for(int i = 1; i <= heapSize; i++) {
+            arr[i] = stones[i - 1];
+        }
+        
+        buildHeap(heapSize);
+        
+        while(heapSize > 1) {
+            int firstElement = extractMax();
+            int secondElement = extractMax();
+            
+            if (firstElement != secondElement) {
+                int newElement = Math.abs(firstElement - secondElement);
+                insert(newElement);
+            }
+        }
+        
+        if (heapSize == 0) {
+            return 0;
+        } else {
+            return arr[1];
+        }
+        
+    }
+    
+    private int parent(int pos) {
+        return pos/2;
+    }
+    
+    private void swap(int idx1, int idx2) {
+        int temp = arr[idx1];
+        arr[idx1] = arr[idx2];
+        arr[idx2] = temp;
+    }
+    
+    private void buildHeap(int size) {
+        for(int i = size/2 ; i >= 1 ; i-- ) {
+            heapify (i); ;
+        }
+    }
+    
+    private void heapify(int parent) {
+        int left = 2 * parent;
+        int right = 2 * parent + 1;
+
+        int largest = (left <= heapSize && arr[left] > arr[parent]) ? left : parent;
+
+        if (right <= heapSize && arr[right] > arr[largest]) {
+            largest = right;
+        }
+
+        if (largest != parent) {
+            swap(parent, largest);
+            heapify(largest);
+        }
+    }
+    
+    private void insert(int element) {
+        arr[++heapSize] = element;
+
+        int current = heapSize;
+        while(arr[current] > arr[parent(current)] && parent(current) >= 1) {
+            swap(current, parent(current));
+            current = parent(current);
+        }
+    }
+    
+    private int extractMax() {
+        int maxElement = arr[1];
+        arr[1] = arr[heapSize--];
+        heapify(1);
+        return maxElement;
+    }
+}
+
+
+class Solution {
+    public int lastStoneWeight(int[] stones) {
+        int n = stones.length;
+        if(n==1)
+            return stones[0];
+        else if(n==2){
+            if(stones[0]==stones[1])
+                return 0;
+            else
+                return Math.abs(stones[0]-stones[1]);
+        }
+        Queue<Integer> pq = new PriorityQueue<>((a,b)->(b-a));
+        for(int x:stones)
+            pq.add(x);
+        while(!pq.isEmpty()){
+            int x=pq.poll();
+            if(pq.size()==0)
+                return x;
+            int y=pq.poll();
+            if(x!=y)
+                pq.add(Math.abs(x-y));
+        }
+        return 0;
+    }
+}
