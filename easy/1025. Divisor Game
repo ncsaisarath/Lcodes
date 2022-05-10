@@ -1,0 +1,92 @@
+Alice and Bob take turns playing a game, with Alice starting first.
+
+Initially, there is a number n on the chalkboard. On each player's turn, that player makes a move consisting of:
+
+    Choosing any x with 0 < x < n and n % x == 0.
+    Replacing the number n on the chalkboard with n - x.
+
+Also, if a player cannot make a move, they lose the game.
+
+Return true if and only if Alice wins the game, assuming both players play optimally.
+
+ 
+
+Example 1:
+
+Input: n = 2
+Output: true
+Explanation: Alice chooses 1, and Bob has no more moves.
+
+Example 2:
+
+Input: n = 3
+Output: false
+Explanation: Alice chooses 1, Bob chooses 1, and Alice has no more moves.
+
+ 
+
+Constraints:
+
+    1 <= n <= 1000
+
+
+class Solution {
+    public boolean divisorGame(int n) {
+        if (n % 2 == 0) return true;
+        return false;
+    }
+}
+
+
+
+class Solution {
+    public boolean divisorGame(int n) {
+        if(n == 1) return false;
+       
+        int i = n;
+        int choice = 0;
+        int turn = 1;
+        boolean won = false;
+        boolean alice = false; 
+        
+        while(!won){
+         
+            if(i % 2 == 0){
+                choice = 1;
+                i = i - choice;
+            }else{
+                choice = 1;
+                for(int j = i - 3; j > 0; j-=2){
+                    if(j % i == 0){
+                        choice = j;
+                        j = 0;
+                    }
+                }
+                i = i - choice;
+            }
+            turn++;
+            if(i == 1 || isPrime(i)){
+                won = true;
+                
+                if(turn % 2 == 0){
+                    alice = won;
+                }
+            }
+            
+        }
+        
+        
+        return alice;
+        
+    }
+    public boolean isPrime(int n ){
+       
+        if(n <= 3) return false;
+        for(int i = 2; i < n; i++){
+            if(n % i == 0){
+                return false;
+            }
+        }
+        return true;
+    }
+}
