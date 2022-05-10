@@ -1,0 +1,127 @@
+Given a fixed-length integer array arr, duplicate each occurrence of zero, shifting the remaining elements to the right.
+
+Note that elements beyond the length of the original array are not written. Do the above modifications to the input array in place and do not return anything.
+
+ 
+
+Example 1:
+
+Input: arr = [1,0,2,3,0,4,5,0]
+Output: [1,0,0,2,3,0,0,4]
+Explanation: After calling your function, the input array is modified to: [1,0,0,2,3,0,0,4]
+
+Example 2:
+
+Input: arr = [1,2,3]
+Output: [1,2,3]
+Explanation: After calling your function, the input array is modified to: [1,2,3]
+
+ 
+
+Constraints:
+
+    1 <= arr.length <= 10^4
+    0 <= arr[i] <= 9
+
+
+class Solution {
+    public void duplicateZeros(int[] arr) {
+        int zeroCounter = 0;
+        int n = arr.length;
+        int lastIdx = n-1;
+        
+        for(int i=0; i <= lastIdx - zeroCounter; i++){
+            if(arr[i]==0){
+                if(i+zeroCounter == lastIdx){
+                    arr[lastIdx] = 0;
+                    lastIdx--;
+                    break;
+                }
+                
+                zeroCounter++;
+            }
+        }
+        
+        for(int srcIdx = lastIdx - zeroCounter; srcIdx >=0 ;srcIdx--){
+            arr[lastIdx] = arr[srcIdx];
+            if(arr[srcIdx] == 0 && (lastIdx - 1) >= 0){
+                lastIdx--;
+                arr[lastIdx] = 0;
+            }
+            lastIdx--;
+        }
+        
+        
+    }
+}
+
+
+class Solution {
+    public void duplicateZeros(int[] arr) {
+        int n = arr.length;
+        if (arr == null || n == 0) return;
+        
+        int[] copy = new int[n];
+        int pointer = 0;
+        for (int i : arr) {
+            if (pointer > n - 1) break;
+            if (pointer + 1 < n && i == 0) {
+                copy[pointer++] = i;
+            }
+            copy[pointer++] = i;
+        }
+        
+        for (int i = 0; i < n; i++) {
+            arr[i] = copy[i];
+        }
+    }
+}
+
+
+class Solution {
+    public void duplicateZeros(int[] arr) {
+        int zeroCounter = 0;
+        int n = arr.length;
+        int lastIdx = n-1;
+        
+        for(int i=0; i <= lastIdx - zeroCounter; i++){
+            if(arr[i]==0){
+                if(i+zeroCounter == lastIdx){
+                    arr[lastIdx] = 0;
+                    lastIdx--;
+                    break;
+                }
+                
+                zeroCounter++;
+            }
+        }
+        
+        for(int srcIdx = lastIdx - zeroCounter; srcIdx >=0 ;srcIdx--){
+            arr[lastIdx] = arr[srcIdx];
+            if(arr[srcIdx] == 0 && (lastIdx - 1) >= 0){
+                lastIdx--;
+                arr[lastIdx] = 0;
+            }
+            lastIdx--;
+        }
+        
+        
+    }
+}
+
+
+class Solution {
+    public void duplicateZeros(int[] arr) {
+        
+        int len = arr.length-1;
+        for(int i=0;i<=len;i++){
+            if(arr[i]==0){
+                for(int j=len;j>i-1 && j>0;j--){
+                    arr[j]=arr[j-1];
+                }
+                arr[i++]=0;
+            }
+        }
+        
+    }
+}
