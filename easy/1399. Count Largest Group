@@ -1,0 +1,138 @@
+You are given an integer n.
+
+Each number from 1 to n is grouped according to the sum of its digits.
+
+Return the number of groups that have the largest size.
+
+ 
+
+Example 1:
+
+Input: n = 13
+Output: 4
+Explanation: There are 9 groups in total, they are grouped according sum of its digits of numbers from 1 to 13:
+[1,10], [2,11], [3,12], [4,13], [5], [6], [7], [8], [9].
+There are 4 groups with largest size.
+
+Example 2:
+
+Input: n = 2
+Output: 2
+Explanation: There are 2 groups [1], [2] of size 1.
+
+ 
+
+Constraints:
+
+    1 <= n <= 10^4
+
+
+class Solution {
+    public int countLargestGroup(int n) {
+        
+        int[] digitsSum = new int[37];
+        int digits = 0;
+        int digits_tenth = 0;
+        int r =0;
+        int max = 0;
+        int count =0;
+        
+        for(int i=1;i<=n;i++) {
+            if (i%10 != 0) {
+                digits += 1;
+            } else if (i%100 != 0) {
+                digits_tenth = digits_tenth + 1;
+                digits = digits_tenth;
+            } else {
+                int num = i;
+                digits = 0;
+                while(num > 0) {
+                    digits += num % 10;
+                    num = num /10;
+                }
+                digits_tenth = digits;
+            }
+            digitsSum[digits] ++;
+        }
+        
+        for(int i=1;i<37;i++) {
+            if(digitsSum[i] == 0) {
+                continue;
+            }
+            if(max < digitsSum[i]) {
+                max = digitsSum[i];
+                count =0;
+            }
+            if(max == digitsSum[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+
+
+class Solution {
+    public int countLargestGroup(int n) {
+        
+        int[] digitsSum = new int[37];
+        int digits = 0;
+        int r =0;
+        int max = 0;
+        int count =0;
+        
+        for(int i=1;i<=n;i++) {
+            if (i%10 != 0) {
+                digits += 1;
+            } else {
+                int num = i;
+                digits = 0;
+                while(num > 0) {
+                    digits += num % 10;
+                    num = num /10;
+                }
+            }
+            digitsSum[digits] ++;
+        }
+        
+        for(int i=1;i<37;i++) {
+            if(digitsSum[i] == 0) {
+                continue;
+            }
+            if(max < digitsSum[i]) {
+                max = digitsSum[i];
+                count =0;
+            }
+            if(max == digitsSum[i]) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+
+class Solution {
+    public int countLargestGroup(int n) {
+        int[] map = new int[37];
+    int maxCount = 0, res = 0;
+    for (int i = 1; i <= n; i++) {
+      //get the sum of digits for current number
+      int num = i, sum = 0;
+      while (num > 0) {
+        sum += num %10;
+        num/=10;
+      }
+      //increment freq counter
+      ++map[sum];
+      //check if this is our new max = start counting from 1, if it next occurance of current max
+      //increment count
+      if (maxCount < map[sum]) {
+        maxCount = map[sum];
+        res = 1;
+      } else if (maxCount == map[sum]) {
+        res++;
+      }
+    }
+    return res;
+    }
+}
