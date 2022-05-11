@@ -1,0 +1,95 @@
+You are given a positive integer num consisting only of digits 6 and 9.
+
+Return the maximum number you can get by changing at most one digit (6 becomes 9, and 9 becomes 6).
+
+ 
+
+Example 1:
+
+Input: num = 9669
+Output: 9969
+Explanation: 
+Changing the first digit results in 6669.
+Changing the second digit results in 9969.
+Changing the third digit results in 9699.
+Changing the fourth digit results in 9666.
+The maximum number is 9969.
+
+Example 2:
+
+Input: num = 9996
+Output: 9999
+Explanation: Changing the last digit 6 to 9 results in the maximum number.
+
+Example 3:
+
+Input: num = 9999
+Output: 9999
+Explanation: It is better not to apply any change.
+
+ 
+
+Constraints:
+
+    1 <= num <= 104
+    num consists of only 6 and 9 digits.
+
+
+class Solution {
+    public int maximum69Number (int num) {
+        int len=0;
+        int temp = num;
+        while(temp>0){
+            temp=temp/10;
+            len=len+1;
+        }
+        int diff=0;
+        // switch(len){
+        //     case 1: diff = 9-num;
+        //         break;
+        //     case 2: diff = 99-num;
+        //         break;
+        //     case 3: diff = 999-num;
+        //         break;
+        //     case 4: diff = 9999-num;
+        //         break;
+        // }
+        if(len==1) diff=9-num;
+        else if(len==2) diff=99-num;
+        else if(len==3) diff=999-num;
+        else if(len==4) diff=9999-num;
+        
+        if(diff==3) num= num+3;
+        else if(diff>3 && diff<=33) num= num+30;
+        else if(diff>33 && diff<=333) num= num+300;
+        else if(diff>333 && diff<=3333) num= num+3000;
+        return num;
+    }
+}
+
+class Solution {
+    public int maximum69Number (int num) {
+        
+        int prev=0;
+        int n=num;
+        int first=0;
+        int ten=1;
+        while(num>0){
+            int temp=num%10;
+            num/=10;
+            if(temp==6)
+                first=prev;
+            prev++;
+            ten*=10;
+            
+        }
+        // System.out.println(ten+" "+n);
+        if(ten-n==1)
+            return n;
+        int three=3;
+        while(first-->0){
+            three*=10;
+        }
+        return n+three;
+    }
+}
