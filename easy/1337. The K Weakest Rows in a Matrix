@@ -1,0 +1,215 @@
+You are given an m x n binary matrix mat of 1's (representing soldiers) and 0's (representing civilians). The soldiers are positioned in front of the civilians. That is, all the 1's will appear to the left of all the 0's in each row.
+
+A row i is weaker than a row j if one of the following is true:
+
+    The number of soldiers in row i is less than the number of soldiers in row j.
+    Both rows have the same number of soldiers and i < j.
+
+Return the indices of the k weakest rows in the matrix ordered from weakest to strongest.
+
+ 
+
+Example 1:
+
+Input: mat = 
+[[1,1,0,0,0],
+ [1,1,1,1,0],
+ [1,0,0,0,0],
+ [1,1,0,0,0],
+ [1,1,1,1,1]], 
+k = 3
+Output: [2,0,3]
+Explanation: 
+The number of soldiers in each row is: 
+- Row 0: 2 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 2 
+- Row 4: 5 
+The rows ordered from weakest to strongest are [2,0,3,1,4].
+
+Example 2:
+
+Input: mat = 
+[[1,0,0,0],
+ [1,1,1,1],
+ [1,0,0,0],
+ [1,0,0,0]], 
+k = 2
+Output: [0,2]
+Explanation: 
+The number of soldiers in each row is: 
+- Row 0: 1 
+- Row 1: 4 
+- Row 2: 1 
+- Row 3: 1 
+The rows ordered from weakest to strongest are [0,2,3,1].
+
+ 
+
+Constraints:
+
+    m == mat.length
+    n == mat[i].length
+    2 <= n, m <= 100
+    1 <= k <= m
+    matrix[i][j] is either 0 or 1.
+
+
+
+class Solution {
+    public int[] kWeakestRows(int[][] mat, int k) {
+        int[] temp = new int[mat.length];
+        int i = 0;
+        
+        for(int[] arr: mat)
+            temp[i++] = countOf0(arr);
+        
+        int[] ans = new int[k];
+        for(int j = 0; j < k; ++j)
+            ans[j] = minIndex(temp);
+        
+        return ans;
+    }
+    
+    int minIndex(int[] arr)
+    {
+        int minindex = 0;
+        int min = Integer.MAX_VALUE;
+        
+        for(int i = 0; i < arr.length; ++i)
+        {
+            if(arr[i] < min)
+            {
+                min = arr[i];
+                minindex = i;
+            }
+        }
+        
+        arr[minindex] = Integer.MAX_VALUE;
+        return minindex;
+    }
+    
+    int countOf0(int[] arr)
+    {
+        int count = 0;
+        for(int i: arr)
+        {
+            if(i == 1)
+                ++count;
+            else
+                break;
+        }
+        
+        return count;
+    }
+}
+
+
+class Solution {
+    public int[] kWeakestRows(int[][] mat, int k) {
+        int n=mat.length;
+        int m=mat[0].length;
+        int a[]=new int[n];
+        int b[]=new int[k];
+        int c=0;
+        for(int ax[]: mat){
+            for(int i:ax){
+                if(i==1)
+                    a[c]++;
+            }
+            ++c;
+        }
+            int q=0;
+        int o=0;
+        while(k>0){
+            m=Integer.MAX_VALUE;
+            c=0;
+            for(int i:a){
+                if(i<m){
+                    o=c;
+                    b[q]=c;
+                    m=i;
+                }
+                ++c;
+            }
+            a[o]=Integer.MAX_VALUE;
+            ++q;
+            --k;
+        }
+        return b;
+    }
+}
+
+
+
+class Solution {
+    public int[] kWeakestRows(int[][] mat, int k) {
+
+        
+         PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] != b[0] ? b[0] - a[0] : b[1] - a[1]);
+        int[] ans = new int[k];
+        
+        for (int i = 0; i < mat.length; i++) {
+            pq.offer(new int[] {numOnes(mat[i]), i});
+            if (pq.size() > k)
+                pq.poll();
+        }
+        
+        while (k > 0)
+            ans[--k] = pq.poll()[1];
+        
+        return ans;
+    }
+    
+    private int numOnes(int[] row) {
+        int lo = 0;
+        int hi = row.length;
+        
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            
+            if (row[mid] == 1)
+                lo = mid + 1;
+            else
+                hi = mid;
+        }
+        
+        return lo;
+    }
+}
+
+
+
+class Solution {
+    class Item implements Comparable<Item>{
+        int sum;
+        int pos;
+        Item(int sum,int pos){
+            this.sum=sum;
+            this.pos=pos;
+        }
+        public int compareTo(Item b){
+            if(this.sum!=b.sum)
+                return this.sum-b.sum;
+            else
+                return this.pos-b.pos;
+        }
+    }
+    public int[] kWeakestRows(int[][] mat, int k) {
+        Item[] items = new Item[mat.length];
+        for(int i=0;i<mat.length;i++){
+            int sum=0;
+            for(int j=0;j<mat[0].length;j++){
+                sum+=mat[i][j];
+            }
+            items[i]=new Item(sum,i);
+        }
+        Arrays.sort(items);
+        int[] res = new int[k];
+        for(int i=0;i<k;i++){
+            res[i]=items[i].pos;
+        }
+        return res;
+    }
+}
