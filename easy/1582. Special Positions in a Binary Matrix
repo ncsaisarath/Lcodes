@@ -1,0 +1,150 @@
+Given an m x n binary matrix mat, return the number of special positions in mat.
+
+A position (i, j) is called special if mat[i][j] == 1 and all other elements in row i and column j are 0 (rows and columns are 0-indexed).
+
+ 
+
+Example 1:
+
+Input: mat = [[1,0,0],[0,0,1],[1,0,0]]
+Output: 1
+Explanation: (1, 2) is a special position because mat[1][2] == 1 and all other elements in row 1 and column 2 are 0.
+
+Example 2:
+
+Input: mat = [[1,0,0],[0,1,0],[0,0,1]]
+Output: 3
+Explanation: (0, 0), (1, 1) and (2, 2) are special positions.
+
+ 
+
+Constraints:
+
+    m == mat.length
+    n == mat[i].length
+    1 <= m, n <= 100
+    mat[i][j] is either 0 or 1.
+
+
+
+class Solution {
+
+    public int numSpecial(int[][] mat) {
+        int count = 0;
+        for (int r = 0; r < mat.length; r++) {
+            final int index = singleOne(mat[r]);
+            if (index >= 0) {
+                final int index2 = singleOne(mat, index);
+                if (index2 >= 0) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    private int singleOne(int[] row) {
+        boolean hasOne = false;
+        int lastOne = -1;
+        for (int i = 0; i < row.length; i++) {
+            if (row[i] == 1) {
+                if (hasOne) {
+                    return -1;
+                }
+                hasOne = true;
+                lastOne = i;
+            }
+        }
+        return lastOne;
+    }
+
+    private int singleOne(int[][] matrix, int col) {
+        boolean hasOne = false;
+        int lastOne = -1;
+        for (int i = 0; i < matrix.length; i++) {
+            if (matrix[i][col] == 1) {
+                if (hasOne) {
+                    return -1;
+                }
+                hasOne = true;
+                lastOne = i;
+            }
+        }
+        return lastOne;
+    }
+
+}
+
+
+
+
+class Solution {
+    public int numSpecial(int[][] mat) {
+        
+        int[] rows= new int[mat.length];
+        int[] cols= new int[mat[0].length];
+        int count=0;
+      
+        for(int i=0;i<mat.length;i++)
+        {
+            for(int j=0;j<mat[0].length;j++)
+            {
+                if(mat[i][j]==1)
+                {
+                 cols[j]++;
+                 rows[i]++;
+                }
+                
+            }
+        }
+         
+        for(int i=0;i<mat.length;i++)
+        {
+            for(int j=0;j<mat[0].length;j++)
+            {
+           if(mat[i][j]==1)
+            {
+                if(rows[i]==1 && cols[j]==1)
+                    count++;
+            }
+            }
+        }
+        
+        
+        return count;
+    }
+}
+
+
+
+class Solution {
+    public int numSpecial(int[][] mat) {
+        int r=mat.length;
+        int c=mat[0].length;
+        int count=0;
+        for(int i=0;i<r;i++){
+            for(int j=0;j<c;j++){
+                if(mat[i][j]==1 && special(mat,i,j))
+                    count++;
+            }
+        }
+        return count;
+    }
+    
+    public boolean special(int[][] mat,int i,int j){
+        
+        for(int l=0;l<mat[0].length;l++){
+            if(l==j)
+                continue;
+            else if(mat[i][l]==1)
+                return false;
+        }
+        for(int l=0;l<mat.length;l++){
+            if(l==i)
+                continue;
+            else if(mat[l][j]==1)
+                return false;
+        }
+        return true;
+    }
+}
