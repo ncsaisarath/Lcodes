@@ -1,0 +1,88 @@
+Given a string s containing only lowercase English letters and the '?' character, convert all the '?' characters into lowercase letters such that the final string does not contain any consecutive repeating characters. You cannot modify the non '?' characters.
+
+It is guaranteed that there are no consecutive repeating characters in the given string except for '?'.
+
+Return the final string after all the conversions (possibly zero) have been made. If there is more than one solution, return any of them. It can be shown that an answer is always possible with the given constraints.
+
+ 
+
+Example 1:
+
+Input: s = "?zs"
+Output: "azs"
+Explanation: There are 25 solutions for this problem. From "azs" to "yzs", all are valid. Only "z" is an invalid modification as the string will consist of consecutive repeating characters in "zzs".
+
+Example 2:
+
+Input: s = "ubv?w"
+Output: "ubvaw"
+Explanation: There are 24 solutions for this problem. Only "v" and "w" are invalid modifications as the strings will consist of consecutive repeating characters in "ubvvw" and "ubvww".
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 100
+    s consist of lowercase English letters and '?'.
+
+
+
+class Solution {
+    public String modifyString(String s) {
+        if (s.length() == 1) return (s.charAt(0)=='?') ? "a" : s; 
+        StringBuilder sb = new StringBuilder();
+        char left = '0', right = '0';
+        for (int i = 0 ; i < s.length() ; i++) {
+            if (s.charAt(i) == '?') {
+                if (i == 0) {
+                    right = s.charAt(i+1);
+                    sb.append(findChar('0', right));
+                } else if (i == s.length() -1){
+                    left = sb.toString().charAt(i-1);
+                    sb.append(findChar(left,'0'));
+                
+                } else {
+                    left = sb.toString().charAt(i-1);
+                    right = s.charAt(i+1);
+                    sb.append(findChar(left,right));
+                }
+            } else {
+                sb.append(s.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+    private char findChar(char l, char r) {
+        for (int i = 0; i < 3; i++) {
+            char tmp = (char)('a' + i);
+            if (l != tmp && r !=tmp) return tmp;
+        }
+        return '?';
+    }
+}
+
+
+class Solution {
+    public String modifyString(String str) {
+       char[] s = str.toCharArray();
+        int i = 0;
+        char c = 'a';
+        while(i < s.length) {
+            if(s[i] == '?') {
+                char prev = i > 0 ? s[i - 1] : ',';
+                char next = i < s.length - 1 ? s[i + 1] : ',';
+                if(prev != c && next != c) {
+                    s[i] = c;
+                    i++;
+                }
+                if(c == 'z')
+                    c = 'a';
+                else
+                    c++;
+            } else
+                i++;
+        }
+        
+        return String.valueOf(s);
+    }
+}
