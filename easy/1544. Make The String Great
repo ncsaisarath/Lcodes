@@ -1,0 +1,134 @@
+Given a string s of lower and upper case English letters.
+
+A good string is a string which doesn't have two adjacent characters s[i] and s[i + 1] where:
+
+    0 <= i <= s.length - 2
+    s[i] is a lower-case letter and s[i + 1] is the same letter but in upper-case or vice-versa.
+
+To make the string good, you can choose two adjacent characters that make the string bad and remove them. You can keep doing this until the string becomes good.
+
+Return the string after making it good. The answer is guaranteed to be unique under the given constraints.
+
+Notice that an empty string is also good.
+
+ 
+
+Example 1:
+
+Input: s = "leEeetcode"
+Output: "leetcode"
+Explanation: In the first step, either you choose i = 1 or i = 2, both will result "leEeetcode" to be reduced to "leetcode".
+
+Example 2:
+
+Input: s = "abBAcC"
+Output: ""
+Explanation: We have many possible scenarios, and all lead to the same answer. For example:
+"abBAcC" --> "aAcC" --> "cC" --> ""
+"abBAcC" --> "abBA" --> "aA" --> ""
+
+Example 3:
+
+Input: s = "s"
+Output: "s"
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 100
+    s contains only lower and upper case English letters.
+
+
+
+class Solution {
+  public String makeGood(String s) {
+
+    char[] ch = s.toCharArray();
+    int j = 0;
+
+    for(char c : ch) {
+
+      if(j > 0 && (c ^ 32) == ch[j - 1]) {
+        --j;
+      } else {
+        ch[j++] = c;
+      }
+    }
+
+    return String.valueOf(ch, 0, j);
+  }
+}
+
+
+
+class Solution {
+    public String makeGood(String s) {
+        int len = s.length();        
+        StringBuilder strb = new StringBuilder();
+        int stringLength = 0;
+        for (char ch : s.toCharArray()) {
+            if (stringLength > 0 && isEqual(ch,strb.charAt(stringLength -1))){
+                strb.deleteCharAt(stringLength -1);
+                stringLength--;
+            } else {
+                strb.append(ch);
+                stringLength++;
+            }
+        }
+        return strb.toString();
+        
+    }
+    private boolean isEqual(char c1, char c2) {
+        int diff = c1 - c2;
+        if (Math.abs(diff) == 32) {
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+class Solution {
+     public String makeGood(String s) {
+         if(s.length()<=1){
+             return s;
+         }
+        int diff = 'a'-'A';
+        StringBuilder sb = new StringBuilder(s);
+     
+        for(int i =1;i<sb.length();i++){
+            if(Math.abs(sb.charAt(i-1) - sb.charAt(i))==diff){
+                sb.delete(i-1, i+1); 
+                i-=2;
+            }
+            if(i<=0){
+                i=0;
+            }
+        }
+        return sb.toString();
+    }
+}
+
+
+
+class Solution {
+    public String makeGood(String s) {
+        
+        Stack<Character> stk=new Stack<>();
+        for(char ch:s.toCharArray())
+        {
+            if(stk.isEmpty())
+                stk.push(ch);
+            else if(Math.abs((int)stk.peek()-(int)ch)==32)
+                stk.pop();
+            else
+                stk.push(ch);
+        }
+        StringBuilder sb=new StringBuilder();
+        for(char ch:stk)
+            sb.append(ch);
+        return sb.toString();
+    }
+}
