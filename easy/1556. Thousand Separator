@@ -1,0 +1,59 @@
+Given an integer n, add a dot (".") as the thousands separator and return it in string format.
+
+ 
+
+Example 1:
+
+Input: n = 987
+Output: "987"
+
+Example 2:
+
+Input: n = 1234
+Output: "1.234"
+
+ 
+
+Constraints:
+
+    0 <= n <= 2^31 - 1
+
+
+class Solution {
+    public String thousandSeparator(int n) {
+        String num = Integer.toString(n);
+        StringBuilder sb = new StringBuilder();
+        for (int i = num.length(); i > 0; i -= 3) {
+            if (sb.length() > 0){ 
+                sb.insert(0, ".");
+            }
+            sb.insert(0, num.substring(Math.max(0, i - 3), i));
+        }
+        return sb.toString();
+    }
+}
+
+
+
+class Solution {
+    public String thousandSeparator(int n) {
+        if (n < 1000) {
+		return Integer.toString(n);
+	}
+
+	StringBuilder sb = new StringBuilder();
+	int count = 0;
+
+	while (n > 0) {
+		int mod = n % 10;
+		sb.append(mod);
+		n /= 10;
+		count++;
+		if (n > 0 && count % 3 == 0) {
+			sb.append(".");
+		}
+	}
+
+	return sb.reverse().toString();
+    }
+}
