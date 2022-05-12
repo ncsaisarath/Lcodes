@@ -1,0 +1,178 @@
+You are given an alphanumeric string s. (Alphanumeric string is a string consisting of lowercase English letters and digits).
+
+You have to find a permutation of the string where no letter is followed by another letter and no digit is followed by another digit. That is, no two adjacent characters have the same type.
+
+Return the reformatted string or return an empty string if it is impossible to reformat the string.
+
+ 
+
+Example 1:
+
+Input: s = "a0b1c2"
+Output: "0a1b2c"
+Explanation: No two adjacent characters have the same type in "0a1b2c". "a0b1c2", "0a1b2c", "0c2a1b" are also valid permutations.
+
+Example 2:
+
+Input: s = "leetcode"
+Output: ""
+Explanation: "leetcode" has only characters so we cannot separate them by digits.
+
+Example 3:
+
+Input: s = "1229857369"
+Output: ""
+Explanation: "1229857369" has only digits so we cannot separate them by characters.
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 500
+    s consists of only lowercase English letters and/or digits.
+
+
+
+class Solution {
+    public String reformat(String s) {
+       // int i = 0;
+        int a = 0;
+        int d = 0;
+        char[] ch = new char[s.length()];
+        char[] digits = new char[s.length()];
+        for(char c:s.toCharArray()){
+            if(((int)c) <=64){
+                digits[d] = c;
+                d++;
+            }else{
+                ch[a] = c;
+                a++;
+            }
+        }
+      
+        if(Math.abs(a-d)>1){
+            return "";
+        }
+        int n = s.length();
+        
+        char[] result = new char[s.length()];
+        if(a>=d){
+            for(int i = 0;i<n;i=i+2){
+                result[i] = ch[i/2];
+                if(i<n-1){
+                  result[i+1] = digits[i/2];  
+                }
+                
+            }
+        }else{
+            for(int i = 0;i<n;i=i+2){
+                result[i] = digits[i/2];
+                 if(i<n-1){
+                 result[i+1] = ch[i/2];
+                 }
+            }
+        }
+        // for(char c:result){
+        //       System.out.println(c);
+        // }
+        return String.valueOf(result);
+    }
+}
+
+
+
+class Solution {
+    public String reformat(String s) {
+        /*
+        Deque<Character> dq = new ArrayDeque<>();
+        int letterCount = 0, digitCount = 0;
+        for(char c : s.toCharArray()){
+            if(Character.isDigit(c)){
+                dq.addFirst(c);
+                digitCount++;
+            }else{
+                letterCount++;
+                dq.addLast(c);
+            }
+        }
+        StringBuilder build = new StringBuilder();
+        if(build.length() == 0 && dq.size() > 0){
+            if(letterCount < digitCount){
+                build.append(dq.removeFirst());
+            }else{
+                build.append(dq.removeLast());
+            }
+        }
+        while(dq.size() > 0){
+            boolean lastCharIsDigit = Character.isDigit(build.charAt(build.length()-1));
+            if(lastCharIsDigit && Character.isLetter(dq.peekLast())){
+                build.append(dq.pollLast());
+            }else if(!lastCharIsDigit && Character.isDigit(dq.peekFirst())){
+                build.append(dq.pollFirst());
+            }else{
+                return "";
+            }
+        }
+        return build.toString();
+        */
+        int letterCount = 0, digitCount = 0;
+        for(char c : s.toCharArray()){
+            if(Character.isDigit(c)){
+                digitCount++;
+            }else{
+                letterCount++;
+            }
+        }
+        if(Math.abs(digitCount-letterCount) > 1){
+            return "";
+        }
+        char[] result = new char[s.length()];
+        int charPtr = digitCount > letterCount ? 1 : 0;
+        int digitPtr = digitCount > letterCount ? 0 : 1;
+        for(char c : s.toCharArray()){
+            if(Character.isDigit(c)){
+                result[digitPtr] = c;
+                digitPtr+=2;
+            }else{
+                result[charPtr] = c;
+                charPtr+=2;
+            }
+        }
+        return new String(result);
+    }
+}
+
+
+
+
+class Solution {
+    public String reformat(String s) {
+        // StringBuilder for maintaining the characters
+		StringBuilder sb = new StringBuilder();
+        StringBuilder alpha = new StringBuilder();
+        StringBuilder digit = new StringBuilder();
+        
+		// separate digits and alpha numerics
+        for (char c : s.toCharArray()){
+            if (Character.isDigit(c)) digit.append(c);
+            else alpha.append(c);
+        }
+        
+		// If any one of the builder length is greater than other then return empty
+        if (Math.abs(alpha.length() - digit.length()) > 1) return "";
+        
+        int i = 0;
+        int j = 0;
+        //digit should be added first if its length is greater than alpha
+		if (digit.length() > alpha.length()) sb.append(digit.charAt(j++));
+        
+		// if the complete string is not reached then add alpha and then digit, break when the length is >= to the string length
+        while (sb.length() < s.length()){
+            sb.append(alpha.charAt(i++));
+            if (sb.length() >= s.length()) break;
+            sb.append(digit.charAt(j++));
+        }
+        
+        return sb.toString();
+    }
+}
