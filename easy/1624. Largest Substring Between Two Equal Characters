@@ -1,0 +1,81 @@
+Given a string s, return the length of the longest substring between two equal characters, excluding the two characters. If there is no such substring return -1.
+
+A substring is a contiguous sequence of characters within a string.
+
+ 
+
+Example 1:
+
+Input: s = "aa"
+Output: 0
+Explanation: The optimal substring here is an empty substring between the two 'a's.
+
+Example 2:
+
+Input: s = "abca"
+Output: 2
+Explanation: The optimal substring here is "bc".
+
+Example 3:
+
+Input: s = "cbzxy"
+Output: -1
+Explanation: There are no characters that appear twice in s.
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 300
+    s contains only lowercase English letters.
+
+
+
+class Solution {
+    public int maxLengthBetweenEqualCharacters(String s) {
+        
+        int[] position_arr = new int[26];
+
+		Arrays.fill(position_arr, -1);
+
+		int result = -1;
+
+		for (int i = 0; i < s.length(); i++) {
+
+			int c = s.charAt(i) - 'a';
+
+			if (position_arr[c] == -1) {
+				position_arr[c] = i;
+			} else {
+				result = Math.max(result, i - position_arr[c] - 1);
+			}
+
+		}
+
+		return result;
+        
+    }
+}
+
+
+
+class Solution {
+    public int maxLengthBetweenEqualCharacters(String s) {
+        // Map<Character,Integer> map = new HashMap<>();
+        int max=-1;
+        int[] map = new int[26];
+        Arrays.fill(map,-1);
+        for(int i=0;i<s.length();i++){
+            char c = s.charAt(i);
+            if(map[c-'a']==-1)
+                map[c-'a']=i;
+            else{
+                if(max<(i-map[c-'a']))
+                    max=(i-map[c-'a']);
+            }
+        }
+        
+        return max==-1?-1:max-1;
+        
+    }
+}
