@@ -26,3 +26,165 @@ Constraints:
     text consists of lowercase English letters and ' '.
     text contains at least one word.
 
+
+
+
+
+class Solution {
+    // My Approach#1.0
+    // - Runtime: O(2*n->n), Space: O(n)
+    public String reorderSpaces(String text) {
+        
+        // first traverse text
+        int wordTotal = 0;
+        int spaceTotal = 0;
+        boolean wordStarts = false;
+        for(char ch: text.toCharArray()) {
+            if(ch==' ') {
+                spaceTotal++;
+                if(wordStarts) {
+                    wordTotal++;
+                    wordStarts = false;
+                } 
+            } else {
+                wordStarts = true;
+            }
+        }
+        if(wordStarts) wordTotal++;
+        
+
+        // second traverse text
+        int avgSpace = wordTotal==1?0:spaceTotal/(wordTotal-1);
+        int leftSpace = wordTotal==1?spaceTotal:spaceTotal%(wordTotal-1);
+        int totalMidSpace = wordTotal==1?0:avgSpace*(wordTotal-1);
+        
+        StringBuilder ans = new StringBuilder();
+        boolean wordStart = false;
+        
+        for(char ch : text.toCharArray()) {
+            if(ch == ' ') {
+                if(wordStart) {
+                    if(totalMidSpace>0) {
+                        for(int i=0;i<avgSpace;i++) {
+                            ans.append(" ");
+                            totalMidSpace--;
+                        }
+                    }
+                    wordStart = false;
+                }
+            } else {
+                ans.append(ch);
+                wordStart = true;
+            }
+        }
+        
+        // append left spaces
+        for(int i=0;i<leftSpace;i++) ans.append(" ");
+        
+        return ans.toString();
+    }
+}
+
+
+
+class Solution {
+    public String reorderSpaces(String text) {        
+        
+        int totalNumberOfSpaces = 0;
+        List<String> words = new ArrayList<>();
+        for(int i=0;i<=text.length()-1;i++){
+            char ch = text.charAt(i);
+            if(ch == ' '){
+                totalNumberOfSpaces++;
+            }
+        }
+        
+        int currentPointer = 0;
+        while(currentPointer <= text.length()-1){
+            if(text.charAt(currentPointer) != ' '){
+                int leftIndex = currentPointer;
+                while(currentPointer <= text.length()-1 &&
+                      text.charAt(currentPointer) != ' '){
+                    currentPointer++;
+                }
+                String subString = text.substring(leftIndex, currentPointer);
+                words.add(subString);
+            }
+            else{
+                currentPointer++;
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        
+        if(words.size() == 1){
+            sb.append(words.get(0));
+            for(int i=1;i<=totalNumberOfSpaces;i++){
+                sb.append(" ");
+            }
+            return sb.toString();
+        }
+        
+        int temp = words.size() - 1;
+        int newSpaceBetweenWords = totalNumberOfSpaces / temp;
+        int extraSpaces = totalNumberOfSpaces % temp;
+        
+        
+        for(int i=0;i<=words.size()-2;i++){
+            sb.append(words.get(i));
+            
+            for(int j=1;j<=newSpaceBetweenWords;j++){
+                sb.append(" ");
+            }
+            
+        }
+        
+        sb.append(words.get(words.size()-1));
+        
+        for(int i=1;i<=extraSpaces;i++){
+            sb.append(" ");
+        }
+        
+        return sb.toString();
+    }
+}
+
+
+
+class Solution {
+    
+    private static final char SPACE = ' ';
+    
+    public String reorderSpaces(String text) {
+        String[] words = text.trim().split("\\s+");
+        
+        int spaces = text.length() - String.join("", words).length();
+        
+        int s = words.length == 1 ? 0      : spaces / (words.length - 1);
+        int r = words.length == 1 ? spaces : spaces % (words.length - 1);       
+        
+        StringBuilder sb = new StringBuilder();
+        
+        for (String word: words) {
+            sb.append(word);
+            for (int i = 0; i < s; i++) {
+                if (sb.length() < text.length()) {
+                    sb.append(" ");
+                }
+            }
+        }
+        
+        for (int i = 0; i < r; i++) {
+            if (sb.length() < text.length()) {
+                sb.append(" ");
+            }
+        }
+        
+        return sb.toString();
+    }
+}
+
+// Algorithm#1.0
+// - first time traverse text: find num of spaces & words
+// - second timetraverse text: append word & avgSpaces into stringBuilder
+
