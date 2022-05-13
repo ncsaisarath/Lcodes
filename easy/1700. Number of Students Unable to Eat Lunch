@@ -1,0 +1,147 @@
+The school cafeteria offers circular and square sandwiches at lunch break, referred to by numbers 0 and 1 respectively. All students stand in a queue. Each student either prefers square or circular sandwiches.
+
+The number of sandwiches in the cafeteria is equal to the number of students. The sandwiches are placed in a stack. At each step:
+
+    If the student at the front of the queue prefers the sandwich on the top of the stack, they will take it and leave the queue.
+    Otherwise, they will leave it and go to the queue's end.
+
+This continues until none of the queue students want to take the top sandwich and are thus unable to eat.
+
+You are given two integer arrays students and sandwiches where sandwiches[i] is the type of the i​​​​​​th sandwich in the stack (i = 0 is the top of the stack) and students[j] is the preference of the j​​​​​​th student in the initial queue (j = 0 is the front of the queue). Return the number of students that are unable to eat.
+
+ 
+
+Example 1:
+
+Input: students = [1,1,0,0], sandwiches = [0,1,0,1]
+Output: 0 
+Explanation:
+- Front student leaves the top sandwich and returns to the end of the line making students = [1,0,0,1].
+- Front student leaves the top sandwich and returns to the end of the line making students = [0,0,1,1].
+- Front student takes the top sandwich and leaves the line making students = [0,1,1] and sandwiches = [1,0,1].
+- Front student leaves the top sandwich and returns to the end of the line making students = [1,1,0].
+- Front student takes the top sandwich and leaves the line making students = [1,0] and sandwiches = [0,1].
+- Front student leaves the top sandwich and returns to the end of the line making students = [0,1].
+- Front student takes the top sandwich and leaves the line making students = [1] and sandwiches = [1].
+- Front student takes the top sandwich and leaves the line making students = [] and sandwiches = [].
+Hence all students are able to eat.
+
+Example 2:
+
+Input: students = [1,1,1,0,0,1], sandwiches = [1,0,0,0,1,1]
+Output: 3
+
+ 
+
+Constraints:
+
+    1 <= students.length, sandwiches.length <= 100
+    students.length == sandwiches.length
+    sandwiches[i] is 0 or 1.
+    students[i] is 0 or 1.
+
+
+
+class Solution {
+    public int countStudents(int[] students, int[] sandwiches) {
+        int ones = 0; //count of students who prefer type1
+        int zeros = 0; //count of students who prefer type0
+		
+        for(int stud : students){
+            if(stud == 0) zeros++;
+            else ones++;
+        }
+        
+        // for each sandwich in sandwiches
+        for(int sandwich : sandwiches){
+            if(sandwich == 0){  // if sandwich is of type0
+                if(zeros == 0){ // if no student want a type0 sandwich
+                    return ones;
+                }
+                zeros--;
+            }
+            else{  // if sandwich is of type1
+                if(ones == 0){  // if no student want a type1 sandwich 
+                    return zeros;
+                }
+                ones--;
+            }
+        }
+        return 0;
+    }
+}
+
+
+
+class Solution {
+    public int countStudents(int[] students, int[] sandwiches) {
+        
+        Queue<Integer> std = new LinkedList<>();
+        int l = students.length;
+        for(int i = 0; i < l; i++) {
+            std.offer(students[i]);
+        }
+        
+        int sn = 0;
+        int seq = 0;
+        while(!std.isEmpty() && seq != l){
+            var s = std.poll();
+            if(s != sandwiches[sn]){
+                std.offer(s);
+                seq++;
+            } else {
+                sn++;
+                seq = 0;
+            } 
+        }
+        
+        return students.length - sn;
+    }
+}
+
+
+
+class Solution {
+    public int countStudents(int[] students, int[] sandwiches) {
+        int stul = students.length;
+        int sanl = sandwiches.length;
+        int stuz=0,stuo=0,sandz=0,sando=0;
+        Queue<Integer> q = new LinkedList<>();
+        Stack<Integer> s = new Stack<>();
+        for(int x:students){
+            q.add(x);
+            if(x==0)
+                stuz++;
+            else
+                stuo++;
+        }
+            
+        for(int i=sandwiches.length-1;i>=0;i--){
+            int x=sandwiches[i];
+            s.push(x);
+            if(x==0)
+                sandz++;
+            else
+                sando++;
+        }
+            
+        while(q.size()>0){
+            if(q.peek()==s.peek()){
+                if(q.peek()==1){
+                    stuo--;
+                    sando--;
+                }else{
+                    stuz--;
+                    sandz--;
+                }
+                q.poll();
+                s.pop();
+            }else if((s.peek()==1 && stuo>0)||(s.peek()==0 && stuz>0)){
+                q.add(q.poll());
+            }else
+                break;
+        }
+        return q.size();
+        
+    }
+}
