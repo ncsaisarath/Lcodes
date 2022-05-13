@@ -1,0 +1,131 @@
+You are given two strings s1 and s2 of equal length. A string swap is an operation where you choose two indices in a string (not necessarily different) and swap the characters at these indices.
+
+Return true if it is possible to make both strings equal by performing at most one string swap on exactly one of the strings. Otherwise, return false.
+
+ 
+
+Example 1:
+
+Input: s1 = "bank", s2 = "kanb"
+Output: true
+Explanation: For example, swap the first character with the last character of s2 to make "bank".
+
+Example 2:
+
+Input: s1 = "attack", s2 = "defend"
+Output: false
+Explanation: It is impossible to make them equal with one string swap.
+
+Example 3:
+
+Input: s1 = "kelb", s2 = "kelb"
+Output: true
+Explanation: The two strings are already equal, so no string swap operation is required.
+
+ 
+
+Constraints:
+
+    1 <= s1.length, s2.length <= 100
+    s1.length == s2.length
+    s1 and s2 consist of only lowercase English letters.
+
+
+class Solution {
+    public boolean areAlmostEqual(String s1, String s2) {
+        char a = '0', b = '0';
+        boolean found = false;
+        for (int i = 0; i < s1.length(); i++) {
+            char c1 = s1.charAt(i);
+            char c2 = s2.charAt(i);
+            if (c1 == c2)
+                continue;
+            
+            if (found) {
+                if (c1 != b || c2 != a)
+                    return false;
+                a = '0';
+                b = '0';
+                continue;
+            }
+                
+            found = true;
+            a = c1;
+            b = c2;
+        }
+        return a == '0';
+    }
+}
+
+
+
+class Solution {
+    public boolean areAlmostEqual(String s1, String s2) {
+        int n1 = s1.length(), n2 = s2.length();
+        if(n1 != n2){
+            return false;
+        }
+        int[] mismatch = new int [2];
+        int count = 0, p1 = 0;
+        for(int i = 0; i < n2; i++){
+            if(s1.charAt(i) != s2.charAt(i)){
+                if(p1 < 2){
+                    mismatch[p1++] = i;
+                }
+                count++;
+            }
+        }
+        if(count == 0){
+            return true;
+        }
+        if(count == 1 || count > 2){
+            return false;
+        }
+        char s1_d1 = s1.charAt(mismatch[0]), s1_d2 = s1.charAt(mismatch[1]);
+        char s2_d1 = s2.charAt(mismatch[0]), s2_d2 = s2.charAt(mismatch[1]);
+        if(s1_d1 == s2_d2 && s2_d1 == s1_d2){
+            return true;
+        }
+        return false;
+    }
+}
+
+
+
+class Solution {
+    public boolean areAlmostEqual(String s1, String s2) {
+        if(s1.equals(s2))
+            return true;
+        int[] ch1 = new int[26];
+        int[] ch2 = new int[26];
+        char[] sc1=s1.toCharArray();
+        char[] sc2=s2.toCharArray();
+        for(char x:sc1){
+            ch1[x-'a']++;
+        }
+        for(char x:sc2){
+            ch2[x-'a']++;
+        }
+        for(int i=0;i<26;i++){
+            if(ch1[i]!=ch2[i])
+                return false;
+        }
+        int pos1=-1,pos2=-1;
+        int i=0;
+        while(i<s1.length()){
+            if(sc1[i]!=sc2[i]){
+                if(pos1==-1)
+                    pos1=i;
+                else if(pos2==-1)
+                    pos2=i;
+                else
+                    return false;
+            }
+            i++;
+        }
+        char temp = sc1[pos1];
+        sc1[pos1]=sc1[pos2];
+        sc1[pos2]=temp;
+        return s2.equals(new String(sc1));
+    }
+}
