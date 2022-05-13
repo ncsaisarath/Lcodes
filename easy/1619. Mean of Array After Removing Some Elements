@@ -1,0 +1,165 @@
+Given an integer array arr, return the mean of the remaining integers after removing the smallest 5% and the largest 5% of the elements.
+
+Answers within 10-5 of the actual answer will be considered accepted.
+
+ 
+
+Example 1:
+
+Input: arr = [1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3]
+Output: 2.00000
+Explanation: After erasing the minimum and the maximum values of this array, all elements are equal to 2, so the mean is 2.
+
+Example 2:
+
+Input: arr = [6,2,7,5,1,2,0,3,10,2,5,0,5,5,0,8,7,6,8,0]
+Output: 4.00000
+
+Example 3:
+
+Input: arr = [6,0,7,0,7,5,7,8,3,4,0,7,8,1,6,8,1,1,2,4,8,1,9,5,4,3,8,5,10,8,6,6,1,0,6,10,8,2,3,4]
+Output: 4.77778
+
+ 
+
+Constraints:
+
+    20 <= arr.length <= 1000
+    arr.length is a multiple of 20.
+    0 <= arr[i] <= 10^5
+
+
+
+class Solution {
+    public double trimMean(int[] arr) {
+        int trim = arr.length / 20;
+
+        qselectmin(arr, 0, arr.length - 1, trim);
+        qselectmin(arr, trim, arr.length - 1, arr.length - 2 * trim);
+
+        int sum = 0;
+        for (int i = trim, l = arr.length - trim; i < l; i++)
+            sum += arr[i];
+        return (double) sum / (arr.length - 2 * trim);
+    }
+   
+    Random rnd = new Random();
+
+    public void qselectmin(int[] a, int from, int to, int k) {
+        if (from == to)
+            return;
+        int pi = partition(a, from, to);
+        int total = pi - from + 1;
+        if (total == k)
+            return;
+        if (total < k)
+            qselectmin(a, pi + 1, to, k - total);
+        else
+            qselectmin(a, from, pi - 1, k);
+    }
+
+    private int partition(int[] a, int l, int r) {
+        int p = l + rnd.nextInt(r - l);
+        swap(a, p, r);
+        p = r;
+        int pivot = a[p];
+
+        int i = l;
+
+        for (int j = l; j < r; j++) {
+            if (a[j] <= pivot)
+                swap(a, i++, j);
+        }
+        swap(a, i, p);
+
+        return i;
+    }
+
+    private void swap(int[] a, int l, int r) {
+        int t = a[l];
+        a[l] = a[r];
+        a[r] = t;
+    }
+}
+
+
+
+class Solution {
+    public double trimMean(int[] arr) {
+        Arrays.sort(arr);
+        int val = (int)((arr.length*5)/100);
+        int start = val;
+        int end = arr.length - val;
+        
+        double result = 0f;
+        for(int i = start;i < end;i++){
+            result = result + arr[i];
+        }
+        
+        return result/(end-start);
+    }
+}
+
+
+
+
+class Solution {
+    public double trimMean(int[] arr) {
+//         int max=-1,min=1000000,total=0;
+//         for(int x:arr){
+//             total+=x;
+//             if(min>x)
+//                 min=x;
+//             else if(max<x)
+//                 max=x;
+//         }
+//         System.out.println(min+" "+max+" "+arr.length);
+
+//         int[] count = new int[max-min+1];
+//         for(int x:arr){
+//             count[x-min]++;
+//         }
+//         // System.out.println(Arrays.toString(count));
+//         System.out.println(total);
+//         int n=arr.length;
+//         int fiveper = (int)(n*.05);
+//         System.out.println(fiveper);
+//         for(int i=0,j=0;i<fiveper;i++){
+//             if(count[j]>0){
+//                 total-=(j+min);
+//                 System.out.println((j+min)+" "+total+" "+i);
+//                 count[j]--;
+//                 i++;
+//             }else{
+//                 while(count[j]==0)
+//                     j++;
+                
+//             }
+//         }
+//         System.out.println(total);
+//         for(int i=0,j=count.length-1;i<fiveper;){
+//             if(count[j]>0){
+//                 total-=(j+min);
+//                 System.out.println((j+min)+" "+total+" "+i);
+//                 count[j]--;
+//                 i++;
+//             }else{
+//                 j--;
+                
+//             }
+//         }
+//         System.out.println(total);
+//         // System.out.println((arr.length-2*fiveper));
+//         return (double)total/(double)(arr.length-2*fiveper);
+        int removal = arr.length / 20;
+        double avg = 0.0;
+        Arrays.sort(arr);
+        
+        for (int i = removal; i < arr.length - removal; i++)
+        {
+            avg = avg + (double)arr[i];
+        }
+        
+        return avg / (arr.length - (removal * 2));
+    }
+}
