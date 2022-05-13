@@ -1,0 +1,195 @@
+Given an array of integers nums, sort the array in increasing order based on the frequency of the values. If multiple values have the same frequency, sort them in decreasing order.
+
+Return the sorted array.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,2,2,2,3]
+Output: [3,1,1,2,2,2]
+Explanation: '3' has a frequency of 1, '1' has a frequency of 2, and '2' has a frequency of 3.
+
+Example 2:
+
+Input: nums = [2,3,1,3,2]
+Output: [1,3,3,2,2]
+Explanation: '2' and '3' both have a frequency of 2, so they are sorted in decreasing order.
+
+Example 3:
+
+Input: nums = [-1,1,-6,4,5,-6,1,4,1]
+Output: [5,-1,4,4,-6,-6,1,1,1]
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 100
+    -100 <= nums[i] <= 100
+
+
+
+class Solution {
+    public int[] frequencySort(int[] nums) {
+        int[] freq = new int[201];
+        for(int i=0;i<nums.length;i++) 
+            freq[nums[i]+100]++;
+        
+        QuickF(nums,0,nums.length-1,freq); // sorting according to frequency of each number.
+        
+        int j = 0;
+        for(int i=0;i<nums.length;i++){
+            while(j<nums.length && freq[nums[i]+100] == freq[nums[j]+100]) 
+                j++;
+            if(j-1<nums.length){
+                Quick(nums,i,j-1); // soring the given subarray in decending order.
+                i = j-1;
+            }
+        }   
+        
+        return nums;
+    }
+    
+    public void QuickF(int[] arr, int start, int end, int[] freq){
+        if(start>=end) return;
+        int i = start;
+        int j = end;
+        int Fpivot = freq[arr[end]+100];
+        
+        while(i<=j){
+            while(i<=j && freq[arr[i]+100]<Fpivot) i++;
+            while(i<=j && freq[arr[j]+100]>Fpivot) j--;
+            
+            if(i<=j){
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                i++; j--;
+            }
+        }
+        
+        QuickF(arr,start,j,freq);
+        QuickF(arr,i,end,freq);
+    }
+    
+     public void Quick(int[] arr, int start, int end){
+        if(start>=end) return;
+        int i = start;
+        int j = end;
+        int pivot = arr[end];
+    
+        while(i<=j){
+            while(i<=j && arr[i]>pivot) 
+                i++;
+            while(i<=j && arr[j]<pivot) 
+                j--;
+            
+            if(i<=j){
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+                i++; j--;
+            }
+        }
+        
+        Quick(arr,start,j);
+        Quick(arr,i,end);
+        
+    }
+}
+
+
+
+class Solution {
+    public int[] frequencySort(int[] nums) {
+        
+        int[] count = new int[201];
+        for (int n: nums) {
+            count[n + 100]++;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = 10000 * count[nums[i] + 100] - nums[i] + 100;
+        }
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = 100 - nums[i] % 10000;
+        }
+        return nums;
+    }
+}
+
+
+
+class Solution {
+    public int[] frequencySort(int[] nums) {
+        int[] count = new int[201];
+        
+        for(int num:nums)
+            count[num+100]++;
+        
+        List<Integer>[] buckets = new ArrayList[nums.length+1];
+        
+        for(int i=200;i>=0;i--){
+            if(count[i]==0) continue;
+            if(buckets[count[i]]==null) buckets[count[i]] = new ArrayList<>();
+            int temp = count[i];
+            while(temp-->0){
+                buckets[count[i]].add(i-100);
+            }
+        }
+        
+        int j=0;
+        for(int i=0;i<=nums.length;i++){
+            if(buckets[i]==null) continue;
+            for(int val:buckets[i])
+                nums[j++] = val;
+        }
+        
+        return nums;
+    }
+}
+
+
+
+class Solution {
+    class Pair implements Comparable<Pair>{
+        int val,freq;
+        Pair(int v,int f){
+            this.val=v;
+            this.freq=f;
+        }
+        public int compareTo(Pair b){
+            if(this.freq!=b.freq)
+                return this.freq-b.freq;
+            else
+                return b.val-this.val;
+        }
+    }
+    public int[] frequencySort(int[] nums) {
+        int max=-1;
+        ArrayList<Pair> pairs = new ArrayList<>();
+        int[] count=new int[201];
+        for(int x:nums){
+            if(max<x)
+                max=x;
+            count[x+100]++;
+        }
+        for(int i=0;i<201;i++){
+            if(count[i]>0){
+                pairs.add(new Pair(i-100,count[i]));
+            }
+        }
+        Collections.sort(pairs);
+        int[] res = new int[nums.length];
+        int pos=0;
+        for(Pair pair:pairs){
+            int x=pair.freq;
+            while(x-->0){
+                res[pos++]=pair.val;
+            }
+        }
+        return res;
+        
+    }
+}
