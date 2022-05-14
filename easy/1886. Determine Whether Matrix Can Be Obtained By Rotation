@@ -1,0 +1,239 @@
+Given two n x n binary matrices mat and target, return true if it is possible to make mat equal to target by rotating mat in 90-degree increments, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: mat = [[0,1],[1,0]], target = [[1,0],[0,1]]
+Output: true
+Explanation: We can rotate mat 90 degrees clockwise to make mat equal target.
+
+Example 2:
+
+Input: mat = [[0,1],[1,1]], target = [[1,0],[0,1]]
+Output: false
+Explanation: It is impossible to make mat equal to target by rotating mat.
+
+Example 3:
+
+Input: mat = [[0,0,0],[0,1,0],[1,1,1]], target = [[1,1,1],[0,1,0],[0,0,0]]
+Output: true
+Explanation: We can rotate mat 90 degrees clockwise two times to make mat equal target.
+
+ 
+
+Constraints:
+
+    n == mat.length == target.length
+    n == mat[i].length == target[i].length
+    1 <= n <= 10
+    mat[i][j] and target[i][j] are either 0 or 1.
+
+
+class Solution {
+    public boolean findRotation(int[][] mat, int[][] target) {
+                for (int i=0 ; i<4 ; i++) {
+                        if ( same( mat , target ) ) {
+                                return true;
+                        }
+                        mat = rotate(mat);
+                }
+                return false;
+        }
+ 
+        private boolean same(int[][] mat, int[][] target) {
+                if (mat.length == target.length && mat[0].length == target[0].length) {
+                        for(int i=0 ; i<mat.length ; i++) {
+                                for(int j=0 ; j<mat[0].length ;j++) {
+                                        if ( mat[i][j] != target[i][j] )
+                                                return false;
+                                }
+                        }
+                }
+                return true;
+        }
+ 
+        private int[][] rotate(int[][] mat) {
+                int n = mat.length;
+                int m = mat[0].length;
+                int b[][] = new int[m][n];
+                for(int i=0 ; i<n ; i++) {
+                        for(int j=0 ; j<m ; j++) {
+                                b[j][n-i-1] = mat[i][j];
+                        }
+                }
+                return b;
+        }
+ 
+}
+
+
+
+
+
+
+class Solution {
+    
+    public boolean findRotation(int[][] mat, int[][] target) {
+        for (int i = 0; i < 4; ++i) {
+            if (isEqual(mat, target)) {
+                return true;
+            }
+            rotateRightInPlace(mat);
+        }
+        
+        return false;
+    }
+    
+    private void rotateRightInPlace(int[][] arr) { 
+        int n = arr.length;
+        for (int j = 0; j < n; ++j) {        
+            for (int i = j; i < n; ++i) { // j = 0, i = 1   
+                int temp = arr[j][i];   // temp = 1
+                arr[j][i] = arr[i][j];  // arr[0][1] = arr[1][0] = 0
+                arr[i][j] = temp;       // arr[1][0] = 1
+            }
+        }
+        
+        for (int j = 0; j < arr.length; ++j) {
+            for (int i = 0; i < arr[0].length / 2; ++i) {
+                int temp = arr[j][i];
+                arr[j][i] = arr[j][arr.length - i - 1];
+                arr[j][arr.length - i - 1] = temp;
+            }
+        }
+        // printMatrix(arr);
+    }    
+    
+    private int[][] rotateRight(int[][] arr) {
+        int[][] result = new int[arr.length][arr.length];
+        int x = arr.length - 1, y = 0;
+        for (int j = 0; j < arr.length; ++j) {
+            y = 0;
+            for (int i = 0; i < arr[0].length; ++i) { 
+                result[j][i] = arr[y][x]; 
+                ++y;
+            }
+            --x;
+        }
+        return result;
+    }
+    
+    private void printMatrix(int[][] arr) {
+        for (int j = 0; j < arr.length; ++j) {
+            for (int i = 0; i < arr[0].length; ++i) {
+                System.out.print(arr[j][i] + " ");
+
+            }
+            System.out.println();
+        }
+        
+        System.out.println();
+    }
+    
+    private boolean isEqual(int[][] arr, int[][] target) {
+        for (int j = 0; j < arr.length; ++j) {
+            for (int i = 0; i < arr[0].length; ++i) {
+                if (arr[j][i] != target[j][i]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
+
+/*
+
+[[0,0,0],[0,1,0],[1,1,1]]
+[[1,1,1],[0,1,0],[0,0,0]]
+
+    [[0,0,0],[0,1,0],[1,1,1]]
+    [[1,1,1],[0,1,0],[0,0,0]]
+
+    [[0,0,0],[0,1,0],[1,1,1]]
+    [[1,0,0],[1,1,0],[1,0,0]]
+*/
+
+
+
+    
+// private int[][] rotateLeft(int[][] arr) {
+//     int[][] result = new int[arr.length][arr.length];
+//     int y = 0, x = 0;
+//     for (int j = arr.length - 1; j >= 0 ; --j) { // j: 2 -> 0
+//         x = 0;
+//         for (int i = 0; i < arr[0].length; ++i) { // i: 0 --> 2    (0,1,2) 2
+//             result[y][x] = arr[i][j];
+//             ++x;
+//         }
+//         ++y;
+//     }
+//     return result;
+// }
+
+
+class Solution {
+    public boolean findRotation(int[][] mat, int[][] target) {
+        int r=mat.length;
+        int c=mat[0].length;
+//         for(int j=0;j<r;j++){
+//                 for(int k=0;k<c;k++){
+//                     if(target[j][k]!=mat[j][k]){
+//                         // System.out.println("contimued");
+//                         break;
+                        
+//                     }
+                        
+                    
+//                 }
+//             }
+        first:
+        for(int i=0;i<4;i++){
+            
+            for(int j=0;j<r;j++){
+                for(int k=0;k<c/2;k++){
+                    int temp=mat[j][k];
+                    mat[j][k]=mat[j][c-k-1];
+                    mat[j][c-k-1]=temp;
+                }
+            }
+            
+            // for(int j=0;j<r;j++){
+            //     for(int k=0;k<c;k++){
+            //         System.out.print(mat[j][k]+" ");
+            //     }
+            //     System.out.println();
+            // }
+            
+            for(int j=0;j<r;j++){
+                for(int k=j+1;k<c;k++){
+                    int temp=mat[j][k];
+                    mat[j][k]=mat[k][j];
+                    mat[k][j]=temp;
+                }
+            }
+            // for(int j=0;j<r;j++){
+            //     for(int k=0;k<c;k++){
+            //         System.out.print(mat[j][k]+" ");
+            //     }
+            //     System.out.println();
+            // }
+            
+            for(int j=0;j<r;j++){
+                for(int k=0;k<c;k++){
+                    if(target[j][k]!=mat[j][k]){
+                        // System.out.println("contimued");
+                        continue first;
+                        
+                    }
+                        
+                    
+                }
+            }
+            return true;
+        }
+        
+        return false;
+    }
+}
