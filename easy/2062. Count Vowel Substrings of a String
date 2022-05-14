@@ -1,0 +1,148 @@
+A substring is a contiguous (non-empty) sequence of characters within a string.
+
+A vowel substring is a substring that only consists of vowels ('a', 'e', 'i', 'o', and 'u') and has all five vowels present in it.
+
+Given a string word, return the number of vowel substrings in word.
+
+ 
+
+Example 1:
+
+Input: word = "aeiouu"
+Output: 2
+Explanation: The vowel substrings of word are as follows (underlined):
+- "aeiouu"
+- "aeiouu"
+
+Example 2:
+
+Input: word = "unicornarihan"
+Output: 0
+Explanation: Not all 5 vowels are present, so there are no vowel substrings.
+
+Example 3:
+
+Input: word = "cuaieuouac"
+Output: 7
+Explanation: The vowel substrings of word are as follows (underlined):
+- "cuaieuouac"
+- "cuaieuouac"
+- "cuaieuouac"
+- "cuaieuouac"
+- "cuaieuouac"
+- "cuaieuouac"
+- "cuaieuouac"
+
+ 
+
+Constraints:
+
+    1 <= word.length <= 100
+    word consists of lowercase English letters only.
+
+
+
+
+
+class Solution {
+    int[] arr = new int[5];
+    int incAndGet(char c, int x) {
+        switch (c) {
+            case 'a':
+                return arr[0] += x;
+            case 'e':
+                return arr[1] += x;
+            case 'i':
+                return arr[2] += x;
+            case 'o':
+                return arr[3] += x;
+            case 'u':
+                return arr[4] += x;
+            default:
+                return -1;
+        }
+    }
+    public int countVowelSubstrings(String word) {
+        int res = 0, cntType = 0, start = 0, pstart = 0, ce;
+        for (int end = 0; end < word.length(); ++end) {
+            ce = incAndGet(word.charAt(end), 1);
+            if (ce < 0) {
+                Arrays.fill(arr, 0);
+                pstart = start = end + 1;
+                cntType = 0;
+            } else {
+                if (ce == 1) {
+                    ++cntType;
+                }
+                while (cntType == 5) {
+                    ce = incAndGet(word.charAt(start++), -1);
+                    if (ce == 0) {
+                        --cntType;
+                    }
+                }
+                res += start - pstart;
+            }
+        }
+        return res;
+    }
+}
+
+
+
+
+class Solution {
+    public int countVowelSubstrings(String word) {
+        int[] pos= new int[26];
+        Arrays.fill(pos, -2);
+        pos[1] = -1;
+        int ans = 0;
+        for (int i=0;i<word.length();i++) {
+            char c = word.charAt(i);
+            if (c == 'a' || c == 'e' ||c == 'i' ||c == 'o' ||c == 'u' ) {
+                pos[c-'a'] = i;
+            } else {
+                pos[1] = i;
+            }
+            // > 0 only if all vowels were seen.
+            // initialized as -2, last seen consonant is -1 stored in pos[1]
+            int minVowel = Math.min(Math.min(Math.min(Math.min(pos[0], pos[4]), 
+                                                      pos[8]), pos[14]), pos[20]);
+            // At each index: the number of valid substrings ending here 
+            // is the distance backwards from the earliest last seen vowel to the last seen consonant.
+            // count only if minVowel is bigger than last seen consonat
+            ans += Math.max(minVowel - pos[1], 0);
+            // System.out.println("i : " + i +  ", con : " + pos[1] + ", vowel: "+ minVowel + ", plus : " + (minVowel - pos[1]));
+        }
+        return ans;
+    }
+}
+
+
+
+
+class Solution {
+    public int countVowelSubstrings(String word) {
+        HashSet<Character> hs = new HashSet<>();
+        hs.add('a');
+        hs.add('e');
+        hs.add('i');
+        hs.add('o');
+        hs.add('u');
+        int ans = 0;
+        HashSet<Character> set = new HashSet<>();
+        for(int i = 0; i < word.length()-4; i++){
+            set.clear();
+            for(int j = i; j < word.length(); j++){
+                char curr = word.charAt(j);
+                if(hs.contains(curr)){
+                    set.add(curr);
+                    if(set.size() >= 5)
+                        ans++;
+                }else{
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+}
