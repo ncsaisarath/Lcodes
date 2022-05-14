@@ -1,0 +1,113 @@
+A sentence is a list of words that are separated by a single space with no leading or trailing spaces. Each word consists of lowercase and uppercase English letters.
+
+A sentence can be shuffled by appending the 1-indexed word position to each word then rearranging the words in the sentence.
+
+    For example, the sentence "This is a sentence" can be shuffled as "sentence4 a3 is2 This1" or "is2 sentence4 This1 a3".
+
+Given a shuffled sentence s containing no more than 9 words, reconstruct and return the original sentence.
+
+ 
+
+Example 1:
+
+Input: s = "is2 sentence4 This1 a3"
+Output: "This is a sentence"
+Explanation: Sort the words in s to their original positions "This1 is2 a3 sentence4", then remove the numbers.
+
+Example 2:
+
+Input: s = "Myself2 Me1 I4 and3"
+Output: "Me Myself and I"
+Explanation: Sort the words in s to their original positions "Me1 Myself2 and3 I4", then remove the numbers.
+
+ 
+
+Constraints:
+
+    2 <= s.length <= 200
+    s consists of lowercase and uppercase English letters, spaces, and digits from 1 to 9.
+    The number of words in s is between 1 and 9.
+    The words in s are separated by a single space.
+    s contains no leading or trailing spaces.
+
+
+
+class Solution {
+    public String sortSentence(String s) {
+        String [] x = s.split(" ");
+        String [] solution = new String [x.length];
+        String solution1 = "";
+        int index = 0;
+        for (int i = 0; i < x.length; i++){
+            index = (x[i].charAt(x[i].length() - 1) - '0');
+            solution[index-1] = x[i].substring(0, x[i].length() - 1);
+        } 
+        solution1 = String.join(" ", solution);
+        return solution1;
+
+        }
+    }
+    
+
+class Solution {
+    public String sortSentence(String s) {
+        StringBuilder sb = new StringBuilder();
+        
+        String[] sent = s.split(" ");
+        String[] ans = new String[sent.length];
+        
+        for(int i = 0; i < sent.length; i++){
+            String word = sent[i];
+            
+            int temp = Integer.parseInt(word.substring(word.length()-1));
+            ans[temp-1] = word.substring(0,word.length()-1);
+            
+            // int temp = Integer.parseInt(word.substring(word.length()-1));
+            // ans[temp-1] = word.substring(0, word.length()-1);
+        }
+        
+        
+        for(String e : ans){
+            sb.append(e+" ");
+        }
+        
+        return sb.toString().strip();
+        
+    }
+}
+
+
+
+
+class Solution {
+    public String sortSentence(String s) {
+        String[] words = new String[201];
+        int start=-1;
+        int n=s.length();
+        int count=0;
+        for(int i=0;i<n;i++){
+            if(start==-1 && Character.isLetter(s.charAt(i))){
+                start=i;
+            }else if(Character.isDigit(s.charAt(i))){
+                int j=i;
+                while(i<n && Character.isDigit(s.charAt(i)))
+                      i++;
+                int pos = Integer.parseInt(s.substring(j,i));
+                words[pos]=s.substring(start,j);
+                count++;
+                start=-1;
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i=1;i<=200;i++){
+            if(words[i]!=null){
+                sb.append(words[i]);
+                count--;
+                if(count>0)
+                    sb.append(" ");
+            }
+                
+        }                     
+        return sb.toString();
+    }
+}
