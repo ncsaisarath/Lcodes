@@ -1,0 +1,74 @@
+class Solution {
+    
+    public List<Integer> intersection(int[][] nums) {
+        if (nums == null) {
+            return Collections.emptyList();
+        } 
+        
+        int len = nums.length;
+        if (len == 0) {
+            return Collections.emptyList();
+        }
+        
+        int[] flag = new int[1001];
+        for (int[] arr : nums) {
+            for (int n : arr) {
+                flag[n]++;
+            }
+        }
+        
+        List<Integer> res = new ArrayList<>();
+        for (int i = 1; i <= 1000; i++) {
+            if (flag[i] == len) {
+                res.add(i);
+            }
+        }
+        
+        return res;
+    }
+    
+    
+    
+    
+    class Solution {
+    public List<Integer> intersection(int[][] nums) {
+        List<Integer> result = new ArrayList<>();
+        int []count = new int[1001];
+        for(int []arr: nums){
+            for(int i: arr){
+                count[i]++;
+            }
+        }
+        for(int i = 0; i < count.length; i++){
+            if(count[i] == nums.length){
+                result.add(i);
+            }
+        }
+        return result;
+    }
+}
+
+
+
+class Solution {
+    public List<Integer> intersection(int[][] nums) {
+        Set<Integer> set1=new HashSet<>();
+        Set<Integer> set2=new HashSet<>();
+        for(int i=0;i<nums[0].length;i++){
+            set1.add(nums[0][i]);
+        }
+        for(int i=1;i<nums.length;i++){
+            for(int j=0;j<nums[i].length;j++){
+                if(set1.contains(nums[i][j]))
+                    set2.add(nums[i][j]);
+            }
+            set1=set2;
+            set2=new HashSet<>();
+        }
+        List<Integer> lis=new ArrayList<>();
+        for(int x:set1)
+            lis.add(x);
+        Collections.sort(lis);
+        return lis;
+    }
+}
