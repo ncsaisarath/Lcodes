@@ -1,0 +1,253 @@
+You are given an integer array nums and an integer k. You want to find a subsequence of nums of length k that has the largest sum.
+
+Return any such subsequence as an integer array of length k.
+
+A subsequence is an array that can be derived from another array by deleting some or no elements without changing the order of the remaining elements.
+
+ 
+
+Example 1:
+
+Input: nums = [2,1,3,3], k = 2
+Output: [3,3]
+Explanation:
+The subsequence has the largest sum of 3 + 3 = 6.
+
+Example 2:
+
+Input: nums = [-1,-2,3,4], k = 3
+Output: [-1,3,4]
+Explanation: 
+The subsequence has the largest sum of -1 + 3 + 4 = 6.
+
+Example 3:
+
+Input: nums = [3,4,3,3], k = 2
+Output: [3,4]
+Explanation:
+The subsequence has the largest sum of 3 + 4 = 7. 
+Another possible subsequence is [4, 3].
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 1000
+    -10^5 <= nums[i] <= 10^5
+    1 <= k <= nums.length
+
+
+
+class Solution {
+    // quick select
+    public int[] maxSubsequence(int[] nums, int k) {
+        int[] ordered = Arrays.copyOf(nums, nums.length);
+        quickSort(nums, nums.length-k, 0, nums.length-1);
+        int[] result = new int[k];
+        int index = 0;
+        int count = 0;
+        int start = nums[nums.length-k];
+        for(int i=nums.length-k; i<nums.length; i++){
+            if(nums[i]==start){
+                count++;
+            }
+        }
+        
+        for(int i=0; i<ordered.length; i++){
+            if(ordered[i]>start || (ordered[i]==start && count-->0)){
+                result[index++] = ordered[i];
+            }
+        }
+        
+        return result;
+    }
+    
+    private void quickSort(int[] nums, int target, int left, int right){
+        if(left>right) return;
+        int partition = sort(nums, left, right);
+        if(partition == target) return;
+        if(partition < target){
+            quickSort(nums, target, partition+1, right);
+            return;
+        }
+        quickSort(nums, target, left, partition-1);
+        return;
+    }
+    private int sort(int[] nums, int left, int right){
+        int pivot = nums[right];
+        int start = left;
+        for(int i=left; i<right; i++){
+            if(nums[i] < pivot){
+                swap(nums, i, start);
+                start++;
+            }
+        }
+        swap(nums, start, right);
+        return start;
+    }
+    private void swap(int[] nums, int i, int j){
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] =  temp;
+        return;
+    }
+}
+
+
+
+
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        
+        int n = nums.length;
+        int[] index = new int[n];
+        
+        for (int i = 0; i < n; ++i) index[i] = i;
+        
+        // Use Quick Select to put the indexes of the 
+        // max k items to the left of index array. 
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {
+            int idx = quickSelect(nums, index, lo, hi);
+            if (idx < k) {
+                lo = idx + 1;
+            } else {
+                hi = idx;
+            }
+        }
+        
+        // Count the occurrencs of the kth largest items
+        // within the k largest ones.
+        int kthVal = nums[index[k - 1]], freqOfkthVal = 0;
+        for (int i : Arrays.copyOf(index, k)) {
+            freqOfkthVal += nums[i] == kthVal ? 1 : 0;
+        }
+        
+        // Greedily copy the subsequence into output array seq.
+        int[] seq = new int[k];
+        int i = 0;
+        for (int num : nums) {
+            if (num > kthVal || num == kthVal && freqOfkthVal-- > 0) {
+                seq[i++] = num;
+            }
+        }
+        
+        return seq;
+    }
+    
+    // Divide index[lo...hi] into two parts: larger and less than 
+    // the pivot; Then return the position of the pivot;
+    private int quickSelect(int[] nums, int[] index, int lo, int hi) {
+        int pivot = index[lo];
+        while (lo < hi) {
+            while (lo < hi && nums[index[hi]] <= nums[pivot]) {
+                --hi;
+            }
+            
+            index[lo] = index[hi];
+            while (lo < hi && nums[index[lo]] >= nums[pivot]) {
+                ++lo;
+            }
+            index[hi] = index[lo];
+        } 
+        
+        
+        index[lo] = pivot;
+        return lo;
+    }
+    
+    
+}
+
+
+
+
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        int n = nums.length;
+        int[] index = new int[n];
+        for (int i = 0; i < n; ++i) {
+            index[i] = i;
+        }
+        
+        // Use Quick Select to put the indexes of the 
+        // max k items to the left of index array. 
+        int lo = 0, hi = n - 1;
+        while (lo < hi) {
+            int idx = quickSelect(nums, index, lo, hi);
+            if (idx < k) {
+                lo = idx + 1;
+            }else {
+                hi = idx;
+            }
+        }
+        
+        // Count the occurrencs of the kth largest items
+        // within the k largest ones.
+        int kthVal = nums[index[k - 1]], freqOfkthVal = 0;
+        for (int i : Arrays.copyOf(index, k)) {
+            freqOfkthVal += nums[i] == kthVal ? 1 : 0;
+        }
+        
+        // Greedily copy the subsequence into output array seq.
+        int[] seq = new int[k];
+        int i = 0;
+        for (int num : nums) {
+            if (num > kthVal || num == kthVal && freqOfkthVal-- > 0) {
+                seq[i++] = num;
+            }
+        }
+        return seq;
+    }
+    
+    // Divide index[lo...hi] into two parts: larger and less than 
+    // the pivot; Then return the position of the pivot;
+    private int quickSelect(int[] nums, int[] index, int lo, int hi) {
+        int pivot = index[lo];
+        while (lo < hi) {
+            while (lo < hi && nums[index[hi]] <= nums[pivot]) {
+                --hi;
+            }
+            index[lo] = index[hi];
+            while (lo < hi && nums[index[lo]] >= nums[pivot]) {
+                ++lo;
+            }
+            index[hi] = index[lo];
+        } 
+        index[lo] = pivot;
+        return lo;
+    }
+}
+
+
+
+class Solution {
+    public int[] maxSubsequence(int[] nums, int k) {
+        PriorityQueue<Node> pq=new PriorityQueue<>((n1,n2)->n1.val-n2.val);
+        for(int i=0;i<nums.length;i++){
+            pq.add(new Node(i,nums[i]));
+            if(pq.size()>k) pq.remove();
+        }
+        int[] ans=new int[k];
+        int ind=0;
+        PriorityQueue<Node> p=new PriorityQueue<>((n1,n2)->n1.i-n2.i);
+        while(!pq.isEmpty()){
+		
+		
+            p.add(pq.remove()); 
+        }
+        while(!p.isEmpty()){
+            Node I=p.remove();
+            ans[ind++]=I.val;
+        }
+        return ans;
+    }
+}
+class Node{
+    int i;
+    int val;
+    Node(int i,int val){
+        this.i=i;
+        this.val=val;
+    }
+}
