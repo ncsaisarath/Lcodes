@@ -1,0 +1,158 @@
+A string s can be partitioned into groups of size k using the following procedure:
+
+    The first group consists of the first k characters of the string, the second group consists of the next k characters of the string, and so on. Each character can be a part of exactly one group.
+    For the last group, if the string does not have k characters remaining, a character fill is used to complete the group.
+
+Note that the partition is done so that after removing the fill character from the last group (if it exists) and concatenating all the groups in order, the resultant string should be s.
+
+Given the string s, the size of each group k and the character fill, return a string array denoting the composition of every group s has been divided into, using the above procedure.
+
+ 
+
+Example 1:
+
+Input: s = "abcdefghi", k = 3, fill = "x"
+Output: ["abc","def","ghi"]
+Explanation:
+The first 3 characters "abc" form the first group.
+The next 3 characters "def" form the second group.
+The last 3 characters "ghi" form the third group.
+Since all groups can be completely filled by characters from the string, we do not need to use fill.
+Thus, the groups formed are "abc", "def", and "ghi".
+
+Example 2:
+
+Input: s = "abcdefghij", k = 3, fill = "x"
+Output: ["abc","def","ghi","jxx"]
+Explanation:
+Similar to the previous example, we are forming the first three groups "abc", "def", and "ghi".
+For the last group, we can only use the character 'j' from the string. To complete this group, we add 'x' twice.
+Thus, the 4 groups formed are "abc", "def", "ghi", and "jxx".
+
+ 
+
+Constraints:
+
+    1 <= s.length <= 100
+    s consists of lowercase English letters only.
+    1 <= k <= 100
+    fill is a lowercase English letter.
+
+
+
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+        
+        int length = s.length();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        if(length%k == 0){
+            sb.append(s);
+        }else{
+            sb.append(s);
+            int num_fill = k*(1+length/k)-length;
+            for(int i = 0; i < num_fill; i++){
+                sb.append(fill);
+            }
+        }
+        
+        String new_s = new String(sb);
+        
+        int new_length = new_s.length();
+        
+        String[] res = new String[new_length/k];
+        int index = 0;
+        for(int i = 0; i < new_length; i = i+k){
+            res[index] = new_s.substring(i, i+k);
+            index++;
+        }
+        
+        // a b c d e f
+        // k = 3
+                
+        return res;
+    }
+}
+
+
+
+
+class Solution {
+public String[] divideString(String str, int k, char fill) {
+    
+	// return if k and str are same
+	if (str.length() == k)
+		return new String[] { str };
+
+	int index = 0;
+	int stringLength = str.length();
+	StringBuilder sb = new StringBuilder(str);
+	
+	// find size of array creation
+	String[] strArr = (stringLength % k == 0) ? new String[stringLength / k] : new String[(stringLength / k) + 1];
+
+	//append fill after str 
+	if (stringLength % k != 0) {
+		for (int i = 0; i < k - (stringLength % k); i++) {
+			sb.append(fill);
+		}
+	}
+
+	//divide into k
+	for (int i = 0; i < sb.length(); i += k) {			
+		strArr[index] = (sb.substring(i, i + k));
+		++index;
+
+	}
+
+	return strArr;
+}
+}
+
+
+
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+        
+        int reminder = s.length() % k ;
+        List<String> list = new ArrayList<>();
+        
+        for(int i =0; i< s.length(); i+=k)
+        {
+            if(i+k < s.length())
+                list.add(s.substring(i, i+k));
+            else
+                list.add(s.substring(i, s.length()));
+        }        
+         
+        String lastStr = list.get(list.size() - 1);        
+        for(int i = lastStr.length(); i<k; i++)
+        {
+            lastStr += String.valueOf(fill);
+        }
+        list.remove(list.size() - 1);
+        list.add(list.size(), lastStr);        
+        return list.toArray(new String[0]);
+    }
+}
+
+
+
+class Solution {
+    public String[] divideString(String s, int k, char fill) {
+        int n=s.length();
+        int len=n/k;
+        if(n%k!=0)
+            len++;
+        String[] res = new String[len];
+        for(int i=0;i<s.length();i+=k){
+            res[i/k]=s.substring(i,Math.min(i+k,s.length()));
+        }
+        int r=k-n%k;
+        if(n%k!=0){
+            res[len-1]=res[len-1].concat(String.valueOf(fill).repeat(r));
+        }
+        return res;
+    }
+}
