@@ -1,0 +1,150 @@
+Given two string arrays words1 and words2, return the number of strings that appear exactly once in each of the two arrays.
+
+ 
+
+Example 1:
+
+Input: words1 = ["leetcode","is","amazing","as","is"], words2 = ["amazing","leetcode","is"]
+Output: 2
+Explanation:
+- "leetcode" appears exactly once in each of the two arrays. We count this string.
+- "amazing" appears exactly once in each of the two arrays. We count this string.
+- "is" appears in each of the two arrays, but there are 2 occurrences of it in words1. We do not count this string.
+- "as" appears once in words1, but does not appear in words2. We do not count this string.
+Thus, there are 2 strings that appear exactly once in each of the two arrays.
+
+Example 2:
+
+Input: words1 = ["b","bb","bbb"], words2 = ["a","aa","aaa"]
+Output: 0
+Explanation: There are no strings that appear in each of the two arrays.
+
+Example 3:
+
+Input: words1 = ["a","ab"], words2 = ["a","a","a","ab"]
+Output: 1
+Explanation: The only string that appears exactly once in each of the two arrays is "ab".
+
+ 
+
+Constraints:
+
+    1 <= words1.length, words2.length <= 1000
+    1 <= words1[i].length, words2[j].length <= 30
+    words1[i] and words2[j] consists only of lowercase English letters.
+
+
+
+class Solution {
+    // HashMap: word counts in words1, second time change to -1
+    // for words2: 
+    // if no word: nothing
+    // if word & word count == 1: change to 0, add 1 to result
+    // if word && word count == 0; -1 to result
+    // if -1: do nothing
+    public int countWords(String[] words1, String[] words2) {
+        int numWordsAppearingOnce = 0;
+        HashMap<String, Integer> wordCounts = new HashMap<>();
+        for (String word: words1) {
+            if(wordCounts.containsKey(word)) {
+                wordCounts.put(word, -1);
+            } else {
+               wordCounts.put(word, 1); 
+            }
+        }
+        
+        for(String word: words2) {
+            if(!wordCounts.containsKey(word)) {
+                continue;
+            }
+            if(wordCounts.get(word) == 1) {
+                numWordsAppearingOnce++;
+                wordCounts.put(word, 0);
+            }else if(wordCounts.get(word) == 0) {
+                numWordsAppearingOnce--;
+                wordCounts.put(word, -1);
+            } 
+        }
+        return numWordsAppearingOnce;
+    }
+}
+
+
+
+class Solution {
+    public int countWords(String[] words1, String[] words2) {
+        HashMap<String, Integer> map1 = new HashMap<>();
+        HashMap<String, Integer> map2 = new HashMap<>();
+        for (String s : words1) {
+            map1.put(s, map1.getOrDefault(s, 0) + 1);
+        }
+        for (String s : words2) {
+            if(map1.containsKey(s)&& map1.get(s)==1) {
+                map2.put(s, map2.getOrDefault(s,0) + 1);
+            }
+        }
+        int res = 0;
+        for(Integer i:map2.values()){
+            if(i==1) res++;
+        }
+        return res;
+    }
+}
+
+
+
+
+class Solution {
+    public int countWords(String[] words1, String[] words2) {
+        HashMap<String,Integer>map=new HashMap<>();
+        for(String str:words1){
+            if(map.containsKey(str)){
+                map.put(str,0);
+            }
+            else{
+                map.put(str,1);
+            }
+        }
+        for(String str:words2){
+           if(map.containsKey(str)){
+                if(map.get(str)==1){
+                    map.put(str,2);
+                }
+               else{
+                   map.put(str,0);
+               }
+            } 
+        }
+        int c=0;
+        for (Map.Entry<String, Integer> e : map.entrySet()){
+            if(e.getValue()==2){
+                c++;
+            }
+        }
+        return c;
+    }
+}
+
+
+
+
+class Solution {
+    public int countWords(String[] words1, String[] words2) {
+        HashSet<String> set=new HashSet<>();
+        HashMap<String,Integer> map = new HashMap<>();
+        for(String word:words1){
+            set.add(word);
+            map.put(word,map.getOrDefault(word,0)+1);
+        }
+        for(String word:words2){
+            set.add(word);
+            map.put(word,map.getOrDefault(word,0)*10+2);
+        }
+        int count=0;
+        for(String x:set){
+            if(map.get(x)==12)
+                count++;
+        }
+        return count;
+    }
+}
