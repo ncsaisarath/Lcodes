@@ -1,0 +1,145 @@
+You are given a string title consisting of one or more words separated by a single space, where each word consists of English letters. Capitalize the string by changing the capitalization of each word such that:
+
+    If the length of the word is 1 or 2 letters, change all letters to lowercase.
+    Otherwise, change the first letter to uppercase and the remaining letters to lowercase.
+
+Return the capitalized title.
+
+ 
+
+Example 1:
+
+Input: title = "capiTalIze tHe titLe"
+Output: "Capitalize The Title"
+Explanation:
+Since all the words have a length of at least 3, the first letter of each word is uppercase, and the remaining letters are lowercase.
+
+Example 2:
+
+Input: title = "First leTTeR of EACH Word"
+Output: "First Letter of Each Word"
+Explanation:
+The word "of" has length 2, so it is all lowercase.
+The remaining words have a length of at least 3, so the first letter of each remaining word is uppercase, and the remaining letters are lowercase.
+
+Example 3:
+
+Input: title = "i lOve leetcode"
+Output: "i Love Leetcode"
+Explanation:
+The word "i" has length 1, so it is lowercase.
+The remaining words have a length of at least 3, so the first letter of each remaining word is uppercase, and the remaining letters are lowercase.
+
+ 
+
+Constraints:
+
+    1 <= title.length <= 100
+    title consists of words separated by a single space without any leading or trailing spaces.
+    Each word consists of uppercase and lowercase English letters and is non-empty.
+
+
+
+
+class Solution {
+    public String capitalizeTitle(String title) {
+        char[] chars = title.toCharArray();
+
+        for (int i = 0; i < chars.length; i++) {
+            int firstIndex = i;
+
+            while (i < chars.length && chars[i] != ' ') {
+                chars[i] |= 32;
+                i++;
+            }
+
+            if (i - firstIndex > 2)
+                chars[firstIndex] &= ~32;
+        }
+
+        return String.valueOf(chars);
+    }
+}
+
+
+
+
+class Solution {
+    public String capitalizeTitle(String title) {
+        int st = 0;
+        int c = 0;
+        char[] ca = title.toCharArray();
+        char[] result = new char[ca.length];
+        boolean first = true;
+        for (int i = 0; i < ca.length; i++) {
+            if (ca[i] == ' ') {
+                first = true;
+                result[i] = ' ';
+                continue;
+            }
+            
+            result[i] = Character.toLowerCase(ca[i]);
+
+            if (first) {
+                st = i;
+                c = 1;
+                first = false;
+                continue;
+            }
+
+            c++;
+            if (c == 3) {
+                result[st] = Character.toUpperCase(ca[st]);
+            }
+        }
+        return new String(result);
+        
+    }
+}
+
+
+
+
+class Solution {
+    public String capitalizeTitle(String title) {
+        char [] result = title.toCharArray();
+        int k = 0;
+        boolean isFirst = true;
+        for (int i=0; i<result.length; i++) {
+            if (result[i] == ' ') {
+                isFirst = true;
+            } else {
+                if (isFirst) {
+                    k = i;
+                    while (k < result.length && result[k] != ' ') {
+                        k++;
+                    }
+                    result[i] = k-i > 2 
+                        ? Character.toUpperCase(result[i]) 
+                        : Character.toLowerCase(result[i]);
+                    isFirst = false;
+                } else {
+                    result[i] = Character.toLowerCase(result[i]);
+                }
+            }
+        }
+        return new String(result);
+    }
+}
+
+
+
+
+class Solution {
+    public String capitalizeTitle(String title) {
+        char[] ch = title.toLowerCase().toCharArray();
+        int j=-1;
+        for(int i=0;i<ch.length;i++){
+            if((i==0 || ch[i-1]==' ')&&((i+1<ch.length && ch[i+1]!=' ')&&(i+2<ch.length && ch[i+2]!=' ')))
+                ch[i]=(char)(ch[i]-32);
+            
+        }
+        return new String(ch);
+        
+    }
+}
