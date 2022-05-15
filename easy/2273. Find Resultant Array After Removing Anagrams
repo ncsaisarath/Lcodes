@@ -1,0 +1,122 @@
+You are given a 0-indexed string array words, where words[i] consists of lowercase English letters.
+
+In one operation, select any index i such that 0 < i < words.length and words[i - 1] and words[i] are anagrams, and delete words[i] from words. Keep performing this operation as long as you can select an index that satisfies the conditions.
+
+Return words after performing all operations. It can be shown that selecting the indices for each operation in any arbitrary order will lead to the same result.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase using all the original letters exactly once. For example, "dacb" is an anagram of "abdc".
+
+ 
+
+Example 1:
+
+Input: words = ["abba","baba","bbaa","cd","cd"]
+Output: ["abba","cd"]
+Explanation:
+One of the ways we can obtain the resultant array is by using the following operations:
+- Since words[2] = "bbaa" and words[1] = "baba" are anagrams, we choose index 2 and delete words[2].
+  Now words = ["abba","baba","cd","cd"].
+- Since words[1] = "baba" and words[0] = "abba" are anagrams, we choose index 1 and delete words[1].
+  Now words = ["abba","cd","cd"].
+- Since words[2] = "cd" and words[1] = "cd" are anagrams, we choose index 2 and delete words[2].
+  Now words = ["abba","cd"].
+We can no longer perform any operations, so ["abba","cd"] is the final answer.
+
+Example 2:
+
+Input: words = ["a","b","c","d","e"]
+Output: ["a","b","c","d","e"]
+Explanation:
+No two adjacent strings in words are anagrams of each other, so no operations are performed.
+
+ 
+
+Constraints:
+
+    1 <= words.length <= 100
+    1 <= words[i].length <= 10
+    words[i] consists of lowercase English letters.
+
+
+
+class Solution {
+    public List<String> removeAnagrams(String[] words) {
+        Stack<String> stack = new Stack<>();
+        
+        for (String word : words){
+            if (stack.isEmpty() || !isAnagram(word, stack.peek()))
+                stack.push(word);
+        }
+        
+        return new ArrayList<>(stack);
+    }
+    
+    private boolean isAnagram(String word1, String word2){
+        int [] arr = new int [26];
+        
+        for (char c : word1.toCharArray())
+            ++arr[c - 'a'];
+        
+        for (char c : word2.toCharArray())
+            --arr[c - 'a'];
+        
+        for (int num : arr){
+            if (num != 0) return false;
+        }
+        
+        return true;
+    }
+}
+
+
+class Solution {
+    public List<String> removeAnagrams(String[] A) {
+    List<String> ans= new ArrayList<>();
+    int n= A.length;
+    for(int i=0;i<n;){
+        int j=i+1;
+        while( j<n && isang(A[i],A[j]) ) j++;
+        ans.add(A[i]);
+        i=j;
+    }
+    return ans;
+}
+//function for checking if two string are anagrams or not
+boolean isang(String p,String q){
+    int[] cnt= new int[26];
+    int res=0;
+    for(int i=0;i<p.length();i++) cnt[p.charAt(i)-'a']++;
+    for(int i=0;i<q.length();i++) cnt[q.charAt(i)-'a']--;
+    for(int i:cnt) if(i!=0) return false;
+    return true;
+}
+}
+
+
+
+class Solution {
+    public List<String> removeAnagrams(String[] words) {
+        int c[]=new int[26],t[]=new int[26];
+        List<String> ans=new ArrayList<>();
+        for(String x:words)
+        {
+            int i,n=x.length();
+            for(i=0;i<26;i++) t[i]=0;
+            for(i=0;i<n;i++) t[x.charAt(i)-'a']++;  //count frequency
+            
+            boolean same=true;
+            for(i=0;i<26;i++)   //if this is the same as previous, no need to add it
+            same&=c[i]==t[i];
+            if(same) continue;
+            
+            ans.add(x);
+            for(i=0;i<26;i++) c[i]=t[i];  
+        }
+        
+        /*String ret[]=new String[ans.size()];
+        int i=0;
+        for(String x:ans) ret[i++]=x;
+        return ret;*/
+        return ans;
+    }
+}
