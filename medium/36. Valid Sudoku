@@ -1,0 +1,245 @@
+Determine if a 9 x 9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules:
+
+    Each row must contain the digits 1-9 without repetition.
+    Each column must contain the digits 1-9 without repetition.
+    Each of the nine 3 x 3 sub-boxes of the grid must contain the digits 1-9 without repetition.
+
+Note:
+
+    A Sudoku board (partially filled) could be valid but is not necessarily solvable.
+    Only the filled cells need to be validated according to the mentioned rules.
+
+ 
+
+Example 1:
+
+Input: board = 
+[["5","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: true
+
+Example 2:
+
+Input: board = 
+[["8","3",".",".","7",".",".",".","."]
+,["6",".",".","1","9","5",".",".","."]
+,[".","9","8",".",".",".",".","6","."]
+,["8",".",".",".","6",".",".",".","3"]
+,["4",".",".","8",".","3",".",".","1"]
+,["7",".",".",".","2",".",".",".","6"]
+,[".","6",".",".",".",".","2","8","."]
+,[".",".",".","4","1","9",".",".","5"]
+,[".",".",".",".","8",".",".","7","9"]]
+Output: false
+Explanation: Same as Example 1, except with the 5 in the top left corner being modified to 8. Since there are two 8's in the top left 3x3 sub-box, it is invalid.
+
+ 
+
+Constraints:
+
+    board.length == 9
+    board[i].length == 9
+    board[i][j] is a digit 1-9 or '.'.
+
+
+
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                if (board[i][j] != '.') {
+                    if(!isValid(board, i, j, board[i][j])) return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    public boolean isValid(char[][] board, int row, int col, char n) {
+        // row
+        for (int i = col+1; i < 9; ++i) {
+            if(board[row][i] == n) return false;
+        }
+        
+        // col
+        for (int i = row+1; i < 9; ++i) {
+            if(board[i][col] == n) return false;
+        }
+        
+        
+        // box
+        int x = row / 3 * 3;
+        int y = col / 3 * 3;
+        
+        for (int i = x; i < x + 3; ++i) {
+            for (int j = y; j < y + 3; ++j) {
+                if(board[i][j] == n && !(i == row && j == col)) return false;
+            }
+        }
+        
+        return true;
+    }
+}
+
+
+
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+       
+        
+        for (int i = 0; i < 9; i++) {
+            Set<Character> set = new HashSet<>();
+            for (int j = 0; j < 9; j++) {
+                char ch = board[i][j];
+                if (ch == '.')
+                    continue;
+                if (set.contains(ch))
+                    return false;
+                set.add(ch);
+            }
+        }
+        
+        for (int i = 0; i < 9; i++) {
+            Set<Character> set = new HashSet<>();
+            for (int j = 0; j < 9; j++) {
+                char ch = board[j][i];
+                if (ch == '.')
+                    continue;
+                if (set.contains(ch))
+                    return false;
+                set.add(ch);
+            }
+        }
+        
+        return check(board, 0, 0) && check(board, 0, 3) && check(board, 0, 6)
+           && check(board, 3, 0) && check(board, 3, 3) && check(board, 3, 6)
+           && check(board, 6, 0) && check(board, 6, 3) && check(board, 6, 6);
+    }
+    
+    public boolean check(char[][] board, int x, int y) {
+         Set<Character> set = new HashSet<>();
+        for (int i = x; i < x+3; i++) {
+            for (int j = y; j < y+3; j++) {
+                char ch = board[i][j];
+                if (ch == '.')
+                    continue;
+                if (set.contains(ch))
+                    return false;
+                set.add(ch);
+            }
+        }
+        return true;
+    }
+}
+
+
+
+
+class Solution {
+    public boolean isValidSudoku(char[][] board) {
+        
+        int[] arr = new int[10];
+        int[] check = new  int[9];
+        
+        // check = getMat(board,0,0);
+        // System.out.println(Arrays.toString(check));
+        
+        for(int rows=0;rows<9;rows++){
+            arr = new int[10];
+            check = getRows(board,rows);
+            // System.out.println(Arrays.toString(check));
+        
+            for(int i=0;i<9;i++){
+                if(arr[check[i]]==0)
+                    arr[check[i]]=check[i];
+                else{
+                    System.out.println(rows+" "+i);
+                    return false;
+                }
+                    
+            }   
+        }
+        
+        for(int cols=0;cols<9;cols++){
+            arr = new int[10];
+            check = getCols(board,cols);
+            
+            for(int i=0;i<9;i++){
+                if(arr[check[i]]==0)
+                    arr[check[i]]=check[i];
+                else{
+                    System.out.println(cols+" "+i);
+                    return false;
+                }    
+            }   
+        }
+        
+        for(int i=0;i<9;i+=3){
+            for(int j=0;j<9;j+=3){
+                if(i%3==0 && j%3==0){
+                    arr = new int[10];
+                    check = getMat(board,i,j);
+        
+                    for(int k=0;k<9;k++){
+                        if(arr[check[k]]==0)
+                            arr[check[k]]=check[k];
+                        else{
+                            System.out.println(i+" "+j+" "+k);
+                            return false;
+                        }
+                            
+                    }     
+                }      
+            }
+        }
+        return true;
+        
+    }
+    
+    public int[] getRows(char[][] board,int row){
+        int[] res = new int[9];
+        int i=0;
+        for(char x:board[row]){
+            if(x=='.')
+                res[i++]=0;
+            else
+                res[i++]=Integer.parseInt(String.valueOf(x));
+        }
+        return res;
+    }
+    
+    public int[] getCols(char[][] board,int col){
+        int[] res = new int[9];
+        
+        for(int i=0;i<9;i++){
+            if(board[i][col]=='.')
+                res[i]=0;
+            else
+                res[i]=Integer.parseInt(String.valueOf(board[i][col]));
+        }
+        return res;
+    }
+    
+    public int[] getMat(char[][] board,int row,int col){
+        int[] res = new int[9];
+        int k=0;
+        for(int i=row;i<row+3;i++){
+            for(int j=col;j<col+3;j++){
+                if(board[i][j]=='.')
+                    res[k++]=0;
+                else
+                    res[k++]=Integer.parseInt(String.valueOf(board[i][j])); 
+            }    
+        }
+        return res;
+    }
+}
