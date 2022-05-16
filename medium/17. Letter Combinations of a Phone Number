@@ -1,0 +1,166 @@
+Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
+
+A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.
+
+ 
+
+Example 1:
+
+Input: digits = "23"
+Output: ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+
+Example 2:
+
+Input: digits = ""
+Output: []
+
+Example 3:
+
+Input: digits = "2"
+Output: ["a","b","c"]
+
+ 
+
+Constraints:
+
+    0 <= digits.length <= 4
+    digits[i] is a digit in the range ['2', '9'].
+
+
+
+class Solution {
+    static final char[] CHARMAP = {'a','d','g','j','m','p','t','w'};
+    
+    public List<String> letterCombinations(String digits) {
+        int dlen = digits.length(), clen, rlen;
+        if (dlen == 0) return new ArrayList();
+        
+        // use char[] instead of string to improve performance for appending characters
+        List<char[]> arr = new ArrayList(), arr2 = null;
+        char dg;
+        for (int i = 0; i < dlen; i++) {
+            // convert digit into init character
+            dg = digits.charAt(i);
+            clen = 3;
+            if (dg == '7' || dg == '9') clen = 4;
+            dg = CHARMAP[dg - '2'];
+            
+            rlen = arr.size();
+            if (rlen > 0) arr2 = new ArrayList(rlen * (clen - 1));
+            for(int j = 0; j < clen; j++) {
+                if (rlen == 0) {
+                    // add new char buffer to arr
+                    char[] buf = new char[dlen];
+                    buf[0] = dg;
+                    arr.add(buf);
+                }
+                else if (j == 0) {
+                    // append digit into arr
+                    for(char[] buf : arr) buf[i] = dg;
+                }
+                else {
+                    // populate varieties into arr2
+                    for(char[] buf : arr) {
+                        buf = Arrays.copyOf(buf, dlen);
+                        buf[i] = dg;
+                        arr2.add(buf);
+                    }
+                }
+                dg++;
+            }
+            if (arr2 != null) arr.addAll(arr2);
+        }
+        
+        // convert List<char[]> into List<String>
+        rlen = arr.size();
+        List<String> ret = new ArrayList(rlen);
+        for (int i = 0; i < rlen; i++) ret.add(new String(arr.get(i)));
+        return ret;
+    }
+}
+
+
+
+
+class Solution {
+    private String[] carr;
+    public List<String> letterCombinations(String digits) {
+        if(digits.length()==0)
+           return new ArrayList<>();
+        List<String> list=new ArrayList<>();
+        carr=new String[10];
+        carr[2]="abc";
+        carr[3]="def";
+        carr[4]="ghi";
+        carr[5]="jkl";
+        carr[6]="mno";
+        carr[7]="pqrs";
+        carr[8]="tuv";
+        carr[9]="wxyz";
+        helper(digits,0,list,new StringBuilder());
+        return list;
+    }
+    private void helper(String digits,int i,List<String> list,StringBuilder res){
+        if(i==digits.length())
+        {
+            list.add(res.toString());
+            return;
+        }
+        String keys=carr[digits.charAt(i)-'0'];
+        char c;
+        for(int j=0;j<keys.length();j++)
+        {
+            c=keys.charAt(j);
+            res.append(c);
+            helper(digits,i+1,list,res);
+            res.deleteCharAt(res.length()-1);
+        }
+    }
+}
+
+
+
+
+class Solution {
+    public List<String> letterCombinations(String digits) {
+        
+        
+        List<String> res = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        
+        if(digits.length() == 0) {
+            return res;
+        }
+        Map<Character, char[]> dict = new HashMap<>();
+        dict.put('1', new char[0]);
+        dict.put('2', new char[]{'a', 'b', 'c'});
+        dict.put('3', new char[]{'d', 'e', 'f'});
+        dict.put('4', new char[]{'g', 'h', 'i'});
+        dict.put('5', new char[]{'j', 'k', 'l'});
+        dict.put('6', new char[]{'m', 'n', 'o'});
+        dict.put('7', new char[]{'p', 'q', 'r', 's'});
+        dict.put('8', new char[]{'t', 'u', 'v'});
+        dict.put('9', new char[]{'w', 'x', 'y', 'z'});
+        dict.put('0', new char[0]);
+        
+        dfs(digits, 0, res, sb, dict);
+        
+        return res;
+    }
+    
+    
+    private void dfs(String digits, int index, List<String> res, StringBuilder sb, Map<Character, char[]> dict) {
+        if(index == digits.length()) {
+            res.add(sb.toString());
+            return;
+        }
+        
+        char digit = digits.charAt(index);
+        char[] letters = dict.get(digit);
+        for(char c : letters) {
+            sb.append(c);
+            dfs(digits, index + 1, res, sb, dict);
+            sb.deleteCharAt(sb.length() - 1);
+        }
+    }
+}
