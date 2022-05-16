@@ -1,0 +1,281 @@
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+    0 <= a, b, c, d < n
+    a, b, c, and d are distinct.
+    nums[a] + nums[b] + nums[c] + nums[d] == target
+
+You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+Example 2:
+
+Input: nums = [2,2,2,2,2], target = 8
+Output: [[2,2,2,2]]
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 200
+    -10^9 <= nums[i] <= 10^9
+    -10^9 <= target <= 10^9
+
+
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        
+        
+        //HashSet<List<Integer>> set = new HashSet<>();
+        List<List<Integer>> list = new ArrayList<>();
+        if (nums == null || nums.length < 4) {
+            return list;
+        }
+        Arrays.sort(nums);
+        int n = nums.length;
+        for(int i = 0; i<= nums.length - 4; i++){
+            
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            
+            if ((long) nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target) {
+                break;
+            }
+            
+            if ((long) nums[i] + nums[n - 1] + nums[n - 2] + nums[n - 3] < target) {
+                continue;
+            }
+            
+            for(int j = i + 1; j<= nums.length - 3; j++){
+                
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+                
+                if ((long) nums[j] + nums[j + 1] + nums[j + 2] > target - nums[i]) {
+                    break;
+                }
+                
+                if ((long) nums[j] + nums[n - 1] + nums[n - 2] < target - nums[i]) {
+                    continue;
+                }
+                int l = j + 1;
+                int k = nums.length - 1;
+                
+                while(l < k){
+                    int result = nums[i] + nums[j] + nums[k] + nums[l];
+
+                    if(result == target){
+                        list.add(Arrays.asList(nums[i], nums[j], nums[k], nums[l]));
+                        l = l + 1;
+                        k = k - 1;
+                        while (l < k && nums[l] == nums[l - 1]) {
+                            l++;
+                        }
+                        while (l < k && nums[k] == nums[k + 1]) {
+                            k--;
+                        }
+                    }
+
+                    else if(result > target){
+                        k = k - 1;
+                    }
+
+                    else if(result < target){
+                        l = l + 1;
+                    }
+                
+                }
+            } 
+            
+        }
+        return list;
+        
+    }
+}
+
+
+
+
+class Solution {
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        int n = nums.length;
+        if (n < 4) return res;
+        
+        Arrays.sort(nums);
+        for (int i = 0; i < n - 3; ++i) {
+            if (nums[i]+nums[i+1] > target - (nums[i+2]+nums[i+3])) break;
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+            if (nums[i]+nums[n-3] < target - (nums[n-2]+nums[n-1])) continue;
+            int threesum = target - nums[i];
+            for (int j = i+1; j < n - 2; ++j) {
+                if (nums[j]+nums[j+1] > threesum - nums[j+2]) break;
+                if (j > i+1 && nums[j] == nums[j - 1]) continue;
+                if (nums[j]+nums[n-2] < threesum - nums[n-1]) continue;
+                sum(nums, i, j, res, target);
+            }
+        }
+        return res;
+    }
+    
+    private void sum(int[] nums, int i, int j, List<List<Integer>> res, int target) {
+        int left = j + 1, right = nums.length - 1;          
+        while (left < right) {
+            long sum = nums[i] + nums[j] + nums[left] + nums[right];
+            if (sum > target) {
+                --right;
+            }
+            else if (sum < target) {
+                ++left;
+            }
+            else {
+                res.add(Arrays.asList(nums[i], nums[j], nums[left++], nums[right--]));
+                while (left < right && nums[left] == nums[left - 1]) ++left;
+                while (left < right && nums[right] == nums[right + 1]) --right;
+            }
+        }
+    }
+}
+
+
+
+
+class Solution {
+        public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        if(nums.length < 4){
+            return res;
+        }
+        Arrays.sort(nums);
+        for(int i = 0; i < nums.length-3 ; i++){
+            if(i > 0 && nums[i] == nums[i-1] ){
+                continue;
+            }
+            int length = nums.length;
+            if((long)nums[i] + nums[length-3] + nums[length -1] + nums[length -2] < target){
+                continue;
+            }
+            if((long)nums[i] + nums[i+1] + nums[i+2] + nums[i+3] > target){
+                break;
+            }
+            for(int k = i+1; k < nums.length-2 ; k++){
+                if(nums[k] == nums[k-1] && k > i+1){
+                    continue;
+                }
+                if((long)nums[i] + nums[k] + nums[length-2] + nums[length -1] < target){
+                    continue;
+                }
+                if((long)nums[i] + nums[k] + nums[k+1] + nums[k+2] > target){
+                    break;
+                }
+                int left = k+1;
+                int right = nums.length-1;
+                while(left < right){
+
+                    int sum = nums[i] + nums[k] + nums[left] + nums[right];
+                    if(sum == target){
+                        res.add(Arrays.asList(nums[i],nums[k],nums[left],nums[right]));
+                        while(left < right && nums[left] == nums[left+1]) {left ++;}
+                        left ++ ;
+                        while(left < right && nums[right] == nums[right -1]) {right --;}
+                        right --;
+                    }else if(sum < target){
+                        left ++;
+                    }else{
+                        right --;
+                    }
+
+                }
+            }
+        }
+        return res;
+    }
+}
+
+
+
+
+class Solution {
+    
+    class Pair{
+        int f;
+        int s;
+        Pair(int f, int s){
+            this.f = f;
+            this.s = s;
+        }
+        
+        @Override
+        public String toString(){
+            return this.f+"-"+this.s;
+        }
+    }
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        
+        ArrayList<List<Integer>> res = new ArrayList<List<Integer>>();
+        
+        if (nums == null || nums.length == 0)
+            return res;
+        
+        int n = nums.length;
+    
+        Arrays.sort(nums); 
+    
+        for (int i = 0; i < n; i++) {
+        
+            int target_3 = target - nums[i];
+        
+            for (int j = i + 1; j < n; j++) {
+            
+                int target_2 = target_3 - nums[j];
+            
+                int front = j + 1;
+                int back = n - 1;
+            
+                while(front < back) {
+                
+                    int two_sum = nums[front] + nums[back];
+                
+                    if (two_sum < target_2) front++;
+                
+                    else if (two_sum > target_2) back--;
+                
+                    else {
+                    
+                        List<Integer> quad = new ArrayList<>(); 
+                        quad.add(nums[i]);
+                        quad.add(nums[j]);
+                        quad.add(nums[front]);
+                        quad.add(nums[back]);
+                        res.add(quad);
+                    
+                        // Processing the duplicates of number 3
+                        while (front < back && nums[front] == quad.get(2)) ++front;
+                    
+                        // Processing the duplicates of number 4
+                        while (front < back && nums[back] == quad.get(3)) --back;
+                
+                    }
+                }
+                
+                // Processing the duplicates of number 2
+                while(j + 1 < n && nums[j + 1] == nums[j]) ++j;
+            }
+        
+            // Processing the duplicates of number 1
+            while (i + 1 < n && nums[i + 1] == nums[i]) ++i;
+        
+        }
+        
+    
+        return res;
+    }
+}
