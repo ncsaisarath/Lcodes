@@ -1,0 +1,150 @@
+Given an integer array nums of length n and an integer target, find three integers in nums such that the sum is closest to target.
+
+Return the sum of the three integers.
+
+You may assume that each input would have exactly one solution.
+
+ 
+
+Example 1:
+
+Input: nums = [-1,2,1,-4], target = 1
+Output: 2
+Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+
+Example 2:
+
+Input: nums = [0,0,0], target = 1
+Output: 0
+
+ 
+
+Constraints:
+
+    3 <= nums.length <= 1000
+    -1000 <= nums[i] <= 1000
+    -10^4 <= target <= 10^4
+
+
+
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int sumRight = 10000;
+        int sumLeft = -10000;
+        Arrays.sort(nums);
+        if (nums[0] + nums[1] + nums[2] >= target) {
+            return nums[0] + nums[1] + nums[2];
+        }
+        if (nums[nums.length - 1] + nums[nums.length - 2] + nums[nums.length - 3] <= target) {
+            return nums[nums.length - 1] + nums[nums.length - 2] + nums[nums.length - 3];
+        }
+        
+        for (int i = 0 ; i < nums.length - 2 ; i++) {
+            int left = i + 1;
+            int right = nums.length - 1;
+
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+                int mid = left + (right - left) / 2;
+                if (sum == target) {
+                    return sum;
+                } else if (sum > target) {
+                    sumRight = Math.min(sumRight, sum);
+                    if (right != mid && nums[i] + nums[left] + nums[mid] > target) {
+                        right = mid;
+                    } else {
+                        right--;
+                    }
+                } else if (sum < target) {
+                    sumLeft = Math.max(sumLeft, sum);
+                    if (left != mid && nums[i] + nums[mid] + nums[right] < target) {
+                        left = mid;
+                    } else {
+                        left++;
+                    }
+                }
+            }
+        }
+        
+        if (Math.abs(sumRight - target) < Math.abs(sumLeft - target)) {
+            return sumRight;
+        } else {
+            return sumLeft;
+        }
+    }
+}
+
+
+
+
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int n = nums.length;
+		if (n < 3) return Integer.MIN_VALUE;
+		
+        Arrays.sort(nums);
+        int sum = nums[0] + nums[1] + nums[2];
+		if (sum >= target) return sum;
+        sum = nums[n - 3] + nums[n - 2] + nums[n - 1];
+		if ( sum <= target) return sum;
+        int sumRight = Integer.MAX_VALUE;
+        int sumLeft = Integer.MIN_VALUE;
+        for (int i = 0 ; i < n - 2; i++) {
+            int lo = i + 1, hi = n - 1;
+            while (lo < hi) {
+                sum = nums[i] + nums[lo] + nums[hi];
+                int mid = lo + (hi - lo) / 2;
+                if (sum == target) return sum;
+                else if (sum < target) {
+                    sumLeft = sumLeft > sum ? sumLeft : sum;
+                    if (lo < mid && nums[i] + nums[mid] + nums[hi] < target) {
+                        lo = mid;
+                    } else {
+                        lo++;
+                    }
+                } else {
+                    sumRight = sumRight < sum ? sumRight : sum;
+                    if (hi > mid && nums[i] + nums[lo] + nums[mid] > target) {
+                        hi = mid;
+                    } else {
+                        hi--;
+                    }
+                } 
+            }
+        }
+        return Math.abs(sumRight - target) < Math.abs(sumLeft - target) ? sumRight : sumLeft;
+    }
+}
+
+
+
+
+class Solution {
+    public int threeSumClosest(int[] nums, int target) {
+        int min = Integer.MAX_VALUE;
+        int n = nums.length;
+        int result = 0;
+        Arrays.sort(nums);
+        for(int i =0;i < n;i++){
+            int j  = i+1;
+            int k = n-1;
+            
+            while(j<k){
+                int sum = nums[i]+nums[j]+nums[k];
+                int diff = Math.abs(sum-target);
+                
+                if (diff < min) {
+                    min = diff;
+                    result = sum;
+                }
+                if(sum <= target){
+                    j++;
+                } else{
+                    k--;
+                }
+            }
+        }
+        
+        return result;
+    }
+}
