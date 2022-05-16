@@ -1,0 +1,148 @@
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+ 
+
+Example 1:
+
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Example 2:
+
+Input: head = [1], n = 1
+Output: []
+
+Example 3:
+
+Input: head = [1,2], n = 1
+Output: [1]
+
+ 
+
+Constraints:
+
+    The number of nodes in the list is sz.
+    1 <= sz <= 30
+    0 <= Node.val <= 100
+    1 <= n <= sz
+
+ 
+
+Follow up: Could you do this in one pass?
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode fast = head, slow = head;
+        
+        if(head == null) {
+            return head;
+        }
+        
+        while (n-- > 0) {
+            if(fast.next == null) {
+                return head.next;
+            }
+            fast = fast.next;
+        }
+        
+        while(fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        
+        slow.next = slow.next.next;
+        return head;
+        
+    }
+}
+
+
+
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        
+        ListNode prev,curr;
+        curr=head;
+        prev=head;
+        int len=0;
+        
+        while(curr!=null){
+            len++;
+            curr=curr.next;
+        }
+        
+        if(len==1 || len==n)
+            return head.next;
+        
+        int count=0;
+        curr=head;
+        while(count<len-n){
+            count++;
+            prev=curr;
+            curr=curr.next;
+        }
+        
+        prev.next=curr.next;
+        
+        
+        return head;
+        
+    }
+}
+
+
+
+
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        
+        if(head.next == null){
+            return null;
+        }
+        
+        int size = 0;
+        ListNode currNode = head;
+        
+        while(currNode != null){
+            currNode = currNode.next;
+            size++;
+        }
+        
+        if(size == n){
+            return head.next;
+        }
+        
+        //dfs = distance from start
+        int dfs = size - n + 1;
+        
+       
+        currNode = head;      //reseting the currNode to head
+        if(dfs > 0){
+        for(int i=1; i<dfs-1; i++){
+            currNode = currNode.next;
+        }
+        }
+        
+        //after above loop currNode will have the node which is prev than the node to be deleted
+        
+        ListNode nodeToBeDeleted = currNode.next;
+        
+        currNode.next = nodeToBeDeleted.next;
+        
+        return head;
+        
+    }
+}
