@@ -1,0 +1,261 @@
+Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer (similar to C/C++'s atoi function).
+
+The algorithm for myAtoi(string s) is as follows:
+
+    Read in and ignore any leading whitespace.
+    Check if the next character (if not already at the end of the string) is '-' or '+'. Read this character in if it is either. This determines if the final result is negative or positive respectively. Assume the result is positive if neither is present.
+    Read in next the characters until the next non-digit character or the end of the input is reached. The rest of the string is ignored.
+    Convert these digits into an integer (i.e. "123" -> 123, "0032" -> 32). If no digits were read, then the integer is 0. Change the sign as necessary (from step 2).
+    If the integer is out of the 32-bit signed integer range [-231, 231 - 1], then clamp the integer so that it remains in the range. Specifically, integers less than -231 should be clamped to -231, and integers greater than 231 - 1 should be clamped to 231 - 1.
+    Return the integer as the final result.
+
+Note:
+
+    Only the space character ' ' is considered a whitespace character.
+    Do not ignore any characters other than the leading whitespace or the rest of the string after the digits.
+
+ 
+
+Example 1:
+
+Input: s = "42"
+Output: 42
+Explanation: The underlined characters are what is read in, the caret is the current reader position.
+Step 1: "42" (no characters read because there is no leading whitespace)
+         ^
+Step 2: "42" (no characters read because there is neither a '-' nor '+')
+         ^
+Step 3: "42" ("42" is read in)
+           ^
+The parsed integer is 42.
+Since 42 is in the range [-231, 231 - 1], the final result is 42.
+
+Example 2:
+
+Input: s = "   -42"
+Output: -42
+Explanation:
+Step 1: "   -42" (leading whitespace is read and ignored)
+            ^
+Step 2: "   -42" ('-' is read, so the result should be negative)
+             ^
+Step 3: "   -42" ("42" is read in)
+               ^
+The parsed integer is -42.
+Since -42 is in the range [-231, 231 - 1], the final result is -42.
+
+Example 3:
+
+Input: s = "4193 with words"
+Output: 4193
+Explanation:
+Step 1: "4193 with words" (no characters read because there is no leading whitespace)
+         ^
+Step 2: "4193 with words" (no characters read because there is neither a '-' nor '+')
+         ^
+Step 3: "4193 with words" ("4193" is read in; reading stops because the next character is a non-digit)
+             ^
+The parsed integer is 4193.
+Since 4193 is in the range [-231, 231 - 1], the final result is 4193.
+
+ 
+
+Constraints:
+
+    0 <= s.length <= 200
+    s consists of English letters (lower-case and upper-case), digits (0-9), ' ', '+', '-', and '.'.
+
+
+
+class Solution {
+    public int myAtoi(String str) {
+        int index = 0, sign = 1, total = 0;
+        //1. Empty string
+        if(str.length() == 0) return 0;
+
+        //2. Remove Spaces
+        while(index < str.length() && str.charAt(index) == ' ')
+            index++;
+
+        if (index == str.length()) return 0;
+
+        //3. Handle signs
+        if(str.charAt(index) == '+' || str.charAt(index) == '-'){
+            sign = str.charAt(index) == '+' ? 1 : -1;
+            index ++;
+        }
+
+        //4. Convert number and avoid overflow
+        while(index < str.length()){
+            int digit = str.charAt(index) - '0';
+            if(digit < 0 || digit > 9) break;
+
+            //check if total will be overflow after 10 times and add digit
+            if(Integer.MAX_VALUE/10 < total || Integer.MAX_VALUE/10 == total && Integer.MAX_VALUE %10 < digit)
+                return sign == 1 ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+
+            total = 10 * total + digit;
+            index ++;
+        }
+        return total * sign;
+    }
+}
+
+
+
+class Solution {
+    public int myAtoi(String s) {
+        int num = 0;
+        Boolean negative = false;
+        int i = 0;
+        
+        //handle spaces
+        while(i<s.length() && s.charAt(i) == ' ') i++;
+        
+        //handle signs
+        if(i<s.length() && s.charAt(i) == '-'){
+            negative = true;
+            i++;
+        }else if(i<s.length() && s.charAt(i) == '+'){
+            i++;
+        }
+        
+        //number
+        while(i<s.length() && Character.isDigit(s.charAt(i))){
+            char ch = s.charAt(i);
+            int tempNum = ch-'0';
+            
+            if((Integer.MAX_VALUE - tempNum)/10 < num){
+                //num = num * 10 + (tempNum)
+                //(num-tempNum)/10 = num
+                if(negative){
+                    return Integer.MIN_VALUE;
+                }else{
+                    return Integer.MAX_VALUE;
+                }
+            }
+            
+            num = num * 10 + tempNum;
+            i++;
+        }
+      
+        if(num == 0) return 0;
+        
+        if(negative){
+            return -num;
+        }else return num;
+        
+    }
+}
+
+
+
+class Solution {
+    public int myAtoi(String s) {
+        String stringWithoutAlphabet = removeAlphabet(s.trim());
+        String stringWithoutSpaces = stringWithoutAlphabet.split(" ")[0];
+        if ("".equals(stringWithoutSpaces)) {
+            return 0;
+        }
+        boolean isNumberNegative = false;
+        char firstChar = stringWithoutSpaces.charAt(0);
+        if (!Character.isDigit(firstChar)) {
+            if (firstChar == '-') {
+                isNumberNegative = true;
+            }
+            if ('.' != firstChar)
+                stringWithoutSpaces = stringWithoutSpaces.substring(1);
+        }
+        long num = parseNumber(stringWithoutSpaces);
+        if (isNumberNegative) {
+            num *= -1;
+        }
+        if (num <= Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        } else if (num >= Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        return (int) num;
+    }
+
+    private String removeAlphabet(String s) {
+        int firstNonDigitIndex = 0;
+        int index = 0;
+        for (char ch : s.toCharArray()) {
+            if (Character.isAlphabetic(ch) || ((ch == '-' || ch == '+') && index != 0)) {
+                break;
+            } else {
+                firstNonDigitIndex++;
+            }
+            ++index;
+        }
+        return s.substring(0, firstNonDigitIndex);
+    }
+
+    private long parseNumber(String s) {
+        int index = s.indexOf(".");
+        if (index > -1) {
+            s = s.substring(0, index);
+        }
+        int length = s.length();
+        long num = 0;
+        for (int i = 0; i < length; ++i) {
+            char ch = s.charAt(i);
+            if (!Character.isDigit(ch)) {
+                return num;
+            }
+            num += Math.pow(10, length - 1 - i) * ((int) (ch - 48));
+        }
+        return num;
+    }
+
+
+}
+
+
+
+class Solution {
+    public int myAtoi(String s) {
+        int i=0;
+        boolean neg=false;
+        int n =s.length();
+        if(n==0)
+            return 0;
+        while(i<n && s.charAt(i)==' ')
+            i++;
+        if(i<n){
+            if(s.charAt(i)=='-'){
+                neg=true;
+                i++;
+            }
+            else if(s.charAt(i)=='+'){
+                i++;
+            }
+        }
+        int start=-1;
+        if(i<n && Character.isDigit(s.charAt(i))){
+            start=i;
+            while(i<n && Character.isDigit(s.charAt(i)))
+                i++;
+        }
+        int res=0;
+        if(start==-1)
+           return res;
+        else{
+            try{
+                res = Integer.parseInt(s.substring(start,i));
+            }catch(Exception e){
+                if(neg){
+                    res=Integer.MIN_VALUE;
+                    neg=false;
+                } 
+                else
+                    res=Integer.MAX_VALUE;
+            }
+        }
+        return neg?-res:res;
+        
+           
+        
+    }
+}
