@@ -1,0 +1,118 @@
+Given an array of non-negative integers nums, you are initially positioned at the first index of the array.
+
+Each element in the array represents your maximum jump length at that position.
+
+Your goal is to reach the last index in the minimum number of jumps.
+
+You can assume that you can always reach the last index.
+
+ 
+
+Example 1:
+
+Input: nums = [2,3,1,1,4]
+Output: 2
+Explanation: The minimum number of jumps to reach the last index is 2. Jump 1 step from index 0 to 1, then 3 steps to the last index.
+
+Example 2:
+
+Input: nums = [2,3,0,1,4]
+Output: 2
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 10^4
+    0 <= nums[i] <= 1000
+
+
+class Solution {
+    public int jump(int[] nums) {
+        return range(nums, 0, 1, 0);
+    }
+    
+    int range(int[] nums, int l, int r, int n) {
+        if (r >= nums.length) return n;
+        int max = 0;
+        for (int i = l; i < r; i++) {
+            max = Math.max(max, i + nums[i]);
+        }
+        return range(nums, r, max + 1, n + 1);
+    }
+}
+
+
+
+class Solution {
+        
+    public int jump(int[] nums) {
+        
+        int step =0;
+        for(int l=0, r=0; r < nums.length-1; step++){
+            int rNew = 0;
+            for(int i=l; i <= r; i++) rNew = Math.max(rNew, i + nums[i]);
+            l = r + 1;
+            r = rNew;
+        }
+        
+        return step;
+        
+    }
+    
+    
+}
+
+
+
+
+class Solution {
+    public int jump(int[] nums) {
+        int n = nums.length;
+        
+        int step = 0;
+        int start = 0, end = 0;
+        int maxRange = 0;
+        
+        
+        while (end < n - 1) {
+            step++;
+            
+            // scan current range, calculate new max range end:
+            for (int i = start; i <= end; i++) {
+                maxRange = Math.max(maxRange, i + nums[i]);
+            }
+            
+            // cannot move to next range:
+            if (maxRange == end) {
+                return -1;
+            }
+            
+            // move to next range:
+            start = end + 1;
+            end = maxRange;
+        }
+        
+        return step;
+    }
+}
+
+
+
+class Solution {
+    public int jump(int[] nums) {
+        int[] res = new int[nums.length];
+        Arrays.fill(res,nums.length-1);
+        res[0]=0;
+        // System.out.println(Arrays.toString(res));
+        for(int i=0;i<nums.length;i++){
+            int x=nums[i];
+            for(int j=i+1;x!=0 && j<=i+x && j<nums.length;j++){
+                res[j]=Math.min(res[j],res[i]+1);
+            }
+            // System.out.println(Arrays.toString(res));
+
+        }
+        return res[nums.length-1];
+    }
+}
