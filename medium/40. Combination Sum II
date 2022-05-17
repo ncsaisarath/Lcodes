@@ -1,0 +1,220 @@
+Given a collection of candidate numbers (candidates) and a target number (target), find all unique combinations in candidates where the candidate numbers sum to target.
+
+Each number in candidates may only be used once in the combination.
+
+Note: The solution set must not contain duplicate combinations.
+
+ 
+
+Example 1:
+
+Input: candidates = [10,1,2,7,6,1,5], target = 8
+Output: 
+[
+[1,1,6],
+[1,2,5],
+[1,7],
+[2,6]
+]
+
+Example 2:
+
+Input: candidates = [2,5,2,1,2], target = 5
+Output: 
+[
+[1,2,2],
+[5]
+]
+
+ 
+
+Constraints:
+
+    1 <= candidates.length <= 100
+    1 <= candidates[i] <= 50
+    1 <= target <= 30
+
+
+
+class Solution {
+//     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+//        List<List<Integer>> list = new LinkedList<List<Integer>>();
+//        Arrays.sort(candidates);
+//        backtrack(list, new LinkedList<Integer>(), candidates, target, 0);
+//        return list;
+//     }
+
+//     private void backtrack(List<List<Integer>> list, LinkedList<Integer> tempList, int[] cand, int remain, int start) {
+
+//        if(remain < 0) return; /** no solution */
+//        else if (remain == 0) {
+//            list.add(new LinkedList<>(tempList));
+//        }
+//        else{
+//           for (int i = start; i < cand.length; i++) {
+//              if(i > start && cand[i] == cand[i-1]) continue; /** skip duplicates */
+//              tempList.add(cand[i]);
+//              backtrack(list, tempList, cand, remain - cand[i], i+1);
+//              tempList.removeLast();
+//           }
+//        }
+//     }
+    
+    private List<List<Integer>> answer = new ArrayList<>();
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        qs(candidates, 0, candidates.length-1);
+        solve(candidates, target, new ArrayList<>(), 0);
+        return answer;
+    }
+
+    private boolean solve(int[] candidates, int target, List<Integer> curAns, int start) {
+        for (int i = start; i < candidates.length; i++) {
+            if (candidates[i]<=target) {
+                curAns.add(candidates[i]);
+
+                if (candidates[i]==target) {
+                    List<Integer> temp = new ArrayList<>(curAns);
+                    answer.add(temp);
+                    curAns.remove(curAns.size()-1);
+                    return true;
+                }
+
+                target -= candidates[i];
+                boolean solved = solve(candidates, target, curAns, i+1);
+                target += candidates[i];
+                curAns.remove(curAns.size()-1);
+
+                while (i+1<candidates.length&&candidates[i+1]==candidates[i]) {
+                    i++;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    private void qs(int[] nums, int l, int r) {
+        if (l<r) {
+            int i = l;
+            int j = r;
+            int baseValue = nums[i];
+
+            while (i<j) {
+                while (i<j&&nums[j]>=baseValue) {
+                    j--;
+                }
+                if (i<j) {
+                    nums[i++] = nums[j];
+                }
+
+                while (i<j&&nums[i]<=baseValue) {
+                    i++;
+                }
+                if (i<j) {
+                    nums[j--] = nums[i];
+                }
+            }
+
+            nums[i] = baseValue;
+            qs(nums, l, i-1);
+            qs(nums, i+1, r);
+
+        }
+    }
+}
+
+
+
+
+
+class Solution {
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> temp = new ArrayList<>();
+        fun(0,candidates,candidates.length,temp,res,target);
+       return res;
+    }
+    
+    public void fun(int index,int[] nums,int n,List<Integer> temp, List<List<Integer>> res,int target){
+        if(target==0){
+            res.add(new ArrayList<>(temp));
+            return;
+        }
+        for(int i=index;i<n;i++){
+            if(i>index && nums[i]==nums[i-1]) continue;
+            if(nums[i]>target) break;
+            temp.add(nums[i]);
+            fun(i+1,nums,n,temp,res,target-nums[i]);
+            temp.remove(temp.size()-1);
+        
+            
+        }
+    }
+}
+
+
+
+
+class Solution {
+    public void getCS2(int idx, ArrayList<Integer> ds, int[] nums, int target, List<List<Integer>> ans){
+        // base case
+        
+            if(target == 0){
+                ans.add(new ArrayList<>(ds));
+                return;
+            }
+        
+        for(int i = idx; i < nums.length; i++){
+             if(i > idx && nums[i] == nums[i - 1]) continue;
+            if(target < nums[i]){
+                break;
+            }
+            
+            ds.add(nums[i]);
+            getCS2(i + 1, ds, nums, target - nums[i], ans);
+            ds.remove(ds.size() - 1);
+        }
+        
+        
+    }
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> ans = new ArrayList<>();
+        getCS2(0, new ArrayList<Integer>(), candidates, target, ans);
+        return ans;
+    }
+}
+
+
+
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        result = new ArrayList<>();
+        Arrays.sort(candidates);
+        sum(0, candidates, new ArrayList<>(), target);
+        return result;
+    }
+    
+    public void sum(int l, int[] cand, List<Integer> ds, int target){
+        if(target==0){
+            result.add(new ArrayList<>(ds));
+            return ;
+        }
+            
+        for(int i=l;i<cand.length;i++){
+            if(i>l && cand[i]==cand[i-1])
+                continue;
+            if(cand[i]>target)
+                break;
+            
+            ds.add(cand[i]);
+            sum(i+1,cand,ds,target-cand[i]);
+            ds.remove(ds.size()-1);
+            
+        }
+    }
+}
