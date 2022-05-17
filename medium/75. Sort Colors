@@ -1,0 +1,173 @@
+Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue.
+
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+
+You must solve this problem without using the library's sort function.
+
+ 
+
+Example 1:
+
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+Example 2:
+
+Input: nums = [2,0,1]
+Output: [0,1,2]
+
+ 
+
+Constraints:
+
+    n == nums.length
+    1 <= n <= 300
+    nums[i] is either 0, 1, or 2.
+
+ 
+
+Follow up: Could you come up with a one-pass algorithm using only constant extra space?
+
+
+
+class Solution {
+   
+    public void sortColors(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return;
+        }
+        
+        quickSort(nums, 0, nums.length - 1);
+        // countSort(nums);
+    }
+    
+    void countSort(int[] nums) {
+        int zero = 0;
+        int one = 0;
+        int two = 0;
+        
+        for (int num : nums) {
+            if (num == 0) {
+                zero++;
+            } else if (num == 1) {
+                one++;
+            } else {
+                two++;
+            }
+        }
+        
+        for (int i = 0; i < nums.length; i++) {
+            if (i < zero) {
+                nums[i] = 0;
+            } else if (zero <= i && i < zero + one) {
+                nums[i] = 1;
+            } else {
+                nums[i] = 2;
+            }
+        }
+        
+        
+    }
+    
+    void quickSort(int[] nums, int start, int end) {
+        if (start >= end) {
+            return;
+        }
+        int left = start;
+        int right = end;
+        int pivot = nums[left + (right - left) / 2];
+        
+        while (left <= right) {
+            while (left <= right && nums[left] < pivot) {
+                left++;
+            }
+            while (left <= right && nums[right] > pivot) {
+                right--;
+            }
+            
+            if (left <= right) {
+                swap(nums, left, right);
+                left++;
+                right--;
+            }
+        }
+        
+        quickSort(nums, start, right);
+        quickSort(nums, left, end);
+    }
+    
+    void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+}
+
+
+
+
+
+class Solution {
+    public  void swap(int arr[],int low,int high)
+    {
+        int temp=arr[low];
+        arr[low]=arr[high];
+        arr[high]=temp;
+    }
+    public void sortColors(int[] arr) {
+        
+        int low=0;
+        int mid=0;
+        int high= arr.length-1;
+        while (mid<=high)
+        {
+            if(arr[mid]==0)
+            {
+                swap(arr,low,mid);
+                low++;
+                mid++;
+            }
+            else if(arr[mid]==1)
+            {
+                mid++;
+            }
+            else {
+                swap(arr,high,mid);
+                high--;
+            }
+
+        }
+        
+    }
+}
+
+
+
+
+
+class Solution {
+    public void sortColors(int[] nums) {
+        
+        int start=0,end=nums.length-1;
+        for(int i=0;i<nums.length && i<=end;){
+            if(nums[i]==0){
+                nums[i]= nums[start];
+                nums[start]=0;
+                // nums[i]=temp;
+                start++;
+                i++;
+            }else if(nums[i]==1){
+                
+                i++;
+            }else{
+                nums[i] = nums[end];
+                nums[end] = 2;
+                // nums[i] = temp;
+                end--;
+            }
+        }
+        
+        return;
+        
+    }
+}
