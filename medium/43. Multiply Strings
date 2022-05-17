@@ -1,0 +1,192 @@
+Given two non-negative integers num1 and num2 represented as strings, return the product of num1 and num2, also represented as a string.
+
+Note: You must not use any built-in BigInteger library or convert the inputs to integer directly.
+
+ 
+
+Example 1:
+
+Input: num1 = "2", num2 = "3"
+Output: "6"
+
+Example 2:
+
+Input: num1 = "123", num2 = "456"
+Output: "56088"
+
+ 
+
+Constraints:
+
+    1 <= num1.length, num2.length <= 200
+    num1 and num2 consist of digits only.
+    Both num1 and num2 do not contain any leading zero, except the number 0 itself.
+
+
+class Solution {
+   public String multiply(String num1, String num2) {
+        int[] n1 = StringToArray(num1); 
+        int[] n2 = StringToArray(num2); 
+        int[] product = new int[n1.length + n2.length + 1]; 
+        
+        for (int i = 0; i < n1.length; i++) {
+            for (int j = 0; j < n2.length; j++) {
+                product[i + j] = product[i + j] + n1[i] * n2[j];  
+            }
+        }
+        int carry = 0; 
+        for (int i = 0; i < n1.length + n2.length + 1; i++) {
+            int temp = carry + product[i]; 
+            carry = temp / 10;            
+            product[i] = temp % 10;       
+        }
+        
+        int last = product.length - 1; 
+        while (last > 0 && product[last] == 0) 
+            last--; 
+        
+        StringBuilder sb = new StringBuilder(); 
+        
+        while (last >= 0) {
+            sb.append((char)(product[last] + '0')); 
+            last--; 
+        }
+        
+        return sb.toString(); 
+    }
+    
+    private int[] StringToArray(String num) {
+        int len = num.length();
+        
+        int[] output = new int[len]; 
+        
+        for (int i = 0; i < len; i++) {
+            output[len - 1 - i] = num.charAt(i) - '0'; 
+        }
+        
+        return output; 
+    }
+}
+
+
+
+import java.math.BigDecimal;
+class Solution {
+
+    
+public String multiply(String num1, String num2) {
+
+        String a = num1, b = num2; // Assume a >= b in length.
+        if(num2.length() > num1.length()) {
+            a = num2; b = num1;
+        }
+        int[] result = new int[num1.length() + num2.length()];
+
+        // which index to start fill while multiplication and saving the multiplied result to result
+        int itr = 1;
+        // compute the result array
+        for (int b_index = b.length() - 1; b_index >=0 ; --b_index) {
+            int val_b = b.charAt(b_index) - '0';
+            int fill_position = num1.length() + num2.length() - itr;
+            for(int a_index = a.length() - 1; a_index >=0; --a_index) {
+                int val_a  = a.charAt(a_index) - '0';
+                result[fill_position] = result[fill_position] + (val_a * val_b);
+                fill_position--;
+            }
+            itr++;
+        }
+        int next_carry =0;
+        // resolve the carry
+        for (int i = num1.length() + num2.length() - 1; i >= 0 ; i--) {
+            int value = result[i] + next_carry;
+            int actual_value = value % 10;
+            next_carry = value / 10;
+            result[i] = actual_value;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < num1.length() + num2.length() ; i++) {
+            sb.append(result[i]);
+        }
+
+        while(sb.charAt(0) == '0') {
+            if(sb.length() == 1) { // first non-zero value seen
+                return "0";
+            }
+            sb.deleteCharAt(0);
+        }
+        return sb.toString();
+    }
+}
+
+
+
+class Solution {
+    public String multiply(String num1, String num2) {
+        if ("0".equals(num1) || "0".equals(num2))
+            return "0";
+        
+        int[] res = new int[num1.length() + num2.length()];
+        for (int i = num2.length() - 1; i >= 0; i--) {
+            int d2 = num2.charAt(i) - '0';
+            
+            for (int j = num1.length() - 1; j >= 0; j--) {
+                int d1 = num1.charAt(j) - '0';
+                
+                int pos = i + j + 1;
+                int p = d1 * d2 + res[pos];
+                res[pos] = p % 10;
+                res[pos - 1] += p / 10;
+            }
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        int start = res[0] == 0 ? 1 : 0;
+        for (int i = start; i < res.length; i++)
+            sb.append(res[i]);
+        
+        return sb.toString();
+    }
+}
+
+
+
+
+
+class Solution {
+    public String multiply(String num1, String num2) {
+        if(num1.equals("0")||num2.equals("0"))
+            return "0";
+        StringBuilder sb1 = new StringBuilder(num1);
+        StringBuilder sb2 = new StringBuilder(num2);
+        sb1.reverse();
+        sb2.reverse();
+        // System.out.println(sb1.toString());
+        // System.out.println(sb2.toString());
+        int n = num1.length()+num2.length();
+        StringBuilder res = new StringBuilder(n);
+        for(int i=0;i<n;i++){
+            res.append(0);
+        }
+        int i=0,j=0;
+        for(i=0;i<num2.length();i++){
+            int x = sb2.charAt(i)-'0';
+            // System.out.println(x);
+            for(j=0;j<num1.length();j++){
+                int y = sb1.charAt(j)-'0';
+                // System.out.print(y+" ");
+                int pos = i+j;
+                int carry = res.charAt(pos)-'0';
+                int mul = x*y+carry;
+                res.setCharAt(pos,(char)(mul%10+'0'));
+                int val = (res.charAt(pos+1)-'0')+mul/10;
+                res.setCharAt(pos+1,(char)(val+'0'));
+            }
+            // System.out.println();
+        }
+        if(res.charAt(res.length()-1)=='0')
+            res.deleteCharAt(res.length()-1);
+        res.reverse();
+        return res.toString();
+    }
+}
