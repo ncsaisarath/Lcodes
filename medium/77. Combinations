@@ -1,0 +1,132 @@
+Given two integers n and k, return all possible combinations of k numbers out of the range [1, n].
+
+You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: n = 4, k = 2
+Output:
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+Example 2:
+
+Input: n = 1, k = 1
+Output: [[1]]
+
+ 
+
+Constraints:
+
+    1 <= n <= 20
+    1 <= k <= n
+
+
+
+class Solution {
+    List<List<Integer>> result = new ArrayList<>();
+    int combLen, range; 
+    public List<List<Integer>> combine(int n, int k) {
+        combLen = k;
+        range = n;
+        List<Integer> pairs = new ArrayList<>(k);
+        helper(0, 1, pairs);
+        return result;
+    }
+    
+    public void helper(int level, int start, List<Integer> pairs) {
+        if(level == combLen) {
+            result.add(new ArrayList<Integer>(pairs));
+            return;
+        }
+        
+        int remaining = combLen - level -1;
+        for(int i=start; i<=range-remaining; i++) {
+            pairs.add(i);
+            helper(level+1, i+1, pairs);
+            pairs.remove(pairs.size()-1);
+        }
+    }
+}
+
+
+
+
+
+class Solution {
+    
+    List<List<Integer>> res = new ArrayList<>();
+    
+    
+    public void dfs(List<Integer> ans, int n, int k, int start) {
+        
+        if(k == 0) {
+            
+            res.add(new ArrayList<>(ans));
+            return;
+        }
+        
+        for(int i=start;i<=n-k+1;++i) {
+            
+            ans.add(i);
+            dfs(ans,n,k-1,i+1);
+            ans.remove(ans.size()-1);
+        }
+    }
+    
+    public List<List<Integer>> combine(int n, int k) {
+        
+        dfs(new ArrayList<>(),n,k,1);
+        
+        return res;
+    }
+}
+
+
+
+
+class Solution {
+    List<List<Integer>> lis ;
+    int[] arr;
+    
+    public List<List<Integer>> combine(int n, int k) {
+        arr = new int[n];
+        Integer[] data = new Integer[k];
+        for(int i=0;i<n;i++){
+            arr[i]=i+1;
+        }
+        lis = new ArrayList<>();
+        
+        util(arr,data,0,n-1,0,k);
+        
+        return lis;
+        
+    }
+    
+    public void util(int[] arr,Integer[] data,int start, int end, int index, int k){
+        if(index==k){
+            ArrayList<Integer> temp = new ArrayList<>();
+            for(int i=0;i<k;i++){
+                temp.add(data[i]);
+            }
+            lis.add(temp);
+            return;
+        }
+        
+        for (int i=start; i<=end && end-i+1 >= k-index; i++)
+        {
+            data[index] = arr[i];
+            util(arr, data, i+1, end, index+1, k);
+        }
+    }
+    
+//    
+}
