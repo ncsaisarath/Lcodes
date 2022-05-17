@@ -1,0 +1,223 @@
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+ 
+
+Example 1:
+
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Example 2:
+
+Input: strs = [""]
+Output: [[""]]
+
+Example 3:
+
+Input: strs = ["a"]
+Output: [["a"]]
+
+ 
+
+Constraints:
+
+    1 <= strs.length <= 104
+    0 <= strs[i].length <= 100
+    strs[i] consists of lowercase English letters.
+
+
+
+class Solution extends java.util.AbstractList {
+    String [] sa;
+    List<List<String>> lls = null;
+
+    public List<List<String>> groupAnagrams(String[] strs) {
+        sa = strs;
+        // if (lls == null) { makeList(); }
+        return this;
+    }
+
+    @Override public List<String> get(int idx) {
+        if (lls == null) { makeList(); }
+        return lls.get(idx);
+    }
+
+    @Override public int size() {
+        if (lls == null) { makeList(); }
+        return lls.size();
+    }
+
+    private void makeList() {
+        Map<int [], List<String>> m = new TreeMap<>(new Comparator<int []>() {
+            @Override public int compare(int [] a, int [] b) {
+                for (int i = 0; i < 26; i++) if (a[i] != b[i]) { return (a[i] - b[i]); }
+                return 0;
+            }
+        });
+
+        for (String s : sa) {
+            int [] cc = countChars(s);
+            List<String> l = m.get(cc);
+            if (l == null) { l = new ArrayList<>(); m.put(cc, l); }
+            l.add(s);
+        }
+
+        lls = new ArrayList<>(m.values());
+    }
+
+    private int [] countChars(String s) {
+        int [] cc = new int [26];
+        for (char c : s.toCharArray()) cc[c - 'a']++;
+        return cc;
+    }
+}
+
+
+
+
+
+import java.util.*;
+
+class Solution extends java.util.AbstractList {
+    String [] sa;
+    List<List<String>> lls = null;
+    
+    public List<List<String>> groupAnagrams(String[] strs) {
+        sa = strs;
+        // if (lls == null) { makeList(); }
+        return this;
+    }
+    
+    @Override public List<String> get(int idx) {
+        if (lls == null) { makeList(); }
+        return lls.get(idx);
+    }
+    
+    @Override public int size() {
+        if (lls == null) { makeList(); }
+        return lls.size();
+    }
+    
+    private void makeList() {
+        Map<int [], List<String>> m = new TreeMap<>(new Comparator<int []>() {
+            @Override public int compare(int [] a, int [] b) {
+                for (int i = 0; i < 26; i++) if (a[i] != b[i]) { return (a[i] - b[i]); }
+                return 0;
+            }
+        });
+        
+        for (String s : sa) {
+            int [] cc = countChars(s);
+            List<String> l = m.get(cc);
+            if (l == null) { l = new ArrayList<>(); m.put(cc, l); }
+            l.add(s);
+        }
+        
+        lls = new ArrayList<>(m.values());
+    }
+    
+    private int [] countChars(String s) {
+        int [] cc = new int [26];
+        for (char c : s.toCharArray()) cc[c - 'a']++;
+        return cc;
+    }
+}
+
+
+
+
+class Solution {
+    
+    public List<List<String>> groupAnagrams(String[] strs) {
+        
+        HashMap<Double,List<String>> hashMap = new HashMap<>();
+        
+        for(int i=0;i<strs.length;i++){
+            double key = cal(strs[i]);
+            
+            if(hashMap.containsKey(key)){
+                hashMap.get(key).add(strs[i]);
+            }else{
+                List<String> arrayList = new ArrayList<String>();
+                arrayList.add(strs[i]);
+                hashMap.put(key, arrayList);
+            }
+        }
+        
+        return new ArrayList(hashMap.values());
+        
+    }
+    
+    public double cal(String s){
+        int[] primes = {2,3,5,7,9,11,13,17,19,23,29,31,37,41,43,47,53,59,67,71,73,79,83,89,97,101,103};
+        
+        double res = 1;
+        for(int i=0;i<s.length();i++){
+            res = res * primes[s.charAt(i) - 'a'];
+        }
+        return res;
+        
+    }
+    
+    /*public List<List<String>> groupAnagrams(String[] strs) {
+                
+        HashMap<String,List<String>> hashMap = new HashMap<>();
+        
+        for(int i=0;i<strs.length;i++){
+            
+            char[] strArray = strs[i].toCharArray(); //eat
+            Arrays.sort(strArray);
+            String s = new String(strArray);
+            
+            if(hashMap.containsKey(s)){
+                hashMap.get(s).add(strs[i]);
+            }else{
+                List<String> arrayList = new ArrayList<String>();
+                arrayList.add(strs[i]);
+                hashMap.put(s,arrayList);
+            }
+            
+        }
+        
+        return new ArrayList(hashMap.values());
+    }*/
+}
+
+
+
+
+
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> lis = new ArrayList<>();
+        Map<String,Integer> map = new HashMap<>();
+        int count=0;
+        for(String word:strs){
+            String sign = getSign(word);
+            if(map.containsKey(sign)){
+                lis.get(map.get(sign)).add(word);
+            }else{
+                map.put(sign,count);
+                lis.add(new ArrayList<>());
+                lis.get(count).add(word);
+                count++;
+            }
+        }
+        return lis;
+    }
+    
+    public String getSign(String word){
+        int[] ch = new int[26];
+        for(char c:word.toCharArray()){
+            ch[c-'a']++;
+        }
+        StringBuilder sb = new StringBuilder();
+        for(int i=0;i<26;i++){
+            sb.append((char)(i+'a'));
+            sb.append(ch[i]);
+        }
+        return sb.toString();
+    }
+}
