@@ -1,0 +1,163 @@
+Given the head of a linked list, rotate the list to the right by k places.
+
+ 
+
+Example 1:
+
+Input: head = [1,2,3,4,5], k = 2
+Output: [4,5,1,2,3]
+
+Example 2:
+
+Input: head = [0,1,2], k = 4
+Output: [2,0,1]
+
+ 
+
+Constraints:
+
+    The number of nodes in the list is in the range [0, 500].
+    -100 <= Node.val <= 100
+    0 <= k <= 2 * 10^9
+
+
+
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(head == null || head.next == null)
+            return head;
+        
+        ListNode oldTail = head;
+        int n = 0;
+        for(n = 1; oldTail.next != null; n++)
+            oldTail = oldTail.next;
+        
+        oldTail.next = head;
+        
+        ListNode newTail = head;
+        for(int i = 0; i < n - k % n - 1; i++)
+            newTail = newTail.next;
+        
+        ListNode newHead = newTail.next;
+        
+        newTail.next = null;
+        
+        return newHead;
+    }
+}
+
+
+
+
+
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        
+        ListNode temp = head;
+        ListNode last = null;
+        if(head==null){
+            
+            return head;
+        }
+        int n = 0;
+        while(temp!=null){
+            
+            n++;
+            last = temp;
+            temp=temp.next;
+        }
+        if(n==1){
+            return head;
+        }
+        k = k%n;
+        int n1 = n-k;
+        
+        if(n1==0){
+            return head;
+        }
+        
+        temp = head;
+        for(int i=1;i<n1;i++){
+            
+            temp=temp.next;
+        }
+        
+        
+        last.next = head;
+        head = temp.next;
+        temp.next = null;
+        
+        return head;
+    }
+}
+
+
+
+
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode rotateRight(ListNode head, int k) {
+        if(k==0 || head==null || head.next==null )
+            return head;
+        
+        ListNode curr=head,prev=null;
+        int len = 0,i=0;
+        while(curr!=null){
+            curr=curr.next;
+            len++;
+        }
+        k = k%len;
+        if(k==len || k==0)
+            return head;
+        k = k%len;
+        curr=head;
+        // while(i<len-k){
+        //     ListNode temp = curr.next;
+        //     curr.next = prev;
+        //     prev = curr;
+        //     curr = temp;
+        //     i++;
+        // }
+        
+//         while(i<len-k){
+//             prev=curr;
+//             curr=curr.next;
+//             i++;
+//         }
+//         ListNode head2 = curr;
+//         prev.next = null;
+        
+//         while(curr!=null)
+        
+        if(curr==null)
+            return head;
+        
+        ListNode mainprev=null,mainnext=null;
+        while(curr!=null){
+            if(i==len-k){
+                mainprev=prev;
+                mainnext=curr;
+            }
+            prev=curr;
+            curr=curr.next;
+            i++;
+        }
+        
+        prev.next = head;
+        mainprev.next = null;
+        head = mainnext;
+        
+        return head;
+        
+    }
+}
