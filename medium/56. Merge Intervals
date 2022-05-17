@@ -1,0 +1,184 @@
+Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.
+
+ 
+
+Example 1:
+
+Input: intervals = [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+Explanation: Since intervals [1,3] and [2,6] overlaps, merge them into [1,6].
+
+Example 2:
+
+Input: intervals = [[1,4],[4,5]]
+Output: [[1,5]]
+Explanation: Intervals [1,4] and [4,5] are considered overlapping.
+
+ 
+
+Constraints:
+
+    1 <= intervals.length <= 104
+    intervals[i].length == 2
+    0 <= starti <= endi <= 104
+
+
+
+class Solution {
+    public int[][] merge(int[][] intervals) {
+
+        
+        int max= getEndTime(intervals);
+
+        int[] arr = new int[max+1];
+        Arrays.fill(arr, -1);
+        
+        for(int i=0; i<intervals.length; i++){
+            arr[intervals[i][0]]=Math.max(arr[intervals[i][0]],intervals[i][1]);
+        }
+        
+        int i=0;
+        List<int[]> intervalList = new ArrayList<>();
+        while(i<arr.length){
+            if(arr[i]==-1) {
+                i++;
+                continue;
+            }
+            int start=i;
+            int end=arr[i];
+            while(i<=end){
+                if(arr[i]>end) end=arr[i];
+                i++;
+            }
+            intervalList.add(new int[]{start,end});
+        }
+        
+        return intervalList.toArray(new int[intervalList.size()][]);
+    }
+    
+    private int getEndTime(int[][] intervals){
+        int endTime = Integer.MIN_VALUE;
+        for(int i=0;i<intervals.length;i++) {
+            if(intervals[i][1] > endTime){
+                endTime=intervals[i][1];
+            } 
+        }
+        return endTime;
+    }
+}
+
+
+
+
+class Solution {
+    public int[][] merge(int[][] intervals) {
+        
+        if(intervals.length == 1) {
+            return intervals;
+        }
+        
+        ArrayList<int[]> result = new ArrayList<int[]>();
+        
+//         List<int[]> intervalsList = new ArrayList(Arrays.asList(intervals));
+        
+//         Collections.sort(intervalsList, (int[] int1, int[] int2) -> {
+//             return int1[0] < int2[0] ? -1 : (int1[0] > int2[0] ? 1 : (int1[1] >= int2[1] ? -1 : 1));
+//         });
+        
+        
+        
+//         int size = -1;
+        
+//         for(int[] interval : intervalsList) {
+//             if(size == -1) {
+//                 result.add(interval);
+//                 size++;
+//             } else {
+//                 int[] prevInterval = result.get(size);
+//                 if(prevInterval[1] >= interval[0]) {
+//                     prevInterval[1] = Math.max(prevInterval[1], interval[1]);
+//                 } else {
+//                     result.add(interval);
+//                     size++;
+//                 }
+//             }
+//         }
+        
+        int intervalLimit = Integer.MIN_VALUE;
+        
+        for(int[] interval : intervals) {
+            intervalLimit = Math.max(intervalLimit, interval[1]);
+        }
+        
+        int[] mark = new int[2*(intervalLimit+1)];
+        
+        for(int[] interval : intervals) {
+            mark[2*interval[0]]++;
+            mark[(2*interval[1]) + 1]--;
+        }
+        
+        int st = 0;
+        
+        for(int i = 1; i < mark.length; i++) {
+            mark[i] += mark[i-1];
+            
+            if(mark[i] != 0 && mark[i-1] == 0) {
+                st = i;
+            }
+            
+            if(mark[i] == 0 && mark[i-1] != 0) {
+                result.add(new int[]{st/2, (i - 1)/2});
+            }
+        }
+        
+        return result.toArray(new int[result.size()][2]);
+    }
+}
+
+
+
+
+class Solution {
+    
+    class Pair{
+        int s,e;
+        Pair(int s, int e){
+            this.s=s;
+            this.e=e;
+        }
+        
+    }
+    
+    public int[][] merge(int[][] intervals) {
+        
+        int n = intervals.length;
+        ArrayList<Pair> arr = new ArrayList<>();
+        for(int[] x: intervals)
+            arr.add(new Pair(x[0],x[1]));
+        
+        Collections.sort(arr, (a,b) -> a.s-b.s);
+        // for(Pair p:arr)
+        //     System.out.println(p.s+" "+p.e);
+        Stack<Pair> stack = new Stack<>();
+        // stack.push(arr.get(0));
+        
+        for(int i=0;i<n;i++){
+            if(stack.isEmpty() || stack.peek().e < arr.get(i).s){
+                stack.push(arr.get(i));
+            }else{
+                Pair temp = stack.pop();
+                stack.push(new Pair(temp.s,Math.max(temp.e,arr.get(i).e)));
+            }
+        }
+        int m = stack.size();
+        int[][] result = new int[m][2];
+        for(int i=m-1;i>=0;i--){
+            Pair temp = stack.pop();
+            result[i][0] = temp.s;
+            result[i][1] = temp.e;
+        }
+        return result;
+        
+    }       
+        
+}
