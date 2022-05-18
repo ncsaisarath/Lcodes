@@ -1,0 +1,292 @@
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. The same letter cell may not be used more than once.
+
+ 
+
+Example 1:
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+
+Example 2:
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+
+Example 3:
+
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+
+ 
+
+Constraints:
+
+    m == board.length
+    n = board[i].length
+    1 <= m, n <= 6
+    1 <= word.length <= 15
+    board and word consists of only lowercase and uppercase English letters.
+
+ 
+
+Follow up: Could you use search pruning to make your solution faster with a larger board?
+
+
+
+
+
+class Solution {
+    int m, n;
+
+    public boolean exist(char[][] board, String word) {
+        m = board.length;
+        n = board[0].length;
+        char[] words = word.toCharArray();
+
+        int h = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] == words[0]) {
+                    h++;
+                } else if (board[i][j] == words[words.length - 1]) {
+                    h--;
+                }
+            }
+        }
+        if (h > 0) {
+            char[] reverseWords = new char[words.length];
+            for (int i = 0; i < words.length; i++) {
+                reverseWords[i] = words[words.length - 1 - i];
+            }
+            words = reverseWords;
+        }
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dfs(board, words, i, j, 0)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean dfs(char[][] board, char[] word, int x, int y, int index) {
+        if (index == word.length) {
+            return true;
+        }
+        if (x < 0 || y < 0 || x >= m || y >= n || board[x][y] != word[index]) {
+            return false;
+        }
+        board[x][y] = '0';
+        boolean res = dfs(board, word, x + 1, y, index + 1) ||
+                dfs(board, word, x - 1, y, index + 1) ||
+                dfs(board, word, x, y + 1, index + 1) ||
+                dfs(board, word, x, y - 1, index + 1);
+        board[x][y] = word[index];
+        return res;
+    }
+}
+
+
+
+
+
+class Solution {
+   
+    /*public boolean exist(char[][] board, String word) {
+        int[][] visited = new int[board.length][board[0].length];
+        for(int i = 0; i < board.length; i++){
+            for(int j = 0; j < board[i].length; j++){
+                if(board[i][j] == word.charAt(0)){
+                    //System.out.println(wordSearch(board, w, 0, i, j));
+                    boolean found = wordSearch(board,visited, word, i, j);
+                    if(found) return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean wordSearch(char[][] board, int[][] visited, String word,int row, int col){
+        if(row >= board.length || col >= board[0].length || col < 0 || row < 0){
+            return false;
+        }
+        if(visited[row][col] == 1){
+            return false;
+        }
+        if(board[row][col] != word.charAt(0)){
+            return false;
+        }
+        if(word.length() -1 == 0){
+            return true;
+        }
+        visited[row][col] = 1;
+        
+        boolean found = wordSearch(board, visited, word.substring(1), row + 1, col) ||
+            wordSearch(board, visited, word.substring(1), row - 1, col) ||
+            wordSearch(board, visited, word.substring(1), row, col + 1) ||
+            wordSearch(board, visited, word.substring(1), row, col - 1);
+        
+        if(found) return true;
+        
+        visited[row][col] = 0;
+        
+        return false;
+        
+    }
+    */
+    int[][] adj = new int[][]{{0,-1},{0,1},{-1,0},{1,0}};
+    public boolean exist(char[][] board, String word) {
+        int m = board.length, n = board[0].length;
+        
+        char[] w = word.toCharArray();
+        
+        if(!checkWordExists(board, w))
+            return false;
+        for(int i=0;i<m;i++) {
+            for(int j=0;j<n;j++) {
+                if(board[i][j]==w[0] && checkPattern(board, w, i, j, 0)) {
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    boolean checkWordExists(char[][] board, char[] word) {
+        int[] charCount = new int[58];
+        boolean[][] neighbours = new boolean[58][58];
+        int i, j, charCurrentIndex, m = board.length, n = board[0].length;
+        for(i=0;i<m;i++) {
+            for(j=0;j<n;j++) {
+                charCurrentIndex = board[i][j] - 'A';
+                charCount[charCurrentIndex]++;
+                if(i>1) {
+                    neighbours[charCurrentIndex][board[i-1][j]-'A'] = true;
+                    neighbours[board[i-1][j]-'A'][charCurrentIndex] = true;
+                }
+                if(i+1<m) {
+                    neighbours[charCurrentIndex][board[i+1][j]-'A'] = true;
+                    neighbours[board[i+1][j]-'A'][charCurrentIndex] = true;
+                }
+                if(j>1) {
+                    neighbours[charCurrentIndex][board[i][j-1]-'A'] = true;
+                    neighbours[board[i][j-1]-'A'][charCurrentIndex] = true;
+                }
+                if(j+1<n) {
+                    neighbours[charCurrentIndex][board[i][j+1]-'A'] = true;
+                    neighbours[board[i][j+1]-'A'][charCurrentIndex] = true;
+                }
+            }
+        }
+        for(i=0;i<word.length;i++) {
+            charCurrentIndex = word[i] - 'A';
+            if(charCount[charCurrentIndex]==0)
+                return false;
+            charCount[charCurrentIndex]--;
+            if(i<word.length-1 && (neighbours[charCurrentIndex][word[i+1]-'A']==false || neighbours[word[i+1]-'A'][charCurrentIndex]==false))
+                return false;
+        }
+        return true;
+    }
+    
+    boolean checkPattern(char[][] board, char[] word, int i, int j, int wordInd) {
+        if(wordInd==word.length) 
+            return true;
+        
+        if(i<0 || i==board.length || j<0 || j==board[0].length || board[i][j]!=word[wordInd])
+            return false;
+        board[i][j] = '*';
+        for(int a=0;a<4;a++) {
+            int x = i + adj[a][0];
+            int y = j + adj[a][1];
+            if(checkPattern(board, word, x, y, wordInd+1))
+                return true;
+        }
+        board[i][j] = word[wordInd];
+        return false;
+    }
+}
+
+
+
+
+class Solution {
+//     public boolean exist(char[][] board, String word) {
+//         int r=board.length;
+//         int c=board[0].length;
+//         if(word.length()>r*c)
+//             return false;
+//         boolean res = false;
+//         boolean[][] vis = new boolean[r][c];
+//         char ch = word.charAt(0);
+//         for(int i=0;i<r;i++){
+//             for(int j=0;j<c;j++){
+//                 if(!vis[i][j] && board[i][j]==ch){
+//                     // vis[i][j]=true;
+//                     res = dfs(board,vis,word,i,j,0);
+//                     // vis[i][j]=false;
+//                     if(res)
+//                         return res;
+//                 }
+//             }
+//         }
+//         return false;
+//     }
+    
+//     public boolean dfs(char[][] board, boolean[][] vis,String word,int i,int j, int pos){
+//         if(i<0 || j<0 || i>=board.length || j>=board[0].length || pos>=word.length() || board[i][j]!=word.charAt(pos))
+//             return false; 
+//         else if(!vis[i][j] && pos==word.length()-1 && board[i][j]==word.charAt(pos))
+//             return true;
+//         boolean res=false;
+//         if(board[i][j]==word.charAt(pos)){
+//             vis[i][j]=true;
+//             res = dfs(board,vis,word,i+1,j,pos+1);
+//             res = res || dfs(board,vis,word,i,j+1,pos+1);
+//             res = res || dfs(board,vis,word,i,j-1,pos+1);
+//             res = res || dfs(board,vis,word,i-1,j,pos+1);
+//             vis[i][j]=false;
+//         }
+//         return res;
+        
+        
+        
+//     }
+    
+    private static final int[][] DIRS = new int[][]{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+
+public boolean exist(char[][] board, String word) {
+	for (var i = 0; i < board.length; i++)
+		for (var j = 0; j < board[0].length; j++)
+			if ((board[i][j] == word.charAt(0)) && exist(board, i, j, 0, word))
+				return true;
+	return false;
+}
+
+// backtracking template: for each choice: choose-explore-unchoose
+private boolean exist(char[][] board, int i, int j, int count, String word) {
+	if (count == word.length())
+		return true;
+	if (i == -1 || i == board.length || j == -1 || j == board[0].length || board[i][j] != word.charAt(count))
+		return false;
+	
+	// choose
+	var temp = board[i][j];
+	board[i][j] = ' ';
+	var found = false;
+	
+	// explore
+	for (var dir : DIRS)
+		if (exist(board, i + dir[0], j + dir[1], count + 1, word)) {
+			found = true;
+			break;
+		}
+
+	// unchoose
+	board[i][j] = temp;
+	return found;
+}
+}
