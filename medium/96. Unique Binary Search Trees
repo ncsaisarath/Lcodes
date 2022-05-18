@@ -1,0 +1,112 @@
+Given an integer n, return the number of structurally unique BST's (binary search trees) which has exactly n nodes of unique values from 1 to n.
+
+ 
+
+Example 1:
+
+Input: n = 3
+Output: 5
+
+Example 2:
+
+Input: n = 1
+Output: 1
+
+ 
+
+Constraints:
+
+    1 <= n <= 19
+
+
+class Solution {
+
+    public int numTrees(int n) {
+        if(n==1){
+            return 1;
+        }
+        
+        int[] array = new int[n+1];
+        array[0] = 1;
+        array[1] = 1;
+        
+        for(int i=2;i<=n;i++){
+            for(int j=1;j<=i;j++){
+                array[i] += array[j-1] * array[i-j];
+            }
+        }
+        return array[n];
+    }
+}
+
+
+
+
+
+class Solution {
+    public int numTrees(int n) {
+        
+        HashMap<Integer, Integer> cache = new HashMap<Integer, Integer>();
+        
+        return recur(n, cache);
+    }
+    
+    public int recur(int n, HashMap<Integer, Integer> cache)
+    {
+        if (n == 0) return 0;
+        if (n == 1) return 1;
+        
+        if (cache.containsKey(n))
+        {
+            return cache.get(n);
+        }
+        
+        int leftComb = 0;
+        int rightComb = 0;
+        int total = 0;
+        for(int r = 1; r <= n; r++)
+        {
+            leftComb = recur(r-1, cache);
+            rightComb = recur(n-r, cache);
+            
+            if (leftComb == 0)
+            {
+                leftComb = 1;
+            }
+            
+            if (rightComb == 0)
+            {
+                rightComb = 1;
+            }
+            
+            total += leftComb*rightComb;
+        }
+        cache.put(n, total);
+        return total;
+    }
+}
+
+
+
+
+class Solution {
+    public int numTrees(int n) {
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        map.put(0,1);
+        map.put(1,1);
+        return numTrees(n, map);
+    }
+    
+    private int numTrees(int n, Map<Integer, Integer> map){
+        // check memory
+        if(map.containsKey(n)) return map.get(n);
+        // recursion
+        int sum = 0;
+        for(int i = 1;i <= n;i++)
+            sum += numTrees(i-1, map) * numTrees(n-i, map);
+        map.put(n, sum);
+        return sum;
+    }
+}
+
+
