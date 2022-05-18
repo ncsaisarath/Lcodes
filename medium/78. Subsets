@@ -1,0 +1,126 @@
+Given an integer array nums of unique elements, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+Example 2:
+
+Input: nums = [0]
+Output: [[],[0]]
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 10
+    -10 <= nums[i] <= 10
+    All the numbers of nums are unique.
+
+
+
+class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+        
+        addOneMoreNumber(0, new ArrayList<>(), nums, result);
+        
+        return result;
+    }
+    
+    private void addOneMoreNumber(int index, List<Integer> composed, int[] nums, List<List<Integer>> result) {
+        // add itself anyway
+        result.add(new ArrayList<>(composed));
+        
+        // base case, no more numbers to add
+        if(index == nums.length) {
+            return;
+        }
+        
+        // continue
+        for(int i = index; i < nums.length; i++) {            
+            // do
+            composed.add(nums[i]);
+            
+            // next
+            addOneMoreNumber(i+1, composed, nums, result);
+            
+            // undo
+            composed.remove(composed.size() - 1);            
+        }
+    }
+}
+
+
+
+
+
+class Solution {
+    List<List<Integer>> result = new ArrayList<>();
+    ArrayList<Integer> subset=new ArrayList<Integer>();
+    public List<List<Integer>> subsets(int[] nums) {
+        dfs(0, nums);
+        return result;
+    }
+    
+    public void dfs(int i, int[] nums) {
+        if (i == nums.length) {
+            result.add(new ArrayList(subset));
+            return;
+        }
+        //desision to include nums[i]
+        subset.add(nums[ i ]);
+        dfs(i + 1, nums);
+        
+        //desision NOT to include nums[i]
+        subset.remove(subset.size() - 1);
+        dfs(i+1, nums);
+    }
+    
+    public List<List<Integer>> subsetss(int[] S) {
+        Arrays.sort(S);
+        List<List<Integer>> out=new ArrayList<List<Integer>>();
+        ArrayList<Integer> subset=new ArrayList<Integer>();
+        out.add(new ArrayList<Integer>(subset));
+        
+        SubsetsI(S, out, subset, 0);
+        
+        return out;
+    }
+    public static void SubsetsI(int[] set, List<List<Integer>> out, ArrayList<Integer> subset, int pos) {
+		for(int i=pos; i<set.length; i++){
+			subset.add(set[i]);
+			out.add(new ArrayList<Integer>(subset));
+			SubsetsI(set, out, subset, i+1);
+			subset.remove(subset.size()-1);
+		}
+	}
+}
+
+
+
+
+class Solution {
+  public List<List<Integer>> subsets(int[] nums) {
+    List<List<Integer>> output = new ArrayList();
+    int n = nums.length;
+
+    for (int i = (int)Math.pow(2, n); i < (int)Math.pow(2, n + 1); ++i) {
+      // generate bitmask, from 0..00 to 1..11
+      String bitmask = Integer.toBinaryString(i).substring(1);
+
+      // append subset corresponding to that bitmask
+      List<Integer> curr = new ArrayList();
+      for (int j = 0; j < n; ++j) {
+        if (bitmask.charAt(j) == '1') curr.add(nums[j]);
+      }
+      output.add(curr);
+    }
+    return output;
+  }
+}
