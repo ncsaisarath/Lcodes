@@ -1,0 +1,112 @@
+Given an integer array nums that may contain duplicates, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,2]
+Output: [[],[1],[1,2],[1,2,2],[2],[2,2]]
+
+Example 2:
+
+Input: nums = [0]
+Output: [[],[0]]
+
+ 
+
+Constraints:
+
+    1 <= nums.length <= 10
+    -10 <= nums[i] <= 10
+
+
+
+class Solution {
+
+    private static final int MIN = -10;
+    private static final int MAX = 10;
+    public static final int LENGTH = MAX - MIN + 1;
+
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        int[] freq = new int[LENGTH];
+        for (int num : nums) {
+            freq[num - MIN]++;
+        }
+        ArrayList<List<Integer>> subsets = new ArrayList<>();
+        subsets2(freq, 0, new int[LENGTH], subsets);
+        return subsets;
+
+    }
+
+    private void subsets2(int[] freq, int i, int[] subset, List<List<Integer>> subsets) {
+        if (i == freq.length) {
+            ArrayList<Integer> s = new ArrayList<>();
+            for (int j = 0; j < subset.length; j++) {
+                for (int k = 0; k < subset[j]; k++)
+                    s.add(j + MIN);
+            }
+            subsets.add(s);
+        } else {
+            for (int j = 0; j <= freq[i]; j++) {
+                subset[i] = j;
+                subsets2(freq, i + 1, subset, subsets);
+            }
+        }
+    }
+
+}
+
+
+
+
+
+class Solution {
+    
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList();
+        res.add(new ArrayList()); //add empty list
+        
+        int lastSubsetSize = 0;
+        for(int i=0; i<nums.length; i++) {
+            int startIndex = (i>0 && nums[i-1] == nums[i]) ? lastSubsetSize: 0;
+            lastSubsetSize = res.size();
+            for(int j=startIndex; j<lastSubsetSize; j++) {
+                List<Integer> newList = new ArrayList(res.get(j));
+                newList.add(nums[i]); //add curr element
+                res.add(newList);
+            }
+        }
+        
+        return res;
+    }
+    
+    
+}
+
+
+
+
+class Solution {
+    List<List<Integer>> result;
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        result = new ArrayList<>();
+        Arrays.sort(nums);
+        subsets(0, nums, new ArrayList<>());
+        return result;
+    }
+    
+    public void subsets(int l, int[] nums, List<Integer> ds){
+        result.add(new ArrayList<>(ds));
+        for(int i=l;i<nums.length;i++){
+            if(i!=l && nums[i-1]==nums[i])
+                continue;
+            ds.add(nums[i]);
+            subsets(i+1, nums, ds);
+            ds.remove(ds.size()-1);
+
+        }
+    }
+}
