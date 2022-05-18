@@ -1,0 +1,142 @@
+Given an integer n, return all the structurally unique BST's (binary search trees), which has exactly n nodes of unique values from 1 to n. Return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: n = 3
+Output: [[1,null,2,null,3],[1,null,3,2],[2,1,3],[3,1,null,null,2],[3,2,null,1]]
+
+Example 2:
+
+Input: n = 1
+Output: [[1]]
+
+ 
+
+Constraints:
+
+    1 <= n <= 8
+
+
+class Solution {
+    List<TreeNode> nullList;
+    
+    public List<TreeNode> generateTrees(int n) {
+        nullList = new ArrayList();
+        nullList.add(null);
+        List<TreeNode>[][] memo = new ArrayList[n + 1][n + 1];
+        return buildTreeList(1, n, memo);       
+    }
+    
+    private List<TreeNode> buildTreeList(int startIdx, int endIdx, List<TreeNode>[][] memo) {
+        if (startIdx > endIdx)              // If not valid range of node values, 
+            return nullList;                //      then return null TreeNode.
+
+        if (memo[startIdx][endIdx] != null) // If already built this start...end range, 
+            return memo[startIdx][endIdx];  //      then return previously built list.
+        
+        List<TreeNode> treeList = new ArrayList();  // List to return up the recursion call.
+        for (int i = startIdx; i <= endIdx; i++) {  // Try all nodes in the range as a root node.
+            List<TreeNode> left = buildTreeList(startIdx, i - 1, memo);
+            List<TreeNode> right = buildTreeList(i + 1, endIdx, memo);
+            for (TreeNode lt : left)                // Use all combinations of left and right nodes 
+                for (TreeNode rt : right)           //      as branches off the current root node.
+                    treeList.add(new TreeNode(i, lt, rt));
+        }
+        memo[startIdx][endIdx] = treeList;  // Save newly built list in case it requested again.
+        return treeList;
+    }
+}
+
+
+
+
+
+class Solution {
+	public List<TreeNode> generateTrees(int n) {
+		if (0 == n) {
+			return new ArrayList<>();
+		}
+		return generateTrees(1, n);
+	}
+
+	public List<TreeNode> generateTrees(int l, int r) {
+		List<TreeNode> res = new ArrayList<>();
+		if (l > r) {   ///JX's: l:left, r: right
+			return null;
+		}
+		if (l == r) {
+			res.add(new TreeNode(l));
+			return res;
+		}
+
+		for(int i = l ; i <= r ; i ++) {
+			List<TreeNode> lefts = generateTrees(l, i - 1);
+			List<TreeNode> rights = generateTrees(i + 1, r);
+			if(null == lefts) {
+			  for(TreeNode right : rights) {
+				TreeNode node = new TreeNode(i);
+				node.right = right;
+				res.add(node);
+			  }
+			} else if(null == rights) {
+			  for(TreeNode left : lefts) {
+				TreeNode node = new TreeNode(i);
+				node.left = left;
+				res.add(node);
+			  }
+			} else {
+			  for(TreeNode left : lefts) {
+				for(TreeNode right : rights) {
+				  TreeNode node = new TreeNode(i);
+				  node.left = left;
+				  node.right = right;
+				  res.add(node);
+				}
+			  }            
+			}
+		}
+
+		return res;
+	}
+}
+
+
+
+
+
+class Solution {
+    public List<TreeNode> generateTrees(int n) {
+        if (n == 0) {
+            return new ArrayList<>();
+        }
+        return helper(1, n);
+    }
+    
+    private List<TreeNode> helper(int lo, int hi) {
+        List<TreeNode> result = new ArrayList<>();
+        //base case
+        if (lo > hi) {
+            result.add(null);
+            return result;
+        }
+        
+        //subproblem to reach boootm
+        for (int i = lo; i <= hi; i++) {
+            List<TreeNode> left = helper(lo, i - 1);
+            List<TreeNode> right = helper(i + 1, hi);
+            //reconstruct tree from bottom to up
+            for (TreeNode l : left) {
+                for (TreeNode r : right) {
+                    TreeNode root = new TreeNode(i);
+                    root.left = l;
+                    root.right = r;
+                    result.add(root);
+                }
+            }
+        }
+        //return list of root to last layer
+        return result;
+    }
+}
