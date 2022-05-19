@@ -1,0 +1,114 @@
+Given two integer arrays inorder and postorder where inorder is the inorder traversal of a binary tree and postorder is the postorder traversal of the same tree, construct and return the binary tree.
+
+ 
+
+Example 1:
+
+Input: inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]
+Output: [3,9,20,null,null,15,7]
+
+Example 2:
+
+Input: inorder = [-1], postorder = [-1]
+Output: [-1]
+
+ 
+
+Constraints:
+
+    1 <= inorder.length <= 3000
+    postorder.length == inorder.length
+    -3000 <= inorder[i], postorder[i] <= 3000
+    inorder and postorder consist of unique values.
+    Each value of postorder also appears in inorder.
+    inorder is guaranteed to be the inorder traversal of the tree.
+    postorder is guaranteed to be the postorder traversal of the tree.
+
+
+
+class Solution {
+    private int idx;   
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        if (inorder.length == 0) return null;
+        idx = postorder.length-1;
+        TreeNode root = build(inorder, postorder, 0, idx);
+        return root;
+    }
+    
+    private TreeNode build(int[] inorder, int[] postorder, int start, int end) {
+        if (start>end) return null;
+        TreeNode node = new TreeNode(postorder[idx--]);
+        if (start==end) return node;
+        
+        int index = findIdx(inorder, node.val, end);
+        node.right = build(inorder, postorder, index+1, end);
+        node.left = build(inorder, postorder, start, index-1);
+        return node;
+    }
+    
+    private int findIdx(int[] inorder, int val, int end) {
+        for (int i=end; i>=0; i--) {
+            if (inorder[i]==val) return i;
+        }
+        return 0;
+    }
+}
+
+
+
+
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+         return btree(postorder,inorder,0,postorder.length-1,postorder.length-1);
+    }
+    
+    public TreeNode btree(int[] postorder, int[] inorder, int min,int max,int postIndex){
+        
+        if(postIndex<0 || min>max ){
+            return null;
+        }
+        
+        TreeNode head = new TreeNode(postorder[postIndex]);
+        int mid = max;
+        for(int i=max;i>=min;i--){
+            if(head.val == inorder[i]){
+                mid = i;
+                break;
+            }
+        }
+        head.left = btree(postorder,inorder,min,mid-1,postIndex-max+mid-1);
+        head.right = btree(postorder,inorder,mid+1,max,postIndex-1);
+        
+        return head;
+    }
+}
+
+
+
+
+
+class Solution {
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        return util(inorder, postorder, 0, inorder.length-1, 0, postorder.length-1);
+    }
+    
+    public TreeNode util(int[] in, int[] post,int is, int ie, int posts, int poste){
+        if(is>ie || posts>poste)
+            return null;
+        TreeNode root = new TreeNode(post[poste]);
+        int index = find(in, post[poste], is, ie);
+        int np = index-is;
+        root.left = util(in, post, is, index-1, posts,posts+np-1);
+        root.right = util(in, post, index+1, ie, posts+np,poste-1);
+        
+        return root;
+    }
+    
+    public int find(int[] arr, int val, int l, int r){
+        for(int i=l;i<=r;i++){
+            if(arr[i]==val)
+                return i;
+        }
+        return -1;
+    }
+}
