@@ -1,0 +1,176 @@
+Given two integer arrays preorder and inorder where preorder is the preorder traversal of a binary tree and inorder is the inorder traversal of the same tree, construct and return the binary tree.
+
+ 
+
+Example 1:
+
+Input: preorder = [3,9,20,15,7], inorder = [9,3,15,20,7]
+Output: [3,9,20,null,null,15,7]
+
+Example 2:
+
+Input: preorder = [-1], inorder = [-1]
+Output: [-1]
+
+ 
+
+Constraints:
+
+    1 <= preorder.length <= 3000
+    inorder.length == preorder.length
+    -3000 <= preorder[i], inorder[i] <= 3000
+    preorder and inorder consist of unique values.
+    Each value of inorder also appears in preorder.
+    preorder is guaranteed to be the preorder traversal of the tree.
+    inorder is guaranteed to be the inorder traversal of the tree.
+
+
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        int[] pre = {0};
+        int[] in = {0};
+        
+        return helper(preorder, pre, inorder, in, Integer.MAX_VALUE);
+    }
+    
+    private TreeNode helper(int[] preorder, int[] pre, int[] inorder, int[] in, int max) {
+        if(pre[0] == preorder.length || in[0] == inorder.length || inorder[in[0]] == max) {
+            return null;
+        }
+        
+        TreeNode root = new TreeNode(preorder[pre[0]]);
+        pre[0]++;
+        root.left = helper(preorder, pre, inorder, in, root.val);
+        in[0]++;
+        root.right = helper(preorder, pre, inorder, in, max);
+        return root;
+    }
+}
+
+
+
+
+class Solution {
+    int preorderIndex;
+    Map<Integer, Integer> inorderIndexMap;
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        preorderIndex = 0;
+        // build a hashmap to store value -> its index relations
+        inorderIndexMap = new HashMap<>();
+        for (int i = 0; i < inorder.length; i++) {
+            inorderIndexMap.put(inorder[i], i);
+        }
+
+        return arrayToTree(preorder, 0, preorder.length - 1);
+    }
+
+    private TreeNode arrayToTree(int[] preorder, int left, int right) {
+        // if there are no elements to construct the tree
+        if (left > right) return null;
+
+        // select the preorder_index element as the root and increment it
+        int rootValue = preorder[preorderIndex++];
+        TreeNode root = new TreeNode(rootValue);
+
+        // build left and right subtree
+        // excluding inorderIndexMap[rootValue] element because it's the root
+        root.left = arrayToTree(preorder, left, inorderIndexMap.get(rootValue) - 1);
+        root.right = arrayToTree(preorder, inorderIndexMap.get(rootValue) + 1, right);
+        return root;
+    }
+}
+
+
+
+
+class Solution {
+    private int pre = 0;
+    private int in = 0;
+    
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return build(preorder, inorder, Integer.MIN_VALUE);
+    }
+    
+    private TreeNode build(int[] preorder, int[] inorder, int stop) {
+        if (pre >= preorder.length)
+            return null;
+        
+        if (inorder[in] == stop) {
+            in++;
+            return null;
+        }
+        
+        TreeNode root = new TreeNode(preorder[pre++]);
+        root.left = build(preorder, inorder, root.val);
+        root.right = build(preorder, inorder, stop);
+        return root;
+    }
+}
+
+
+
+
+
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        HashMap<Integer, Integer> inOrderMap = new HashMap<>();
+        for(int i = 0; i < inorder.length; i++){
+            inOrderMap.put(inorder[i], i);
+        }
+        
+        return build(0, inorder.length-1, 0, preorder.length-1, preorder, inOrderMap);
+        
+    }
+    
+    private TreeNode build(int inStart, int inEnd, int preStart, int preEnd, int[] pre, HashMap<Integer, Integer> inMap){
+        if(inStart > inEnd) return null;
+        int inRootIndex = inMap.get(pre[preStart]);
+        
+        TreeNode root = new TreeNode(pre[preStart]);
+        
+        int leftInStart = inStart;
+        int leftInEnd = inRootIndex - 1;
+        int leftPreStart = preStart + 1;
+        int leftPreEnd = leftPreStart + (leftInEnd - leftInStart);
+        
+        int rightInStart = inRootIndex + 1;
+        int rightInEnd = inEnd;
+        int rightPreStart = leftPreEnd + 1;
+        int rightPreEnd = preEnd;
+        
+        root.left = build(leftInStart, leftInEnd, leftPreStart, leftPreEnd, pre, inMap);
+        root.right = build(rightInStart, rightInEnd, rightPreStart, rightPreEnd, pre, inMap);
+        
+        return root;
+    }
+}
+
+
+
+
+class Solution {
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildUtil(preorder,inorder,0,preorder.length-1,0,inorder.length-1);
+    }
+    
+    public TreeNode buildUtil(int[] pre, int[] in, int ps, int pe, int is, int ie){
+        if(ps>pe || is>ie){
+            return null;
+        }
+        TreeNode root = new TreeNode(pre[ps]);
+        int index = find(in, pre[ps],is,ie);
+        int np = index-is;
+        root.left = buildUtil(pre,in,ps+1,ps+np,is,index-1);
+        
+        root.right = buildUtil(pre,in,ps+np+1,pe,index+1,ie);
+        return root;
+    }
+    
+    public int find(int[] arr,int val, int l, int r){
+        for(int i=l;i<=r;i++){
+            if(arr[i]==val)
+                return i;
+        }
+        return -1;
+    }
+}
